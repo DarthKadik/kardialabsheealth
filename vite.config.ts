@@ -97,7 +97,7 @@ export default defineConfig({
                 src: 'pwa-512x512.png',
                 sizes: '512x512',
                 type: 'image/png',
-                purpose: 'any maskable'
+                purpose: 'maskable'
             }
         ],
         screenshots: [
@@ -106,7 +106,7 @@ export default defineConfig({
             sizes: '720x1280',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'App Screenshot'
+            label: 'App Screenshot Mobile'
           }
         ]
     }
