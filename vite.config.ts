@@ -69,55 +69,36 @@ export default defineConfig({
     ...(produceSingleFile ? [viteSingleFile()] : []),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: null, // We are taking manual control
-      devOptions: {
-        enabled: true
-      },
+      injectRegister: 'script',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
-        cleanupOutdatedCaches: true,
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'offlineCache',
-              expiration: {
-                maxEntries: 200,
-              },
-            },
-          },
-        ],
       },
       manifest: {
         name: 'Sauna Journal',
         short_name: 'Sauna',
         description: 'Track your sauna sessions and wellness journey',
-        id: '/?source=pwa', // Make the ID more unique
         start_url: '/',
-        scope: '/',
         display: 'standalone',
-        orientation: 'portrait',
         theme_color: '#3E2723',
         background_color: '#FFEBCD',
         icons: [
           {
-            src: '/pwa-192x192.png', // Add leading slash
+            src: '/pwa-144x144.png', // Added 144px icon
+            sizes: '144x144',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/pwa-512x512.png', // Add leading slash
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-512x512.png', // Add leading slash
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
+            purpose: 'any maskable'
           }
         ]
       }
