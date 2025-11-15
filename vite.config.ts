@@ -4,6 +4,7 @@ import path from 'path'
 import react from '@vitejs/plugin-react'
 import { viteSingleFile } from "vite-plugin-singlefile"
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 
 /**
@@ -55,12 +56,58 @@ const produceSingleFile = process.env.SINGLE_FILE === 'true'
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   plugins: [
     react(), 
     tailwindcss(), 
     figmaAssetsResolver(), 
     removeVersionSpecifiers(), 
-    ...(produceSingleFile ? [viteSingleFile()] : [])
-  ],
+    ...(produceSingleFile ? [viteSingleFile()] : []),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      manifest: {
+        name: 'Sauna Journal',
+        short_name: 'Sauna',
+        description: 'Track your sauna sessions and wellness journey',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              }
+            }
+          }
+        ]
+      }
+    })
+  ]
 })
 

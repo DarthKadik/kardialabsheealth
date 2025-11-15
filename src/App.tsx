@@ -1,41 +1,129 @@
+import { useState } from "react";
+import { Home, Users, Activity, Brain, MapPin } from "lucide-react";
+import { Dashboard } from "./components/Dashboard";
+import { Community } from "./components/Community";
+import { DataTracking } from "./components/DataTracking";
+import { SaunaAlgorithms } from "./components/SaunaAlgorithms";
+import { FindSaunas } from "./components/FindSaunas";
+import { SessionBar } from "./components/SessionBar";
+import { useSessionState } from "./hooks/useSessionState";
+import { InstallPrompt } from "./components/InstallPrompt";
 
-function App() {
+export default function App() {
+  const [activeTab, setActiveTab] = useState("home");
+  const sessionState = useSessionState();
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "home":
+        return <Dashboard onNavigate={setActiveTab} sessionState={sessionState} />;
+      case "community":
+        return <Community />;
+      case "tracking":
+        return <DataTracking />;
+      case "algorithms":
+        return <SaunaAlgorithms />;
+      case "find":
+        return <FindSaunas />;
+      default:
+        return <Dashboard onNavigate={setActiveTab} sessionState={sessionState} />;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">Figma Make Local Runner</h1>
-          
-          <p className="text-lg text-gray-700 mb-6">
-            A skeleton project designed to run code downloaded from Figma Make locally, so you can easily modify the generated code with your favorite tools.
-          </p>
+    <div className="h-screen flex flex-col bg-[#FFEBCD] max-w-md mx-auto">
+      {/* Session Bar - Show when session is running and not on home page */}
+      {sessionState.isSessionRunning && activeTab !== "home" && (
+        <SessionBar
+          elapsedTime={sessionState.elapsedTime}
+          duration={sessionState.duration}
+          heatLevel={sessionState.heatLevel}
+          currentProgram={sessionState.currentProgram}
+          currentIntervalIndex={sessionState.currentIntervalIndex}
+          intervalStartTime={sessionState.intervalStartTime}
+          onStop={sessionState.stopProgram}
+          onNavigateHome={() => setActiveTab("home")}
+          getTotalProgramDuration={sessionState.getTotalProgramDuration}
+          getIntervalElapsedTime={sessionState.getIntervalElapsedTime}
+          getCurrentInterval={sessionState.getCurrentInterval}
+        />
+      )}
 
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
-            <p className="text-blue-800">
-              This project comes with several pre-installed packages that Figma-generated code may require. If you encounter errors about missing dependencies, you may need to install additional packages as needed.
-            </p>
-          </div>
-
-
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">🛠️ Setup</h2>
-          
-
-          <ol className="list-decimal list-inside text-gray-700 mb-4 space-y-2">
-            <li>Download your code from Figma Make</li>
-            <li>Decompress the downloaded files</li>
-            <li>Copy the <code className="bg-gray-200 px-1 rounded">src</code> folder into the root folder of this project to replace the existing <code className="bg-gray-200 px-1 rounded">src</code> folder</li>
-          </ol>
-          
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-            <p className="text-yellow-800 font-medium">
-              <strong>Important:</strong> Make sure to replace or merge with the existing files in the <code className="bg-yellow-200 px-1 rounded">src</code> folder. The current <code className="bg-yellow-200 px-1 rounded">src</code> folder contains a demo application that you should replace with your Figma Make code.
-            </p>
-          </div>
-
-        </div>
+      {/* App Content */}
+      <div
+        className={`flex-1 overflow-y-auto pb-20 ${
+          sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
+        }`}
+      >
+        {renderContent()}
       </div>
-    </div>
-  )
-}
 
-export default App
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-gradient-to-r from-[#3E2723] to-[#5C4033] border-t border-[#8B7355]/40 px-4 py-2 safe-area-bottom">
+        <div className="flex items-center justify-around">
+          <button
+            onClick={() => setActiveTab("home")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+              activeTab === "home"
+                ? "text-[#FFEBCD]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <Home className="w-5 h-5" />
+            <span className="text-xs">Home</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("community")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+              activeTab === "community"
+                ? "text-[#FFEBCD]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <Users className="w-5 h-5" />
+            <span className="text-xs">Community</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("tracking")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+              activeTab === "tracking"
+                ? "text-[#FFEBCD]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <Activity className="w-5 h-5" />
+            <span className="text-xs">Stats</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("algorithms")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+              activeTab === "algorithms"
+                ? "text-[#FFEBCD]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <Brain className="w-5 h-5" />
+            <span className="text-xs">Smart</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("find")}
+            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+              activeTab === "find"
+                ? "text-[#FFEBCD]"
+                : "text-white/60 hover:text-white/80"
+            }`}
+          >
+            <MapPin className="w-5 h-5" />
+            <span className="text-xs">Find</span>
+          </button>
+        </div>
+      </nav>
+
+      <InstallPrompt />
+    </div>
+  );
+}
