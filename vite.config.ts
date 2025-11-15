@@ -69,58 +69,48 @@ export default defineConfig({
     ...(produceSingleFile ? [viteSingleFile()] : []),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
-      devOptions: {
-        enabled: true
-      },
-      manifest: {
-        name: 'Sauna Journal - Track Your Wellness',
-        short_name: 'Sauna Journal',
-        description: 'Track your sauna sessions and wellness journey',
-        theme_color: '#3E2723',
-        background_color: '#FFEBCD',
-        display: 'standalone',
-        start_url: '/',
-        scope: '/',
-        orientation: 'portrait',
-        categories: ['health', 'lifestyle', 'wellness'],
-        icons: [
-          {
-            src: '/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
-          }
-        ]
-      },
+      injectRegister: 'script',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              }
+      },
+      manifest: {
+        name: 'Kardia Sauna',
+        short_name: 'Kardia',
+        description: 'Your personal sauna companion',
+        theme_color: '#000000',
+        background_color: '#000000',
+        start_url: '/',
+        scope: '/',
+        display: 'standalone',
+        icons: [
+            {
+                src: 'pwa-144x144.png',
+                sizes: '144x144',
+                type: 'image/png',
+                purpose: 'any'
+            },
+            {
+                src: 'pwa-192x192.png',
+                sizes: '192x192',
+                type: 'image/png',
+                purpose: 'any'
+            },
+            {
+                src: 'pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'maskable'
             }
+        ],
+        screenshots: [
+          {
+            src: 'screenshot-mobile.png',
+            sizes: '720x1280',
+            type: 'image/png',
+            label: 'App Screenshot Mobile'
           }
         ]
-      }
+    }
     })
   ]
 })

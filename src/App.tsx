@@ -7,7 +7,8 @@ import { SaunaAlgorithms } from "./components/SaunaAlgorithms";
 import { FindSaunas } from "./components/FindSaunas";
 import { SessionBar } from "./components/SessionBar";
 import { useSessionState } from "./hooks/useSessionState";
-import { InstallPrompt } from "./components/InstallPrompt";
+import { InAppInstallPrompt } from "./components/InAppInstallPrompt";
+import { PWADebugger } from "./components/PWADebugger";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -32,6 +33,7 @@ export default function App() {
 
   return (
     <div className="h-screen flex flex-col bg-[#FFEBCD] max-w-md mx-auto">
+      {/*<PWADebugger />*/}
       {/* Session Bar - Show when session is running and not on home page */}
       {sessionState.isSessionRunning && activeTab !== "home" && (
         <SessionBar
@@ -122,8 +124,9 @@ export default function App() {
           </button>
         </div>
       </nav>
-
-      <InstallPrompt />
+      
+      {/* <InAppInstallPrompt />*/}
+      
     </div>
   );
 }
