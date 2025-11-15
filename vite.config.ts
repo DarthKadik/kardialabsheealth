@@ -69,7 +69,10 @@ export default defineConfig({
     ...(produceSingleFile ? [viteSingleFile()] : []),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      injectRegister: null, // We are taking manual control
+      devOptions: {
+        enabled: true
+      },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
         cleanupOutdatedCaches: true,
