@@ -33,7 +33,7 @@ export default function App() {
 
   return (
     <div className="h-screen flex flex-col bg-[#FFEBCD] max-w-md mx-auto">
-      <PWADebugger />
+      {/*<PWADebugger />*/}
       {/* Session Bar - Show when session is running and not on home page */}
       {sessionState.isSessionRunning && activeTab !== "home" && (
         <SessionBar
@@ -124,8 +124,9 @@ export default function App() {
           </button>
         </div>
       </nav>
-
-      <InAppInstallPrompt />
+      
+      {/* <InAppInstallPrompt />*/}
+      
     </div>
   );
 }
