@@ -7,7 +7,7 @@ import { SaunaAlgorithms } from "./components/SaunaAlgorithms";
 import { FindSaunas } from "./components/FindSaunas";
 import { SessionBar } from "./components/SessionBar";
 import { useSessionState } from "./hooks/useSessionState";
-import { InstallPrompt } from "./components/InstallPrompt";
+import { InAppInstallPrompt } from "./components/InAppInstallPrompt";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
@@ -123,7 +123,7 @@ export default function App() {
         </div>
       </nav>
 
-      <InstallPrompt />
+      <InAppInstallPrompt />
     </div>
   );
 }
