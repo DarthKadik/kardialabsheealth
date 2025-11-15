@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { Card } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { BookOpen, Calendar, Clock, Flame, TrendingUp, TrendingDown } from "lucide-react";
@@ -9,6 +9,9 @@ import { DataService } from "../utils/dataUtils";
 const dataService = new DataService();
 
 function DataTrackingComponent() {
+  // State for selected sleep score type
+  const [selectedSleepScore, setSelectedSleepScore] = useState<'remSleepScore' | 'deepSleepScore' | 'totalSleepScore'>('totalSleepScore');
+
   // Memoize all data calculations to prevent unnecessary re-renders
   const { weeklyStats, totalSessions, totalHours, avgDuration, avgTemperature, heartRateChartData, maxTemperature, favoriteDay } = useMemo(() => {
     // Get weekly stats for last week (7 days ago)
@@ -280,7 +283,42 @@ function DataTrackingComponent() {
 
               {/* Sleep Score and Sauna Duration Chart */}
               <Card className="p-4">
-                <h3 className="text-gray-900 mb-4">Sleep Score & Sauna Duration</h3>
+                <h3 className="text-gray-900 mb-3">Sleep Score & Sauna Duration</h3>
+                
+                {/* Sleep Score Type Toggle Buttons */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setSelectedSleepScore('totalSleepScore')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      selectedSleepScore === 'totalSleepScore'
+                        ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white'
+                        : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  >
+                    Total Sleep
+                  </button>
+                  <button
+                    onClick={() => setSelectedSleepScore('remSleepScore')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      selectedSleepScore === 'remSleepScore'
+                        ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white'
+                        : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  >
+                    REM Sleep
+                  </button>
+                  <button
+                    onClick={() => setSelectedSleepScore('deepSleepScore')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      selectedSleepScore === 'deepSleepScore'
+                        ? 'bg-gradient-to-r from-orange-500 to-red-600 text-white'
+                        : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                    }`}
+                  >
+                    Deep Sleep
+                  </button>
+                </div>
+
                 <ResponsiveContainer width="100%" height={200} debounce={300}>
                   <ComposedChart data={weeklyStats.sleep.chartData} key="sleep-sauna-chart">
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -295,7 +333,25 @@ function DataTrackingComponent() {
                       </linearGradient>
                     </defs>
                     <Bar yAxisId="right" dataKey="saunaMinutes" fill="url(#saunaGradient)" radius={[8, 8, 0, 0]} name="Sauna Minutes" isAnimationActive={false} />
-                    <Line yAxisId="left" type="monotone" dataKey="sleepScore" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: "#8b5cf6", r: 4 }} name="Sleep Score" isAnimationActive={false} />
+                    <Line 
+                      yAxisId="left" 
+                      type="monotone" 
+                      dataKey={selectedSleepScore} 
+                      stroke={
+                        selectedSleepScore === 'totalSleepScore' ? '#10b981' : 
+                        selectedSleepScore === 'remSleepScore' ? '#3b82f6' : 
+                        '#8b5cf6'
+                      }
+                      strokeWidth={3} 
+                      dot={{ 
+                        fill: selectedSleepScore === 'totalSleepScore' ? '#10b981' : 
+                              selectedSleepScore === 'remSleepScore' ? '#3b82f6' : 
+                              '#8b5cf6', 
+                        r: 4 
+                      }} 
+                      name={selectedSleepScore === 'remSleepScore' ? 'REM Sleep Score' : selectedSleepScore === 'deepSleepScore' ? 'Deep Sleep Score' : 'Total Sleep Score'} 
+                      isAnimationActive={false} 
+                    />
                   </ComposedChart>
                 </ResponsiveContainer>
               </Card>

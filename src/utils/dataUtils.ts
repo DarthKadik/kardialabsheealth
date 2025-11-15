@@ -46,6 +46,9 @@ export interface WeeklyChartDataPoint {
   day: string; // Day name (Mon, Tue, etc.)
   date: string; // Date in YYYY-MM-DD format
   sleepScore?: number;
+  remSleepScore?: number;
+  deepSleepScore?: number;
+  totalSleepScore?: number;
   saunaMinutes?: number;
   restingHeartRateScore?: number;
   hrvBalanceScore?: number;
@@ -510,6 +513,9 @@ export class DataService {
         }
 
         chartPoint.sleepScore = dayData.ouraData['Sleep Score'];
+        chartPoint.remSleepScore = dayData.ouraData['REM Sleep Score'];
+        chartPoint.deepSleepScore = dayData.ouraData['Deep Sleep Score'];
+        chartPoint.totalSleepScore = dayData.ouraData['Total Sleep Score'];
       }
 
       if (dayData?.saunaSessions) {
