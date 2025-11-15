@@ -69,45 +69,42 @@ export default defineConfig({
     ...(produceSingleFile ? [viteSingleFile()] : []),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
-      devOptions: {
-        enabled: true
+      injectRegister: 'auto', // Let the plugin handle registration
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
+        cleanupOutdatedCaches: true,
       },
       manifest: {
         name: 'Sauna Journal',
         short_name: 'Sauna',
         description: 'Track your sauna sessions and wellness journey',
+        id: '/?source=pwa', // Make the ID more unique
+        start_url: '/',
+        scope: '/',
+        display: 'standalone',
+        orientation: 'portrait',
         theme_color: '#3E2723',
         background_color: '#FFEBCD',
-        display: 'standalone',
-        scope: '/',
-        start_url: '/',
-        id: '/',
-        orientation: 'portrait',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: '/pwa-192x192.png', // Add leading slash
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png', // Add leading slash
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png', // Add leading slash
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
           }
         ]
-      },
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
-        cleanupOutdatedCaches: true
       }
     })
   ]
