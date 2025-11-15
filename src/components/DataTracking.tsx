@@ -1,30 +1,92 @@
+import { memo, useMemo } from "react";
 import { Card } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Calendar, TrendingUp, Activity, Flame, BookOpen } from "lucide-react";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BookOpen, Calendar, Clock, Flame, TrendingUp, TrendingDown } from "lucide-react";
+import { Line, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { SaunaJournal } from "./SaunaJournal";
+import { DataService } from "../utils/dataUtils";
 
-const weeklyData = [
-  { day: "Mon", sessions: 1, duration: 25, avgTemp: 85 },
-  { day: "Tue", sessions: 2, duration: 40, avgTemp: 82 },
-  { day: "Wed", sessions: 1, duration: 20, avgTemp: 88 },
-  { day: "Thu", sessions: 0, duration: 0, avgTemp: 0 },
-  { day: "Fri", sessions: 2, duration: 35, avgTemp: 85 },
-  { day: "Sat", sessions: 1, duration: 30, avgTemp: 90 },
-  { day: "Sun", sessions: 1, duration: 25, avgTemp: 87 },
-];
+const dataService = new DataService();
 
-const heartRateData = [
-  { time: "0", bpm: 72 },
-  { time: "5", bpm: 95 },
-  { time: "10", bpm: 118 },
-  { time: "15", bpm: 132 },
-  { time: "20", bpm: 128 },
-  { time: "25", bpm: 105 },
-  { time: "30", bpm: 78 },
-];
+function DataTrackingComponent() {
+  // Memoize all data calculations to prevent unnecessary re-renders
+  const { weeklyStats, totalSessions, totalHours, avgDuration, avgTemperature, heartRateChartData, maxTemperature, favoriteDay } = useMemo(() => {
+    // Get weekly stats for last week (7 days ago)
+    const referenceDate = new Date();
+    referenceDate.setDate(referenceDate.getDate() - 128); // Go back 7 days to get last week
+    const weeklyStats = dataService.getWeeklyStats(referenceDate);
 
-export function DataTracking() {
+    // Get yearly data for summary stats
+    const yearlyData = dataService.getCombinedYearlyData(2025);
+    const totalSessions = yearlyData.dailyData.reduce(
+      (sum, day) => sum + (day.saunaSessions?.length || 0),
+      0
+    );
+    const totalMinutes = yearlyData.dailyData.reduce(
+      (sum, day) =>
+        sum +
+        (day.saunaSessions?.reduce(
+          (s, session) => s + session.duration_minutes,
+          0
+        ) || 0),
+      0
+    );
+    const totalHours = (totalMinutes / 60).toFixed(1);
+    const avgDuration = totalSessions > 0 
+      ? Math.round(totalMinutes / totalSessions) 
+      : 0;
+
+    // Calculate average temperature and max temperature from all sessions
+    let totalTemp = 0;
+    let tempCount = 0;
+    let maxTemp = 0;
+    yearlyData.dailyData.forEach((day) => {
+      day.saunaSessions?.forEach((session) => {
+        if (session.time_series && session.time_series.length > 0) {
+          const avgTemp = session.time_series.reduce(
+            (sum, ts) => sum + ts.temperature_celsius,
+            0
+          ) / session.time_series.length;
+          const sessionMaxTemp = Math.max(...session.time_series.map(ts => ts.temperature_celsius));
+          totalTemp += avgTemp;
+          tempCount++;
+          if (sessionMaxTemp > maxTemp) {
+            maxTemp = sessionMaxTemp;
+          }
+        }
+      });
+    });
+    const avgTemperature = tempCount > 0 ? Math.round(totalTemp / tempCount) : 85;
+    const maxTemperature = Math.round(maxTemp);
+
+    // Heart rate data from weekly stats
+    const heartRateChartData = weeklyStats.heartRate.chartData;
+
+    // Calculate favorite day (day of week with most sessions)
+    const dayCounts: Record<string, number> = {};
+    yearlyData.dailyData.forEach((day) => {
+      if (day.saunaSessions && day.saunaSessions.length > 0) {
+        const date = new Date(day.date + 'T00:00:00');
+        const dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
+        dayCounts[dayName] = (dayCounts[dayName] || 0) + day.saunaSessions.length;
+      }
+    });
+    const favoriteDay = Object.entries(dayCounts).reduce((a, b) => 
+      dayCounts[a[0]] > dayCounts[b[0]] ? a : b,
+      ['Saturday', 0]
+    );
+
+    return {
+      weeklyStats,
+      totalSessions,
+      totalHours,
+      avgDuration,
+      avgTemperature,
+      maxTemperature,
+      heartRateChartData,
+      favoriteDay,
+    };
+  }, []); // Empty dependency array - only calculate once on mount
   return (
     <div className="min-h-full bg-[#FFEBCD]">
       {/* Header */}
@@ -54,7 +116,7 @@ export function DataTracking() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355]/90 to-[#6D5A47]/90" />
             <div className="relative p-3 h-full flex flex-col justify-between">
               <p className="text-[#FFEBCD] text-xs">Total Sessions</p>
-              <p className="text-white text-2xl">142</p>
+              <p className="text-white text-2xl">{totalSessions}</p>
             </div>
           </div>
           
@@ -68,7 +130,7 @@ export function DataTracking() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#6D5A47]/90 to-[#5C4033]/90" />
             <div className="relative p-3 h-full flex flex-col justify-between">
               <p className="text-[#FFEBCD] text-xs">Total Time</p>
-              <p className="text-white text-2xl">54.3h</p>
+              <p className="text-white text-2xl">{totalHours}h</p>
             </div>
           </div>
           
@@ -82,7 +144,7 @@ export function DataTracking() {
             <div className="absolute inset-0 bg-gradient-to-br from-orange-600/80 to-red-700/80" />
             <div className="relative p-3 h-full flex flex-col justify-between">
               <p className="text-white/90 text-xs">Avg Temperature</p>
-              <p className="text-white text-2xl">85°C</p>
+              <p className="text-white text-2xl">{avgTemperature}°C</p>
             </div>
           </div>
           
@@ -96,7 +158,7 @@ export function DataTracking() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#5C4033]/90 to-[#3E2723]/90" />
             <div className="relative p-3 h-full flex flex-col justify-between">
               <p className="text-[#FFEBCD] text-xs">Avg Duration</p>
-              <p className="text-white text-2xl">23min</p>
+              <p className="text-white text-2xl">{avgDuration}min</p>
             </div>
           </div>
         </div>
@@ -116,60 +178,194 @@ export function DataTracking() {
             <SaunaJournal />
           </TabsContent>
 
-          <TabsContent value="week" className="space-y-4">
-            {/* Session Frequency */}
-            <Card className="p-4">
-              <h3 className="text-gray-900 mb-4">Sessions This Week</h3>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Bar dataKey="sessions" fill="url(#colorGradient)" radius={[8, 8, 0, 0]} />
-                  <defs>
-                    <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f97316" />
-                      <stop offset="100%" stopColor="#dc2626" />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
+          <TabsContent value="week" className="space-y-6">
+            {/* General Statistics */}
+            <div className="grid grid-cols-3 gap-3">
+              <Card className="p-4">
+                <div className="text-center">
+                  <p className="text-gray-600 text-xs mb-3">Sessions</p>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="p-1.5 rounded-lg bg-orange-100 flex-shrink-0">
+                      <Calendar className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <p className="text-gray-900 text-2xl font-semibold leading-tight">{weeklyStats.general.sessionCount}</p>
+                  </div>
+                </div>
+              </Card>
 
-            {/* Heart Rate Trend */}
-            <Card className="p-4">
-              <h3 className="text-gray-900 mb-4">Heart Rate Trend</h3>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={heartRateData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="time" tick={{ fontSize: 12 }} label={{ value: 'Minutes', position: 'insideBottom', offset: -5 }} />
-                  <YAxis tick={{ fontSize: 12 }} label={{ value: 'BPM', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="bpm" stroke="#f97316" strokeWidth={3} dot={{ fill: "#f97316", r: 4 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </Card>
+              <Card className="p-4">
+                <div className="text-center">
+                  <p className="text-gray-600 text-xs mb-3">Total Minutes</p>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="p-1.5 rounded-lg bg-blue-100 flex-shrink-0">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <p className="text-gray-900 text-2xl font-semibold leading-tight">{weeklyStats.general.totalMinutes}</p>
+                  </div>
+                </div>
+              </Card>
 
-            {/* Temperature Trend */}
-            <Card className="p-4">
-              <h3 className="text-gray-900 mb-4">Temperature Preferences</h3>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                  <YAxis tick={{ fontSize: 12 }} domain={[0, 100]} />
-                  <Tooltip />
-                  <Bar dataKey="avgTemp" fill="url(#tempGradient)" radius={[8, 8, 0, 0]} />
-                  <defs>
-                    <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#8b5cf6" />
-                      <stop offset="100%" stopColor="#ec4899" />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
+              <Card className="p-4">
+                <div className="text-center">
+                  <p className="text-gray-600 text-xs mb-3">Streak</p>
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="p-1.5 rounded-lg bg-red-100 flex-shrink-0">
+                      <Flame className="w-4 h-4 text-red-600" />
+                    </div>
+                    <p className="text-gray-900 text-2xl font-semibold leading-tight">
+                      {weeklyStats.general.streakWeeks}<span className="text-gray-600 text-xs font-normal ml-0.5">weeks</span>
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Sleep Section */}
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-gray-900 text-lg font-semibold">Sleep</h2>
+                <p className="text-gray-600 text-sm mt-1">Comparison of nights after sauna vs nights not after sauna</p>
+              </div>
+              
+              {/* Sleep Improvements */}
+              <div className="grid grid-cols-3 gap-3">
+                <Card className="p-4">
+                  <div>
+                    <p className="text-gray-600 text-xs mb-1">REM Sleep</p>
+                    <div className="flex items-center gap-2">
+                      {weeklyStats.sleep.remImprovement >= 0 ? (
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-red-600" />
+                      )}
+                      <p className={`text-lg font-semibold ${weeklyStats.sleep.remImprovement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {weeklyStats.sleep.remImprovement >= 0 ? '+' : ''}{weeklyStats.sleep.remImprovement.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <div>
+                    <p className="text-gray-600 text-xs mb-1">Deep Sleep</p>
+                    <div className="flex items-center gap-2">
+                      {weeklyStats.sleep.deepSleepImprovement >= 0 ? (
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-red-600" />
+                      )}
+                      <p className={`text-lg font-semibold ${weeklyStats.sleep.deepSleepImprovement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {weeklyStats.sleep.deepSleepImprovement >= 0 ? '+' : ''}{weeklyStats.sleep.deepSleepImprovement.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <div>
+                    <p className="text-gray-600 text-xs mb-1">Total Sleep</p>
+                    <div className="flex items-center gap-2">
+                      {weeklyStats.sleep.totalSleepImprovement >= 0 ? (
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-red-600" />
+                      )}
+                      <p className={`text-lg font-semibold ${weeklyStats.sleep.totalSleepImprovement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {weeklyStats.sleep.totalSleepImprovement >= 0 ? '+' : ''}{weeklyStats.sleep.totalSleepImprovement.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Sleep Score and Sauna Duration Chart */}
+              <Card className="p-4">
+                <h3 className="text-gray-900 mb-4">Sleep Score & Sauna Duration</h3>
+                <ResponsiveContainer width="100%" height={200} debounce={300}>
+                  <ComposedChart data={weeklyStats.sleep.chartData} key="sleep-sauna-chart">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                    <YAxis yAxisId="left" tick={{ fontSize: 12 }} domain={[0, 100]} label={{ value: 'Sleep Score', angle: -90, position: 'insideLeft' }} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} label={{ value: 'Minutes', angle: 90, position: 'insideRight' }} />
+                    <Tooltip />
+                    <defs>
+                      <linearGradient id="saunaGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f97316" />
+                        <stop offset="100%" stopColor="#dc2626" />
+                      </linearGradient>
+                    </defs>
+                    <Bar yAxisId="right" dataKey="saunaMinutes" fill="url(#saunaGradient)" radius={[8, 8, 0, 0]} name="Sauna Minutes" isAnimationActive={false} />
+                    <Line yAxisId="left" type="monotone" dataKey="sleepScore" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: "#8b5cf6", r: 4 }} name="Sleep Score" isAnimationActive={false} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
+
+            {/* Heart Rate Section */}
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-gray-900 text-lg font-semibold">Heart Rate</h2>
+                <p className="text-gray-600 text-sm mt-1">Comparison of days with sauna vs days without sauna</p>
+              </div>
+              
+              {/* Heart Rate Improvements */}
+              <div className="grid grid-cols-2 gap-3">
+                <Card className="p-4">
+                  <div>
+                    <p className="text-gray-600 text-xs mb-1">HRV Balance Score</p>
+                    <div className="flex items-center gap-2">
+                      {weeklyStats.heartRate.hrvImprovement >= 0 ? (
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-red-600" />
+                      )}
+                      <p className={`text-lg font-semibold ${weeklyStats.heartRate.hrvImprovement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {weeklyStats.heartRate.hrvImprovement >= 0 ? '+' : ''}{weeklyStats.heartRate.hrvImprovement.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <div>
+                    <p className="text-gray-600 text-xs mb-1">Resting HR Score</p>
+                    <div className="flex items-center gap-2">
+                      {weeklyStats.heartRate.restingHeartRateScoreImprovement >= 0 ? (
+                        <TrendingUp className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <TrendingDown className="w-4 h-4 text-red-600" />
+                      )}
+                      <p className={`text-lg font-semibold ${weeklyStats.heartRate.restingHeartRateScoreImprovement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {weeklyStats.heartRate.restingHeartRateScoreImprovement >= 0 ? '+' : ''}{weeklyStats.heartRate.restingHeartRateScoreImprovement.toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Heart Rate Scores Chart */}
+              <Card className="p-4">
+                <h3 className="text-gray-900 mb-4">Heart Rate Scores & Sauna Duration</h3>
+                <ResponsiveContainer width="100%" height={200} debounce={300}>
+                  <ComposedChart data={heartRateChartData} key="heartrate-chart">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                    <YAxis yAxisId="left" tick={{ fontSize: 12 }} domain={[0, 100]} label={{ value: 'Score', angle: -90, position: 'insideLeft' }} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12 }} label={{ value: 'Minutes', angle: 90, position: 'insideRight' }} />
+                    <Tooltip />
+                    <defs>
+                      <linearGradient id="saunaGradientHR" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f97316" />
+                        <stop offset="100%" stopColor="#dc2626" />
+                      </linearGradient>
+                    </defs>
+                    <Bar yAxisId="right" dataKey="saunaMinutes" fill="url(#saunaGradientHR)" radius={[8, 8, 0, 0]} name="Sauna Minutes" isAnimationActive={false} />
+                    <Line yAxisId="left" type="monotone" dataKey="hrvBalanceScore" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: "#8b5cf6", r: 4 }} name="HRV Balance" isAnimationActive={false} />
+                    <Line yAxisId="left" type="monotone" dataKey="restingHeartRateScore" stroke="#f97316" strokeWidth={3} dot={{ fill: "#f97316", r: 4 }} name="Resting HR Score" isAnimationActive={false} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="year" className="space-y-3 pb-6">
@@ -188,7 +384,7 @@ export function DataTracking() {
                 <p className="text-white/80 text-sm mb-2">Your 2025</p>
                 <h2 className="text-white mb-4">Sauna Wrapped</h2>
                 <div className="space-y-1">
-                  <p className="text-white text-5xl">142</p>
+                  <p className="text-white text-5xl">{totalSessions}</p>
                   <p className="text-white/90">Sessions This Year</p>
                 </div>
               </div>
@@ -356,8 +552,8 @@ export function DataTracking() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355]/90 to-[#6D5A47]/90" />
                 <div className="relative p-5 text-center">
                   <p className="text-[#FFEBCD] text-xs mb-2">Total Hours</p>
-                  <p className="text-white text-3xl mb-1">54.3</p>
-                  <p className="text-[#FFEBCD]/80 text-xs">That's 2.3 days!</p>
+                  <p className="text-white text-3xl mb-1">{totalHours}</p>
+                  <p className="text-[#FFEBCD]/80 text-xs">That's {(parseFloat(totalHours) / 24).toFixed(1)} days!</p>
                 </div>
               </div>
 
@@ -371,7 +567,7 @@ export function DataTracking() {
                 <div className="absolute inset-0 bg-gradient-to-br from-red-600/90 to-orange-700/90" />
                 <div className="relative p-5 text-center">
                   <p className="text-white/90 text-xs mb-2">Hottest Session</p>
-                  <p className="text-white text-3xl mb-1">92°C</p>
+                  <p className="text-white text-3xl mb-1">{maxTemperature}°C</p>
                   <p className="text-white/80 text-xs">You like it hot!</p>
                 </div>
               </div>
@@ -388,8 +584,8 @@ export function DataTracking() {
               <div className="absolute inset-0 bg-gradient-to-br from-[#5C4033]/90 to-[#3E2723]/90" />
               <div className="relative p-5 text-center">
                 <p className="text-[#FFEBCD] text-xs mb-2">Your Favorite Day</p>
-                <p className="text-white text-3xl mb-1">Saturday</p>
-                <p className="text-[#FFEBCD]/80 text-xs">42 sessions on Saturdays</p>
+                <p className="text-white text-3xl mb-1">{favoriteDay[0]}</p>
+                <p className="text-[#FFEBCD]/80 text-xs">{favoriteDay[1]} sessions on {favoriteDay[0]}s</p>
               </div>
             </div>
 
@@ -450,3 +646,6 @@ export function DataTracking() {
     </div>
   );
 }
+
+// Export memoized component to prevent unnecessary re-renders from parent
+export const DataTracking = memo(DataTrackingComponent);
