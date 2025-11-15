@@ -74,34 +74,42 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
       },
       manifest: {
-        name: 'Sauna Journal',
-        short_name: 'Sauna',
-        description: 'Track your sauna sessions and wellness journey',
-        start_url: '/',
+        name: 'Kardia Sauna',
+        short_name: 'Kardia',
+        description: 'Your personal sauna companion',
+        theme_color: '#000000',
+        start_url: '.',
         display: 'standalone',
-        theme_color: '#3E2723',
-        background_color: '#FFEBCD',
         icons: [
+            {
+                src: 'pwa-144x144.png',
+                sizes: '144x144',
+                type: 'image/png',
+                purpose: 'any'
+            },
+            {
+                src: 'pwa-192x192.png',
+                sizes: '192x192',
+                type: 'image/png',
+                purpose: 'any'
+            },
+            {
+                src: 'pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'any maskable'
+            }
+        ],
+        screenshots: [
           {
-            src: '/pwa-144x144.png', // Added 144px icon
-            sizes: '144x144',
+            src: 'screenshot-mobile.png',
+            sizes: '720x1280',
             type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: '/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
+            form_factor: 'narrow',
+            label: 'App Screenshot'
           }
         ]
-      }
+    }
     })
   ]
 })
