@@ -8,12 +8,34 @@ import { DataService } from "../utils/dataUtils";
 
 const dataService = new DataService();
 
+// Helper function to get day of year (1-365/366)
+function getDayOfYear(date: Date): number {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = date.getTime() - start.getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
+// Helper function to get week number and day index for activity map
+function getWeekAndDayIndex(date: Date): { weekIndex: number; dayIndex: number } {
+  const dayOfYear = getDayOfYear(date);
+  const adjustedDayOfYear = dayOfYear - 1; // 0-indexed
+  
+  // Calculate which week of the year (0-52)
+  const weekIndex = Math.floor(adjustedDayOfYear / 7);
+  
+  // Calculate day index within week (0 = Monday, 6 = Sunday)
+  const dayOfWeek = date.getDay();
+  const dayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Convert Sunday=0 to Sunday=6, others shift by 1
+  
+  return { weekIndex, dayIndex };
+}
+
 function DataTrackingComponent() {
   // State for selected sleep score type
   const [selectedSleepScore, setSelectedSleepScore] = useState<'remSleepScore' | 'deepSleepScore' | 'totalSleepScore'>('totalSleepScore');
 
   // Memoize all data calculations to prevent unnecessary re-renders
-  const { weeklyStats, totalSessions, totalHours, avgDuration, avgTemperature, heartRateChartData, maxTemperature, favoriteDay } = useMemo(() => {
+  const { weeklyStats, totalSessions, totalHours, avgDuration, avgTemperature, heartRateChartData, maxTemperature, favoriteDay, activityMapData } = useMemo(() => {
     // Get weekly stats for last week (7 days ago)
     const referenceDate = new Date();
     referenceDate.setDate(referenceDate.getDate()); // Go back 7 days to get last week
@@ -79,6 +101,29 @@ function DataTrackingComponent() {
       ['Saturday', 0]
     );
 
+    // Build activity map data from real sauna sessions
+    const activityMap = new Map<string, { hasSauna: boolean; sessionCount: number; totalMinutes: number }>();
+    
+    // Initialize all days to no sauna
+    for (let week = 0; week < 53; week++) {
+      for (let day = 0; day < 7; day++) {
+        const key = `${week}-${day}`;
+        activityMap.set(key, { hasSauna: false, sessionCount: 0, totalMinutes: 0 });
+      }
+    }
+    
+    // Fill in real data
+    yearlyData.dailyData.forEach((day) => {
+      if (day.saunaSessions && day.saunaSessions.length > 0) {
+        const date = new Date(day.date + 'T00:00:00');
+        const { weekIndex, dayIndex } = getWeekAndDayIndex(date);
+        const key = `${weekIndex}-${dayIndex}`;
+        const sessionCount = day.saunaSessions.length;
+        const totalMinutes = day.saunaSessions.reduce((sum, s) => sum + s.duration_minutes, 0);
+        activityMap.set(key, { hasSauna: true, sessionCount, totalMinutes });
+      }
+    });
+
     return {
       weeklyStats,
       totalSessions,
@@ -88,6 +133,7 @@ function DataTrackingComponent() {
       maxTemperature,
       heartRateChartData,
       favoriteDay,
+      activityMapData: activityMap,
     };
   }, []); // Empty dependency array - only calculate once on mount
   return (
@@ -479,11 +525,6 @@ function DataTrackingComponent() {
                   <div className="space-y-0.5">
                     {(() => {
                       const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                      const saunaDays = new Set([
-                        3, 5, 8, 12, 15, 19, 22, 26, 29, 33, 36, 40, 43, 47, 50, 54, 57, 61, 64, 68,
-                        71, 75, 78, 82, 85, 89, 92, 96, 99, 103, 106, 110, 113, 117, 120, 124, 127, 131,
-                        134, 138, 141, 145, 148, 152, 155, 159, 162, 166, 169, 173, 176, 180
-                      ]);
 
                       return daysOfWeek.map((dayName, dayIndex) => (
                         <div key={dayName} className="flex gap-2 items-center">
@@ -495,17 +536,27 @@ function DataTrackingComponent() {
                           {/* Dots for this day across all weeks */}
                           <div className="flex gap-1">
                             {Array.from({ length: 26 }).map((_, weekIndex) => {
-                              const dayOfYear = weekIndex * 7 + dayIndex;
-                              const hasSauna = saunaDays.has(dayOfYear);
+                              const key = `${weekIndex}-${dayIndex}`;
+                              const dayData = activityMapData.get(key) || { hasSauna: false, sessionCount: 0, totalMinutes: 0 };
+                              const hasSauna = dayData.hasSauna;
+                              
+                              // Determine color intensity based on session count or total minutes
+                              let colorClass = 'bg-gray-200';
+                              if (hasSauna) {
+                                if (dayData.sessionCount >= 2 || dayData.totalMinutes >= 40) {
+                                  colorClass = 'bg-red-600';
+                                } else if (dayData.sessionCount >= 1 || dayData.totalMinutes >= 20) {
+                                  colorClass = 'bg-orange-500';
+                                } else {
+                                  colorClass = 'bg-orange-300';
+                                }
+                              }
+                              
                               return (
                                 <div
                                   key={weekIndex}
-                                  className={`w-[8px] h-[8px] rounded-sm ${
-                                    hasSauna
-                                      ? 'bg-gradient-to-br from-orange-500 to-red-600'
-                                      : 'bg-gray-200'
-                                  }`}
-                                  title={`${dayName} week ${weekIndex + 1}: ${hasSauna ? 'Sauna day' : 'No session'}`}
+                                  className={`w-[8px] h-[8px] rounded-sm ${colorClass}`}
+                                  title={`${dayName} week ${weekIndex + 1}: ${hasSauna ? `${dayData.sessionCount} session(s), ${dayData.totalMinutes} min` : 'No session'}`}
                                 />
                               );
                             })}
@@ -545,12 +596,6 @@ function DataTrackingComponent() {
                   <div className="space-y-0.5">
                     {(() => {
                       const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                      const saunaDays = new Set([
-                        183, 187, 190, 194, 197, 201, 204, 208, 211, 215, 218, 222, 225, 229, 232, 236, 
-                        239, 243, 246, 250, 253, 257, 260, 264, 267, 271, 274, 278, 281, 285, 288, 292, 
-                        295, 299, 302, 306, 309, 313, 316, 320, 323, 327, 330, 334, 337, 341, 344, 348, 
-                        351, 355, 358, 362
-                      ]);
 
                       return daysOfWeek.map((dayName, dayIndex) => (
                         <div key={dayName} className="flex gap-2 items-center">
@@ -562,17 +607,28 @@ function DataTrackingComponent() {
                           {/* Dots for this day across all weeks */}
                           <div className="flex gap-1">
                             {Array.from({ length: 26 }).map((_, weekIndex) => {
-                              const dayOfYear = (weekIndex + 26) * 7 + dayIndex;
-                              const hasSauna = saunaDays.has(dayOfYear);
+                              const actualWeekIndex = weekIndex + 26; // Second half starts at week 26
+                              const key = `${actualWeekIndex}-${dayIndex}`;
+                              const dayData = activityMapData.get(key) || { hasSauna: false, sessionCount: 0, totalMinutes: 0 };
+                              const hasSauna = dayData.hasSauna;
+                              
+                              // Determine color intensity based on session count or total minutes
+                              let colorClass = 'bg-gray-200';
+                              if (hasSauna) {
+                                if (dayData.sessionCount >= 2 || dayData.totalMinutes >= 40) {
+                                  colorClass = 'bg-red-600';
+                                } else if (dayData.sessionCount >= 1 || dayData.totalMinutes >= 20) {
+                                  colorClass = 'bg-orange-500';
+                                } else {
+                                  colorClass = 'bg-orange-300';
+                                }
+                              }
+                              
                               return (
                                 <div
                                   key={weekIndex}
-                                  className={`w-[8px] h-[8px] rounded-sm ${
-                                    hasSauna
-                                      ? 'bg-gradient-to-br from-orange-500 to-red-600'
-                                      : 'bg-gray-200'
-                                  }`}
-                                  title={`${dayName} week ${weekIndex + 27}: ${hasSauna ? 'Sauna day' : 'No session'}`}
+                                  className={`w-[8px] h-[8px] rounded-sm ${colorClass}`}
+                                  title={`${dayName} week ${actualWeekIndex + 1}: ${hasSauna ? `${dayData.sessionCount} session(s), ${dayData.totalMinutes} min` : 'No session'}`}
                                 />
                               );
                             })}
