@@ -3,55 +3,55 @@ import { Button } from './ui/button';
 import { Download } from 'lucide-react';
 
 /**
- * This component implements the custom in-app installation flow
- * as described in the web.dev article: https://web.dev/articles/customize-install
+ * A "smart" install button that provides the best possible action.
+ * - If the browser's install prompt is available, it uses it.
+ * - If not, it shows manual instructions for the user's OS.
  */
 export function InAppInstallPrompt() {
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
-  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
+    // Check if the app is already running in standalone mode
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Listen for the browser's install prompt event
     const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent the default browser prompt from showing
       e.preventDefault();
-      // Stash the event so it can be triggered later
-      setInstallPromptEvent(e);
-      // Show our custom install button
-      setShowInstallButton(true);
+      setInstallPromptEvent(e); // Stash the event
     };
 
-    // Listen for the browser's signal that the app can be installed
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    // Listen for when the app is successfully installed
-    const handleAppInstalled = () => {
-      // Hide the custom install button once installed
-      setShowInstallButton(false);
-      setInstallPromptEvent(null);
-    };
-
-    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
-  const handleInstallClick = async () => {
-    if (!installPromptEvent) {
-      return;
+  const handleInstallClick = () => {
+    // If the browser provided a prompt, use it
+    if (installPromptEvent) {
+      installPromptEvent.prompt();
+    } else {
+      // Otherwise, show manual instructions
+      showManualInstallInstructions();
     }
-    // Trigger the browser's installation prompt
-    installPromptEvent.prompt();
-    
-    // The prompt can only be used once
-    setInstallPromptEvent(null);
-    setShowInstallButton(false);
   };
 
-  // Only render the button if the browser has indicated the app is installable
-  if (!showInstallButton) {
+  const showManualInstallInstructions = () => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    alert(
+      isIOS
+        ? 'To install: Tap the Share button, then scroll down and select "Add to Home Screen".'
+        : 'To install: Open your browser menu (the three dots) and look for "Install app" or "Add to Home screen".'
+    );
+  };
+
+  // Don't show the button if the app is already installed
+  if (isInstalled) {
     return null;
   }
 
@@ -63,7 +63,7 @@ export function InAppInstallPrompt() {
           className="w-full bg-[#FFEBCD] text-[#3E2723] hover:bg-[#FFE4B5] shadow-lg"
         >
           <Download className="w-5 h-5 mr-3" />
-          Install App to Your Device
+          Install App
         </Button>
     </div>
   );
