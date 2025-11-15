@@ -105,7 +105,6 @@ export default defineConfig({
             src: 'screenshot-mobile.png',
             sizes: '720x1280',
             type: 'image/png',
-            form_factor: 'narrow',
             label: 'App Screenshot Mobile'
           }
         ]
