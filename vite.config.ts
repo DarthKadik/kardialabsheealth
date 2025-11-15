@@ -78,7 +78,9 @@ export default defineConfig({
         short_name: 'Kardia',
         description: 'Your personal sauna companion',
         theme_color: '#000000',
-        start_url: '.',
+        background_color: '#000000',
+        start_url: '/',
+        scope: '/',
         display: 'standalone',
         icons: [
             {
