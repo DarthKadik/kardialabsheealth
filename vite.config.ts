@@ -70,9 +70,12 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      devOptions: {
+        enabled: true
+      },
       manifest: {
-        name: 'Sauna Journal',
-        short_name: 'Sauna',
+        name: 'Sauna Journal - Track Your Wellness',
+        short_name: 'Sauna Journal',
         description: 'Track your sauna sessions and wellness journey',
         theme_color: '#3E2723',
         background_color: '#FFEBCD',
@@ -80,20 +83,22 @@ export default defineConfig({
         start_url: '/',
         scope: '/',
         orientation: 'portrait',
+        categories: ['health', 'lifestyle', 'wellness'],
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: '/pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
