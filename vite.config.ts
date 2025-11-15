@@ -74,9 +74,12 @@ export default defineConfig({
         name: 'Sauna Journal',
         short_name: 'Sauna',
         description: 'Track your sauna sessions and wellness journey',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#3E2723',
+        background_color: '#FFEBCD',
         display: 'standalone',
+        start_url: '/',
+        scope: '/',
+        orientation: 'portrait',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -87,7 +90,13 @@ export default defineConfig({
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'any'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       },
