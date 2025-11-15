@@ -2,8 +2,8 @@
   "metadata": {
     "generated_at": "2025-11-15T20:08:04.017706",
     "start_date": "2025-01-01",
-    "end_date": "2025-11-15",
-    "total_sessions": 100,
+    "end_date": "2025-11-23",
+    "total_sessions": 102,
     "session_types": [
       {
         "id": 1,
@@ -47227,6 +47227,876 @@
           "temperature_celsius": 75.3,
           "humidity_percent": 31.0,
           "heart_rate_bpm": 100
+        }
+      ]
+    },
+    {
+      "session_id": "session_20250707_132500_6378",
+      "timestamp": "2025-11-17T13:25:00++02:00",
+      "session_type_id": 4,
+      "session_type_title": "Evening Wind-Down Session",
+      "duration_minutes": 51,
+      "recovery_score": 63,
+      "relaxation_score": 4,
+      "enjoyment_score": 1,
+      "time_series": [
+        {
+          "time_minutes": 0,
+          "temperature_celsius": 74.1,
+          "humidity_percent": 21.3,
+          "heart_rate_bpm": 98
+        },
+        {
+          "time_minutes": 1,
+          "temperature_celsius": 74.2,
+          "humidity_percent": 21.4,
+          "heart_rate_bpm": 95
+        },
+        {
+          "time_minutes": 2,
+          "temperature_celsius": 73.6,
+          "humidity_percent": 20.4,
+          "heart_rate_bpm": 96
+        },
+        {
+          "time_minutes": 3,
+          "temperature_celsius": 72.0,
+          "humidity_percent": 20.9,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 4,
+          "temperature_celsius": 71.3,
+          "humidity_percent": 18.2,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 5,
+          "temperature_celsius": 72.3,
+          "humidity_percent": 17.8,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 6,
+          "temperature_celsius": 73.1,
+          "humidity_percent": 20.2,
+          "heart_rate_bpm": 96
+        },
+        {
+          "time_minutes": 7,
+          "temperature_celsius": 72.1,
+          "humidity_percent": 20.7,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 8,
+          "temperature_celsius": 69.6,
+          "humidity_percent": 20.9,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 9,
+          "temperature_celsius": 69.5,
+          "humidity_percent": 23.1,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 10,
+          "temperature_celsius": 69.3,
+          "humidity_percent": 20.0,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 11,
+          "temperature_celsius": 69.2,
+          "humidity_percent": 19.0,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 12,
+          "temperature_celsius": 69.8,
+          "humidity_percent": 18.6,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 13,
+          "temperature_celsius": 70.5,
+          "humidity_percent": 19.8,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 14,
+          "temperature_celsius": 71.2,
+          "humidity_percent": 20.9,
+          "heart_rate_bpm": 92
+        },
+        {
+          "time_minutes": 15,
+          "temperature_celsius": 71.4,
+          "humidity_percent": 19.7,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 16,
+          "temperature_celsius": 69.7,
+          "humidity_percent": 21.0,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 17,
+          "temperature_celsius": 69.5,
+          "humidity_percent": 20.4,
+          "heart_rate_bpm": 95
+        },
+        {
+          "time_minutes": 18,
+          "temperature_celsius": 71.4,
+          "humidity_percent": 21.8,
+          "heart_rate_bpm": 97
+        },
+        {
+          "time_minutes": 19,
+          "temperature_celsius": 71.5,
+          "humidity_percent": 20.3,
+          "heart_rate_bpm": 98
+        },
+        {
+          "time_minutes": 20,
+          "temperature_celsius": 71.6,
+          "humidity_percent": 20.1,
+          "heart_rate_bpm": 96
+        },
+        {
+          "time_minutes": 21,
+          "temperature_celsius": 71.6,
+          "humidity_percent": 19.5,
+          "heart_rate_bpm": 96
+        },
+        {
+          "time_minutes": 22,
+          "temperature_celsius": 71.7,
+          "humidity_percent": 20.9,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 23,
+          "temperature_celsius": 69.6,
+          "humidity_percent": 20.1,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 24,
+          "temperature_celsius": 69.4,
+          "humidity_percent": 20.1,
+          "heart_rate_bpm": 95
+        },
+        {
+          "time_minutes": 25,
+          "temperature_celsius": 69.5,
+          "humidity_percent": 20.7,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 26,
+          "temperature_celsius": 70.6,
+          "humidity_percent": 21.2,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 27,
+          "temperature_celsius": 70.5,
+          "humidity_percent": 22.2,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 28,
+          "temperature_celsius": 69.1,
+          "humidity_percent": 22.1,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 29,
+          "temperature_celsius": 69.6,
+          "humidity_percent": 21.4,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 30,
+          "temperature_celsius": 69.0,
+          "humidity_percent": 20.8,
+          "heart_rate_bpm": 92
+        },
+        {
+          "time_minutes": 31,
+          "temperature_celsius": 68.2,
+          "humidity_percent": 20.7,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 32,
+          "temperature_celsius": 67.8,
+          "humidity_percent": 20.9,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 33,
+          "temperature_celsius": 68.6,
+          "humidity_percent": 20.7,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 34,
+          "temperature_celsius": 69.8,
+          "humidity_percent": 20.6,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 35,
+          "temperature_celsius": 70.2,
+          "humidity_percent": 18.7,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 36,
+          "temperature_celsius": 70.7,
+          "humidity_percent": 19.7,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 37,
+          "temperature_celsius": 71.0,
+          "humidity_percent": 19.9,
+          "heart_rate_bpm": 92
+        },
+        {
+          "time_minutes": 38,
+          "temperature_celsius": 70.9,
+          "humidity_percent": 21.1,
+          "heart_rate_bpm": 93
+        },
+        {
+          "time_minutes": 39,
+          "temperature_celsius": 71.3,
+          "humidity_percent": 21.0,
+          "heart_rate_bpm": 95
+        },
+        {
+          "time_minutes": 40,
+          "temperature_celsius": 69.2,
+          "humidity_percent": 18.8,
+          "heart_rate_bpm": 94
+        },
+        {
+          "time_minutes": 41,
+          "temperature_celsius": 69.4,
+          "humidity_percent": 18.5,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 42,
+          "temperature_celsius": 68.7,
+          "humidity_percent": 18.4,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 43,
+          "temperature_celsius": 69.8,
+          "humidity_percent": 19.5,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 44,
+          "temperature_celsius": 69.7,
+          "humidity_percent": 17.1,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 45,
+          "temperature_celsius": 69.8,
+          "humidity_percent": 17.5,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 46,
+          "temperature_celsius": 68.6,
+          "humidity_percent": 18.4,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 47,
+          "temperature_celsius": 69.6,
+          "humidity_percent": 17.8,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 48,
+          "temperature_celsius": 70.2,
+          "humidity_percent": 18.2,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 49,
+          "temperature_celsius": 70.6,
+          "humidity_percent": 17.6,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 50,
+          "temperature_celsius": 69.9,
+          "humidity_percent": 17.0,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 51,
+          "temperature_celsius": 69.3,
+          "humidity_percent": 16.9,
+          "heart_rate_bpm": 85
+        }
+      ]
+    },
+    {
+      "session_id": "session_20250708_194900_5573",
+      "timestamp": "2025-11-18T19:49:00++02:00",
+      "session_type_id": 2,
+      "session_type_title": "Athletic Recovery Session",
+      "duration_minutes": 88,
+      "recovery_score": 84,
+      "relaxation_score": 4,
+      "enjoyment_score": 4,
+      "time_series": [
+        {
+          "time_minutes": 0,
+          "temperature_celsius": 80.7,
+          "humidity_percent": 15.6,
+          "heart_rate_bpm": 92
+        },
+        {
+          "time_minutes": 1,
+          "temperature_celsius": 80.7,
+          "humidity_percent": 14.8,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 2,
+          "temperature_celsius": 81.4,
+          "humidity_percent": 16.5,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 3,
+          "temperature_celsius": 81.7,
+          "humidity_percent": 16.7,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 4,
+          "temperature_celsius": 81.3,
+          "humidity_percent": 18.2,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 5,
+          "temperature_celsius": 82.7,
+          "humidity_percent": 17.9,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 6,
+          "temperature_celsius": 83.0,
+          "humidity_percent": 19.6,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 7,
+          "temperature_celsius": 82.8,
+          "humidity_percent": 20.1,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 8,
+          "temperature_celsius": 82.7,
+          "humidity_percent": 21.3,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 9,
+          "temperature_celsius": 82.4,
+          "humidity_percent": 21.6,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 10,
+          "temperature_celsius": 82.0,
+          "humidity_percent": 20.3,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 11,
+          "temperature_celsius": 80.0,
+          "humidity_percent": 19.8,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 12,
+          "temperature_celsius": 79.3,
+          "humidity_percent": 18.3,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 13,
+          "temperature_celsius": 78.9,
+          "humidity_percent": 18.7,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 14,
+          "temperature_celsius": 79.5,
+          "humidity_percent": 17.1,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 15,
+          "temperature_celsius": 78.2,
+          "humidity_percent": 17.8,
+          "heart_rate_bpm": 91
+        },
+        {
+          "time_minutes": 16,
+          "temperature_celsius": 78.1,
+          "humidity_percent": 13.7,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 17,
+          "temperature_celsius": 77.8,
+          "humidity_percent": 15.5,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 18,
+          "temperature_celsius": 78.3,
+          "humidity_percent": 14.7,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 19,
+          "temperature_celsius": 78.9,
+          "humidity_percent": 14.2,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 20,
+          "temperature_celsius": 78.5,
+          "humidity_percent": 16.5,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 21,
+          "temperature_celsius": 78.3,
+          "humidity_percent": 17.3,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 22,
+          "temperature_celsius": 78.0,
+          "humidity_percent": 18.7,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 23,
+          "temperature_celsius": 78.0,
+          "humidity_percent": 17.6,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 24,
+          "temperature_celsius": 78.3,
+          "humidity_percent": 19.1,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 25,
+          "temperature_celsius": 79.6,
+          "humidity_percent": 19.0,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 26,
+          "temperature_celsius": 78.8,
+          "humidity_percent": 19.3,
+          "heart_rate_bpm": 83
+        },
+        {
+          "time_minutes": 27,
+          "temperature_celsius": 80.4,
+          "humidity_percent": 21.1,
+          "heart_rate_bpm": 82
+        },
+        {
+          "time_minutes": 28,
+          "temperature_celsius": 79.4,
+          "humidity_percent": 19.6,
+          "heart_rate_bpm": 80
+        },
+        {
+          "time_minutes": 29,
+          "temperature_celsius": 80.2,
+          "humidity_percent": 20.8,
+          "heart_rate_bpm": 81
+        },
+        {
+          "time_minutes": 30,
+          "temperature_celsius": 79.8,
+          "humidity_percent": 21.1,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 31,
+          "temperature_celsius": 79.1,
+          "humidity_percent": 20.7,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 32,
+          "temperature_celsius": 80.3,
+          "humidity_percent": 19.3,
+          "heart_rate_bpm": 84
+        },
+        {
+          "time_minutes": 33,
+          "temperature_celsius": 80.3,
+          "humidity_percent": 19.1,
+          "heart_rate_bpm": 82
+        },
+        {
+          "time_minutes": 34,
+          "temperature_celsius": 80.3,
+          "humidity_percent": 18.3,
+          "heart_rate_bpm": 80
+        },
+        {
+          "time_minutes": 35,
+          "temperature_celsius": 80.0,
+          "humidity_percent": 19.9,
+          "heart_rate_bpm": 77
+        },
+        {
+          "time_minutes": 36,
+          "temperature_celsius": 79.6,
+          "humidity_percent": 20.0,
+          "heart_rate_bpm": 78
+        },
+        {
+          "time_minutes": 37,
+          "temperature_celsius": 79.5,
+          "humidity_percent": 19.2,
+          "heart_rate_bpm": 80
+        },
+        {
+          "time_minutes": 38,
+          "temperature_celsius": 77.0,
+          "humidity_percent": 17.6,
+          "heart_rate_bpm": 78
+        },
+        {
+          "time_minutes": 39,
+          "temperature_celsius": 76.0,
+          "humidity_percent": 17.3,
+          "heart_rate_bpm": 79
+        },
+        {
+          "time_minutes": 40,
+          "temperature_celsius": 76.9,
+          "humidity_percent": 19.1,
+          "heart_rate_bpm": 80
+        },
+        {
+          "time_minutes": 41,
+          "temperature_celsius": 78.3,
+          "humidity_percent": 19.4,
+          "heart_rate_bpm": 83
+        },
+        {
+          "time_minutes": 42,
+          "temperature_celsius": 79.6,
+          "humidity_percent": 19.2,
+          "heart_rate_bpm": 84
+        },
+        {
+          "time_minutes": 43,
+          "temperature_celsius": 78.9,
+          "humidity_percent": 21.3,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 44,
+          "temperature_celsius": 79.2,
+          "humidity_percent": 20.7,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 45,
+          "temperature_celsius": 77.6,
+          "humidity_percent": 19.6,
+          "heart_rate_bpm": 84
+        },
+        {
+          "time_minutes": 46,
+          "temperature_celsius": 77.7,
+          "humidity_percent": 20.2,
+          "heart_rate_bpm": 83
+        },
+        {
+          "time_minutes": 47,
+          "temperature_celsius": 78.7,
+          "humidity_percent": 20.6,
+          "heart_rate_bpm": 81
+        },
+        {
+          "time_minutes": 48,
+          "temperature_celsius": 78.9,
+          "humidity_percent": 19.9,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 49,
+          "temperature_celsius": 78.8,
+          "humidity_percent": 18.9,
+          "heart_rate_bpm": 82
+        },
+        {
+          "time_minutes": 50,
+          "temperature_celsius": 78.9,
+          "humidity_percent": 20.8,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 51,
+          "temperature_celsius": 80.1,
+          "humidity_percent": 20.2,
+          "heart_rate_bpm": 83
+        },
+        {
+          "time_minutes": 52,
+          "temperature_celsius": 79.9,
+          "humidity_percent": 18.4,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 53,
+          "temperature_celsius": 80.0,
+          "humidity_percent": 18.8,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 54,
+          "temperature_celsius": 81.2,
+          "humidity_percent": 20.0,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 55,
+          "temperature_celsius": 80.8,
+          "humidity_percent": 19.8,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 56,
+          "temperature_celsius": 79.4,
+          "humidity_percent": 20.5,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 57,
+          "temperature_celsius": 80.6,
+          "humidity_percent": 19.2,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 58,
+          "temperature_celsius": 81.3,
+          "humidity_percent": 20.0,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 59,
+          "temperature_celsius": 79.3,
+          "humidity_percent": 18.9,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 60,
+          "temperature_celsius": 79.3,
+          "humidity_percent": 19.4,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 61,
+          "temperature_celsius": 79.4,
+          "humidity_percent": 20.4,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 62,
+          "temperature_celsius": 80.6,
+          "humidity_percent": 20.4,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 63,
+          "temperature_celsius": 80.5,
+          "humidity_percent": 18.9,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 64,
+          "temperature_celsius": 80.6,
+          "humidity_percent": 17.6,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 65,
+          "temperature_celsius": 80.6,
+          "humidity_percent": 19.8,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 66,
+          "temperature_celsius": 80.2,
+          "humidity_percent": 18.9,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 67,
+          "temperature_celsius": 81.2,
+          "humidity_percent": 20.0,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 68,
+          "temperature_celsius": 80.4,
+          "humidity_percent": 20.1,
+          "heart_rate_bpm": 84
+        },
+        {
+          "time_minutes": 69,
+          "temperature_celsius": 79.9,
+          "humidity_percent": 18.9,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 70,
+          "temperature_celsius": 79.9,
+          "humidity_percent": 18.4,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 71,
+          "temperature_celsius": 78.9,
+          "humidity_percent": 20.6,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 72,
+          "temperature_celsius": 80.5,
+          "humidity_percent": 24.7,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 73,
+          "temperature_celsius": 80.4,
+          "humidity_percent": 23.8,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 74,
+          "temperature_celsius": 81.0,
+          "humidity_percent": 22.9,
+          "heart_rate_bpm": 86
+        },
+        {
+          "time_minutes": 75,
+          "temperature_celsius": 80.1,
+          "humidity_percent": 20.6,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 76,
+          "temperature_celsius": 80.6,
+          "humidity_percent": 18.5,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 77,
+          "temperature_celsius": 81.2,
+          "humidity_percent": 17.7,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 78,
+          "temperature_celsius": 81.7,
+          "humidity_percent": 17.4,
+          "heart_rate_bpm": 90
+        },
+        {
+          "time_minutes": 79,
+          "temperature_celsius": 83.0,
+          "humidity_percent": 17.7,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 80,
+          "temperature_celsius": 82.1,
+          "humidity_percent": 18.8,
+          "heart_rate_bpm": 87
+        },
+        {
+          "time_minutes": 81,
+          "temperature_celsius": 81.6,
+          "humidity_percent": 19.2,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 82,
+          "temperature_celsius": 80.7,
+          "humidity_percent": 20.1,
+          "heart_rate_bpm": 84
+        },
+        {
+          "time_minutes": 83,
+          "temperature_celsius": 80.5,
+          "humidity_percent": 19.4,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 84,
+          "temperature_celsius": 81.0,
+          "humidity_percent": 19.4,
+          "heart_rate_bpm": 85
+        },
+        {
+          "time_minutes": 85,
+          "temperature_celsius": 81.3,
+          "humidity_percent": 19.0,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 86,
+          "temperature_celsius": 82.4,
+          "humidity_percent": 17.6,
+          "heart_rate_bpm": 88
+        },
+        {
+          "time_minutes": 87,
+          "temperature_celsius": 82.5,
+          "humidity_percent": 15.5,
+          "heart_rate_bpm": 89
+        },
+        {
+          "time_minutes": 88,
+          "temperature_celsius": 82.1,
+          "humidity_percent": 15.3,
+          "heart_rate_bpm": 89
         }
       ]
     }

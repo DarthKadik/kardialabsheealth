@@ -16,7 +16,7 @@ function DataTrackingComponent() {
   const { weeklyStats, totalSessions, totalHours, avgDuration, avgTemperature, heartRateChartData, maxTemperature, favoriteDay } = useMemo(() => {
     // Get weekly stats for last week (7 days ago)
     const referenceDate = new Date();
-    referenceDate.setDate(referenceDate.getDate() - 128); // Go back 7 days to get last week
+    referenceDate.setDate(referenceDate.getDate()); // Go back 7 days to get last week
     const weeklyStats = dataService.getWeeklyStats(referenceDate);
 
     // Get yearly data for summary stats
