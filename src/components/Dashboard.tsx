@@ -228,7 +228,7 @@ export function Dashboard({ onNavigate, sessionState }: DashboardProps) {
         <div className="relative z-10">
           <div className="mb-6">
             <p className="text-white/70 text-sm">Welcome back,</p>
-            <h1 className="text-white mt-1">1</h1>
+            <h1 className="text-white mt-1">2</h1>
           </div>
           
           <div className="bg-[#8B7355]/40 backdrop-blur-md border border-white/20 rounded-2xl p-5 shadow-xl max-w-[280px]">

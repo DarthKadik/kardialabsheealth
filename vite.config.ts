@@ -69,10 +69,21 @@ export default defineConfig({
     ...(produceSingleFile ? [viteSingleFile()] : []),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto', // Let the plugin handle registration
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
         cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'offlineCache',
+              expiration: {
+                maxEntries: 200,
+              },
+            },
+          },
+        ],
       },
       manifest: {
         name: 'Sauna Journal',
