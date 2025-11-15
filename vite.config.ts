@@ -74,31 +74,31 @@ export default defineConfig({
         enabled: true
       },
       manifest: {
-        name: 'Sauna Journal - Track Your Wellness',
-        short_name: 'Sauna Journal',
+        name: 'Sauna Journal',
+        short_name: 'Sauna',
         description: 'Track your sauna sessions and wellness journey',
         theme_color: '#3E2723',
         background_color: '#FFEBCD',
         display: 'standalone',
-        start_url: '/',
         scope: '/',
+        start_url: '/',
+        id: '/',
         orientation: 'portrait',
-        categories: ['health', 'lifestyle', 'wellness'],
         icons: [
           {
-            src: '/pwa-192x192.png',
+            src: 'pwa-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/pwa-512x512.png',
+            src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: '/pwa-512x512.png',
+            src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
@@ -107,19 +107,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              }
-            }
-          }
-        ]
+        cleanupOutdatedCaches: true
       }
     })
   ]
