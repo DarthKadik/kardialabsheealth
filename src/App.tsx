@@ -46,6 +46,7 @@ export default function App() {
           isWarming={sessionState.isWarming}
           isReadyToStart={sessionState.isReadyToStart}
           warmupProgressPct={sessionState.warmupProgressPct}
+          etaSeconds={sessionState.etaSeconds}
         />
       )}
 
