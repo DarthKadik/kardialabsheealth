@@ -192,6 +192,10 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    .mapboxgl-ctrl-attrib {
+      display: none !important;
+    }
     
 
 /* Hide scrollbar for time wheel picker */

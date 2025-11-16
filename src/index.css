@@ -16,6 +16,26 @@
       --tw-gradient-via: #0000;
       --tw-gradient-to: #0000;
       --tw-gradient-stops: initial;
+
+.mapboxgl-ctrl-attrib {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  padding: 2px 8px !important;
+  border-radius: 4px !important;
+}
+
+.mapboxgl-ctrl-attrib a {
+  color: #333 !important;
+  text-decoration: none !important;
+}
+
+.mapboxgl-ctrl-attrib a:hover {
+  color: #000 !important;
+}
+
+.mapboxgl-ctrl-attrib-inner {
+  font-size: 10px !important;
+  opacity: 0.8;
+}
       --tw-gradient-via-stops: initial;
       --tw-gradient-from-position: 0%;
       --tw-gradient-via-position: 50%;
