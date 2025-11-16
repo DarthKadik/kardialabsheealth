@@ -4,7 +4,7 @@ import Map from "./Map";
 import { Input } from "./ui/input";
 import { MapPin, Star, Navigation, Clock, Users, Globe, Flame, Sparkles, ShoppingBag, Package, Plus, Minus } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { useState, useRef, RefObject } from "react";
+import { useState, useRef, RefObject, useEffect } from "react";
 import { Badge } from "./ui/badge";
 import { Sauna } from '../types';
 import {
@@ -228,6 +228,38 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [showMap, setShowMap] = useState(true);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const [visitedSaunas, setVisitedSaunas] = useState<number[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredSaunas = saunas.filter((s) => {
+    if (!searchTerm) return true;
+    const q = searchTerm.trim().toLowerCase();
+    return (
+      s.name.toLowerCase().includes(q) ||
+      s.address.toLowerCase().includes(q) ||
+      (s.distance && s.distance.toLowerCase().includes(q))
+    );
+  });
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('visitedSaunas');
+      if (raw) setVisitedSaunas(JSON.parse(raw));
+    } catch (e) {
+      // ignore malformed data
+    }
+  }, []);
+
+  const toggleVisited = (saunaId: number) => {
+    setVisitedSaunas(prev => {
+      const exists = prev.includes(saunaId);
+      const next = exists ? prev.filter((id) => id !== saunaId) : [...prev, saunaId];
+      try {
+        localStorage.setItem('visitedSaunas', JSON.stringify(next));
+      } catch (e) {}
+      return next;
+    });
+  };
 
   const handleSaunaClick = (saunaId: number) => {
     setShowMap(false);
@@ -303,7 +335,9 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
               
               <div className="relative">
                 <Input
-                  placeholder="Search location..."
+                  value={searchTerm}
+                  onChange={(e: any) => setSearchTerm(e.target.value)}
+                  placeholder="Search saunas or address..."
                   className="pl-4 bg-white/90 backdrop-blur-sm border-white/40 placeholder:text-gray-500"
                 />
               </div>
@@ -313,7 +347,7 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
           {/* Map */}
           {showMap && (
             <div className="h-96">
-              <Map listedSaunas={saunas} onListedSaunaClick={handleSaunaClick} />
+              <Map listedSaunas={filteredSaunas} onListedSaunaClick={handleSaunaClick} visitedSaunaIds={visitedSaunas} />
             </div>
           )}
 
@@ -336,9 +370,9 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
                   </Button>
                 </>
               ) : (
-                <>
+                  <>
                   <h3 className="text-[#3E2723]">Nearby Saunas</h3>
-                  <span className="text-[#6D5A47] text-sm">{saunas.length} results</span>
+                  <span className="text-[#6D5A47] text-sm">{filteredSaunas.length} results</span>
                 </>
               )}
             </div>
@@ -346,11 +380,11 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
             <div className="space-y-4" ref={scrollContainerRef}>
               {(selectedSauna
                 ? saunas.filter((s) => s.id === selectedSauna)
-                : saunas
+                : filteredSaunas
               ).map((sauna) => (
                 <div
                   key={sauna.id}
-                  id={`sauna-${sauna.id}`}
+                  id={`sauna-card-${sauna.id}`}
                   className="relative overflow-hidden rounded-2xl shadow-lg"
                 >
                   <div
@@ -381,6 +415,12 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
                           Full
                         </div>
                       )}
+
+                      {visitedSaunas.includes(sauna.id) && (
+                        <div className="absolute top-12 left-3 bg-emerald-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs">
+                          Visited
+                        </div>
+                      )}
                     </div>
 
                     <div className="p-5">
@@ -404,7 +444,7 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
                         {sauna.hours}
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-3 gap-3">
                         <Button
                           variant="outline"
                           size="sm"
@@ -418,6 +458,18 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
                           disabled={!sauna.available}
                         >
                           {sauna.available ? "Book Now" : "Full"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-2 border-[#8B7355] text-[#5C4033] hover:bg-[#FFEBCD]"
+                          onClick={() => toggleVisited(sauna.id)}
+                        >
+                          {visitedSaunas.includes(sauna.id) ? (
+                            <><Minus className="w-4 h-4 mr-1" />Unvisit</>
+                          ) : (
+                            <><Plus className="w-4 h-4 mr-1" />Visited</>
+                          )}
                         </Button>
                       </div>
                     </div>

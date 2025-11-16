@@ -9,14 +9,45 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 interface MapProps {
   listedSaunas: Sauna[];
   onListedSaunaClick: (saunaId: number) => void;
+    visitedSaunaIds?: number[];
 }
 
-const Map = ({ listedSaunas, onListedSaunaClick }: MapProps) => {
+const Map = ({ listedSaunas, onListedSaunaClick, visitedSaunaIds = [] }: MapProps) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng, setLng] = useState(24.93);
   const [lat, setLat] = useState(60.17);
   const [zoom, setZoom] = useState(9);
+
+    const createListedSaunasGeoJSON = (saunas: Sauna[], visitedIds: number[] = []): GeoJSON.FeatureCollection<GeoJSON.Point> => ({
+        type: 'FeatureCollection',
+        features: saunas.map(sauna => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [sauna.longitude, sauna.latitude]
+            },
+            properties: {
+                id: sauna.id,
+                name: sauna.name,
+                visited: visitedIds.includes(sauna.id),
+                description: `
+                    <div style="min-width:180px;max-width:220px;">
+                        <div style="font-weight:bold;font-size:1.1em;">${sauna.name}</div>
+                        <div style="color:#6D5A47;font-size:0.95em;">${sauna.address}</div>
+                        <div style="margin-top:4px;font-size:0.95em;">
+                            <span style="color:#3E2723;">${sauna.distance}</span> &bull; 
+                            <span style="color:#8B7355;">⭐ ${sauna.rating} (${sauna.reviews})</span>
+                        </div>
+                        <div style="margin-top:2px;font-size:0.92em;">
+                            <span style="color:${sauna.available ? '#228B22' : '#888'};font-weight:bold;">${sauna.available ? 'Available' : 'Full'}</span>
+                            <span style="margin-left:8px;">${sauna.capacity}</span>
+                        </div>
+                    </div>
+                `
+            }
+        }))
+    });
 
     useEffect(() => {
     if (map.current || !mapContainer.current) return; // initialize map only once
@@ -58,39 +89,9 @@ const Map = ({ listedSaunas, onListedSaunaClick }: MapProps) => {
                 }
             });
 
-                        const listedSaunasGeoJSON: GeoJSON.FeatureCollection<GeoJSON.Point> = {
-                                type: 'FeatureCollection',
-                                features: listedSaunas.map(sauna => ({
-                                        type: 'Feature',
-                                        geometry: {
-                                                type: 'Point',
-                                                coordinates: [sauna.longitude, sauna.latitude]
-                                        },
-                                        properties: {
-                                                id: sauna.id,
-                                                name: sauna.name,
-                                                // Add more data to the popup
-                                                description: `
-                                                    <div style="min-width:180px;max-width:220px;">
-                                                        <div style="font-weight:bold;font-size:1.1em;">${sauna.name}</div>
-                                                        <div style="color:#6D5A47;font-size:0.95em;">${sauna.address}</div>
-                                                        <div style="margin-top:4px;font-size:0.95em;">
-                                                            <span style="color:#3E2723;">${sauna.distance}</span> &bull; 
-                                                            <span style="color:#8B7355;">⭐ ${sauna.rating} (${sauna.reviews})</span>
-                                                        </div>
-                                                        <div style="margin-top:2px;font-size:0.92em;">
-                                                            <span style="color:${sauna.available ? '#228B22' : '#888'};font-weight:bold;">${sauna.available ? 'Available' : 'Full'}</span>
-                                                            <span style="margin-left:8px;">${sauna.capacity}</span>
-                                                        </div>
-                                                    </div>
-                                                `
-                                        }
-                                }))
-                        };
-
             map.current.addSource('listed-saunas', {
                 type: 'geojson',
-                data: listedSaunasGeoJSON
+                data: createListedSaunasGeoJSON(listedSaunas, visitedSaunaIds)
             });
 
             map.current.addLayer({
@@ -98,8 +99,8 @@ const Map = ({ listedSaunas, onListedSaunaClick }: MapProps) => {
                 'type': 'circle',
                 'source': 'listed-saunas',
                 'paint': {
-                    'circle-radius': 8,
-                    'circle-color': 'rgba(63, 40, 5, 1)'
+                    'circle-radius': ['case', ['==', ['get', 'visited'], true], 10, 8] as any,
+                    'circle-color': ['case', ['==', ['get', 'visited'], true], '#4CAF50', 'rgba(63, 40, 5, 1)'] as any
                 }
             });
 
@@ -147,6 +148,19 @@ const Map = ({ listedSaunas, onListedSaunaClick }: MapProps) => {
         }
     });
   });
+
+    // keep the listed-saunas source updated when props change
+    useEffect(() => {
+        if (!map.current) return;
+        const src = map.current.getSource('listed-saunas') as mapboxgl.GeoJSONSource | undefined;
+        if (src) {
+            try {
+                (src as mapboxgl.GeoJSONSource).setData(createListedSaunasGeoJSON(listedSaunas, visitedSaunaIds));
+            } catch (e) {
+                // ignore if source not ready
+            }
+        }
+    }, [listedSaunas, visitedSaunaIds]);
 
   return (
     <div>
