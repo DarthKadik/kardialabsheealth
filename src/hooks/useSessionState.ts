@@ -224,12 +224,16 @@ export function useSessionState() {
     setElapsedTime(0);
     setIsSessionScheduled(false);
     setScheduledStartTime("");
+    // Ensure warm-up UI logic starts from ambient temperature
+    setCurrentTemp(24);
   };
 
   const stopSession = () => {
     setIsSessionRunning(false);
     setSessionStartTime(null);
     setElapsedTime(0);
+    // Reset to ambient after session ends
+    setCurrentTemp(24);
   };
   
   const scheduleSession = (time: string) => {
@@ -275,6 +279,8 @@ export function useSessionState() {
     setIntervalStartTime(Date.now());
     setElapsedTime(0);
     setCurrentIntervalIndex(0);
+    // Ensure warm-up UI logic starts from ambient temperature
+    setCurrentTemp(24);
   };
   
   // Aliases to standardize API
