@@ -100,3 +100,19 @@ export interface SaunaSessionsData {
   sessions: SaunaSession[];
 }
 
+export interface Sauna {
+  id: number;
+  name: string;
+  distance: string;
+  rating: number;
+  reviews: number;
+  address: string;
+  available: boolean;
+  capacity: string;
+  image: string;
+  hours: string;
+  longitude: number;
+  latitude: number;
+}
+}
+
