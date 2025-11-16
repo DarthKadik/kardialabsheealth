@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "./ui/button";
 import { shareOnWhatsapp, shareOnX, mobileShare } from "../utils/socialShareUtils";
 
@@ -51,8 +52,17 @@ export function SessionShareCard({ stats, feedback, onClose }: SessionShareCardP
 
   // No image generation; simple text-based share
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
+  // Prevent background scroll while share modal is open
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[2147483647] flex items-end sm:items-center justify-center" style={{ zIndex: 2147483647 }}>
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="relative w-full max-w-md mx-auto bg-[#FFEBCD] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
         <div className="relative px-6 pt-8 pb-6 text-white overflow-hidden">
@@ -111,7 +121,8 @@ export function SessionShareCard({ stats, feedback, onClose }: SessionShareCardP
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
