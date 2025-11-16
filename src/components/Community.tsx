@@ -447,7 +447,6 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
                       };
                       sessionState.addProgram(program);
                       setProgramBuilderOpen(false);
-                      onNavigate && onNavigate("home");
                     }}
                     onStartNow={(config) => {
                       const program: import("../hooks/useSessionState").SavedProgram = {
