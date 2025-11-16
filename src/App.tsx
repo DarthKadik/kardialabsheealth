@@ -8,22 +8,83 @@ import { FindSaunas } from "./components/FindSaunas";
 import { SessionBar } from "./components/SessionBar";
 import { useSessionState } from "./hooks/useSessionState";
 import { SessionFeedback } from "./components/SessionFeedback";
+import { SessionShareCard } from "./components/SessionShareCard";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
   const sessionState = useSessionState();
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showShareCard, setShowShareCard] = useState(false);
+  const [shareStats, setShareStats] = useState<{
+    durationMin: number;
+    avgTemp: number;
+    programName: string | null;
+    intervalsCompleted: number;
+    startedAt: number;
+    endedAt: number;
+  } | null>(null);
+  const [shareFeedback, setShareFeedback] = useState<{ relaxing: number; enjoyable: number } | null>(null);
   const wasRunningRef = useRef(false);
+  const lastRunningSnapshotRef = useRef<{
+    sessionStartTime: number | null;
+    durationMin: number;
+    avgTemp: number;
+    currentProgramName: string | null;
+    intervalsCompleted: number;
+  }>({
+    sessionStartTime: null,
+    durationMin: 0,
+    avgTemp: 0,
+    currentProgramName: null,
+    intervalsCompleted: 0,
+  });
 
   // Show feedback when a running session stops (includes auto-stop on completion)
   useEffect(() => {
     const wasRunning = wasRunningRef.current;
     const isRunning = sessionState.isSessionRunning;
     if (wasRunning && !isRunning) {
+      // Build share stats from last running snapshot
+      const snap = lastRunningSnapshotRef.current;
+      const endedAt = Date.now();
+      setShareStats({
+        durationMin: snap.durationMin,
+        avgTemp: Math.round(snap.avgTemp),
+        programName: snap.currentProgramName,
+        intervalsCompleted: snap.intervalsCompleted,
+        startedAt: snap.sessionStartTime ?? endedAt,
+        endedAt,
+      });
       setShowFeedback(true);
     }
     wasRunningRef.current = isRunning;
   }, [sessionState.isSessionRunning]);
+
+  // While session is running, keep a snapshot of relevant details for sharing
+  useEffect(() => {
+    if (sessionState.isSessionRunning) {
+      const isProgram = !!sessionState.currentProgram;
+      const durationFromProgram = isProgram && sessionState.currentProgram
+        ? sessionState.getTotalProgramDuration(sessionState.currentProgram)
+        : undefined;
+      const durationMin = durationFromProgram ?? (sessionState.duration?.[0] ?? 0);
+      lastRunningSnapshotRef.current = {
+        sessionStartTime: sessionState.sessionStartTime,
+        durationMin,
+        avgTemp: sessionState.heatLevel?.[0] ?? 0,
+        currentProgramName: sessionState.currentProgram?.name ?? null,
+        intervalsCompleted: sessionState.currentIntervalIndex ?? 0,
+      };
+    }
+  }, [
+    sessionState.isSessionRunning,
+    sessionState.sessionStartTime,
+    sessionState.elapsedTime,
+    sessionState.currentProgram,
+    sessionState.currentIntervalIndex,
+    sessionState.heatLevel,
+    sessionState.duration,
+  ]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -144,10 +205,21 @@ export default function App() {
       {showFeedback && (
         <SessionFeedback
           onClose={() => setShowFeedback(false)}
-          onSubmit={() => {
-            // TODO: persist feedback if needed
+          onSubmit={(data) => {
+            // Persist feedback if needed, then show share card
+            setShareFeedback({ relaxing: data.relaxingLevel, enjoyable: data.enjoyableLevel });
             setShowFeedback(false);
+            setShowShareCard(true);
           }}
+        />
+      )}
+
+      {/* Session Share Card Modal */}
+      {showShareCard && shareStats && shareFeedback && (
+        <SessionShareCard
+          stats={shareStats}
+          feedback={shareFeedback}
+          onClose={() => setShowShareCard(false)}
         />
       )}
     </div>

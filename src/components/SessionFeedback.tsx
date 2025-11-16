@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "./ui/button";
 
 interface SessionFeedbackProps {
@@ -76,17 +77,33 @@ export function SessionFeedback({ onSubmit, onClose }: SessionFeedbackProps) {
   const [relaxing, setRelaxing] = useState<number | null>(null);
   const [enjoyable, setEnjoyable] = useState<number | null>(null);
   const [step, setStep] = useState<0 | 1>(0);
+  const [visible, setVisible] = useState(false);
 
   const canSubmit = relaxing !== null && enjoyable !== null;
   const canGoNext = relaxing !== null;
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
+  useEffect(() => {
+    // Trigger enter animation on mount
+    const id = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  // Prevent background scroll while modal is open
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[2147483647] flex items-end sm:items-center justify-center" style={{ zIndex: 2147483647 }}>
       <div
-        className="absolute inset-0 bg-black/60"
+        className={`absolute inset-0 bg-black/60 transition-opacity duration-200 ${visible ? "opacity-100" : "opacity-0"}`}
         onClick={onClose}
       />
-      <div className="relative w-full max-w-md mx-auto bg-[#FFEBCD] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden">
+      <div className={`relative w-full max-w-md mx-auto bg-[#FFEBCD] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transition-all duration-200 ${visible ? "opacity-100 translate-y-0 sm:scale-100" : "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"}`}>
         <div className="relative px-6 pt-8 pb-6 text-white overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -197,7 +214,8 @@ export function SessionFeedback({ onSubmit, onClose }: SessionFeedbackProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

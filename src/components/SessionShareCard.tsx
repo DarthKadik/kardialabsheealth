@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
+import { shareOnWhatsapp, shareOnX, mobileShare } from "../utils/socialShareUtils";
 
 interface ShareStats {
   durationMin: number;
@@ -22,115 +23,33 @@ interface SessionShareCardProps {
 }
 
 export function SessionShareCard({ stats, feedback, onClose }: SessionShareCardProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const size = 1080; // square card for social
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Background gradient
-    const grad = ctx.createLinearGradient(0, 0, size, size);
-    grad.addColorStop(0, "#3E2723");
-    grad.addColorStop(1, "#5C4033");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, size, size);
-
-    // Card overlay
-    ctx.fillStyle = "rgba(255, 235, 205, 0.08)";
-    ctx.fillRect(60, 60, size - 120, size - 120);
-
-    // Heading
-    ctx.fillStyle = "#FFEBCD";
-    ctx.font = "bold 64px system-ui, -apple-system, sans-serif";
-    ctx.fillText("Sauna Session", 100, 140);
-
-    // Date
-    ctx.fillStyle = "rgba(255,255,255,0.8)";
-    ctx.font = "32px system-ui, -apple-system, sans-serif";
-    const date = new Date(stats.endedAt).toLocaleString();
-    ctx.fillText(date, 100, 190);
-
-    // Metrics
-    ctx.fillStyle = "#FFEBCD";
-    ctx.font = "bold 48px system-ui, -apple-system, sans-serif";
-    ctx.fillText(`${stats.durationMin} min`, 100, 270);
-    ctx.font = "28px system-ui, -apple-system, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.fillText("Duration", 100, 310);
-
-    ctx.fillStyle = "#FFEBCD";
-    ctx.font = "bold 48px system-ui, -apple-system, sans-serif";
-    ctx.fillText(`${Math.round(stats.avgTemp)}°C`, 360, 270);
-    ctx.font = "28px system-ui, -apple-system, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.fillText("Avg Temp", 360, 310);
-
-    ctx.fillStyle = "#FFEBCD";
-    ctx.font = "bold 48px system-ui, -apple-system, sans-serif";
-    ctx.fillText(`${Math.max(0, stats.intervalsCompleted)}`, 610, 270);
-    ctx.font = "28px system-ui, -apple-system, sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.85)";
-    ctx.fillText("Intervals", 610, 310);
-
-    if (stats.programName) {
-      ctx.fillStyle = "rgba(255,255,255,0.9)";
-      ctx.font = "28px system-ui, -apple-system, sans-serif";
-      ctx.fillText(`Program: ${stats.programName}`, 100, 370);
-    }
-
-    // Badges for feedback
-    const drawBadge = (x: number, y: number, label: string, value: number, colors: { bg: string; text: string }) => {
-      const w = 380;
-      const h = 100;
-      ctx.fillStyle = colors.bg;
-      roundRect(ctx, x, y, w, h, 16, true, false);
-      ctx.fillStyle = colors.text;
-      ctx.font = "28px system-ui, -apple-system, sans-serif";
-      ctx.fillText(label, x + 24, y + 40);
-      ctx.font = "bold 44px system-ui, -apple-system, sans-serif";
-      ctx.fillText(`Level ${value}/5`, x + 24, y + 84);
-    };
-
-    drawBadge(100, 430, "Relaxing", feedback.relaxing, { bg: "rgba(255,255,255,0.1)", text: "#FFEBCD" });
-    drawBadge(520, 430, "Enjoyable", feedback.enjoyable, { bg: "rgba(255,255,255,0.1)", text: "#FFEBCD" });
-
-    // Footer / branding
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
-    ctx.font = "24px system-ui, -apple-system, sans-serif";
-    ctx.fillText("Shared from Smart Sauna", 100, size - 120);
-    ctx.fillText("#sauna #wellness", 100, size - 80);
+  const defaultShareText = useMemo(() => {
+    const date = new Date(stats.endedAt).toLocaleDateString();
+    const lines: string[] = [
+      `Sauna session ${date}`,
+      `${stats.durationMin} min @ ~${Math.round(stats.avgTemp)}°C`,
+      `Relaxing ${feedback.relaxing}/5, Enjoyable ${feedback.enjoyable}/5`,
+      `#sauna #wellness`,
+    ];
+    return lines.join("\n\n");
   }, [stats, feedback]);
-
-  const downloadPng = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const link = document.createElement("a");
-    link.download = `sauna-session-${new Date(stats.endedAt).toISOString()}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+  const [shareText, setShareText] = useState<string>(defaultShareText);
+  useEffect(() => {
+    setShareText(defaultShareText);
+  }, [defaultShareText]);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const autoResize = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "0px";
+    const newHeight = Math.max(160, el.scrollHeight);
+    el.style.height = `${newHeight}px`;
   };
+  useEffect(() => {
+    autoResize();
+  }, [shareText]);
 
-  const copyToClipboard = async () => {
-    try {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-      if (blob && navigator.clipboard && "write" in navigator.clipboard) {
-        // @ts-ignore
-        await navigator.clipboard.write([new window.ClipboardItem({ "image/png": blob })]);
-        alert("Image copied to clipboard!");
-      } else {
-        downloadPng();
-      }
-    } catch {
-      downloadPng();
-    }
-  };
+  // No image generation; simple text-based share
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
@@ -151,23 +70,37 @@ export function SessionShareCard({ stats, feedback, onClose }: SessionShareCardP
           </div>
         </div>
         <div className="p-6 space-y-4">
-          <div className="w-full bg-[#3E2723] rounded-xl overflow-hidden aspect-square">
-            <canvas ref={canvasRef} className="w-full h-full block" />
-          </div>
-          <div className="flex gap-2">
-            <Button
-              className="flex-1 bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white"
-              onClick={downloadPng}
-            >
-              Save Image
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1 border-[#8B7355] text-[#8B7355] hover:bg-[#8B7355] hover:text-white"
-              onClick={copyToClipboard}
-            >
-              Copy Image
-            </Button>
+          <div className="space-y-2">
+            <label className="text-[#3E2723] text-sm">Post text</label>
+            <textarea
+              ref={textareaRef}
+              value={shareText}
+              onChange={(e) => setShareText(e.target.value)}
+              className="w-full resize-none rounded-xl bg-white/80 border border-[#8B7355]/30 px-4 py-3 text-[#3E2723] placeholder:text-[#5C4033]/50 focus:outline-none focus:ring-2 focus:ring-[#8B7355] shadow-inner"
+              style={{ minHeight: 160 }}
+              placeholder="Add a note about your session..."
+            />
+            <div className="flex gap-2">
+              <Button
+                className="flex-1 bg-[#25D366] hover:bg-[#1ebe5b] text-white"
+                onClick={() => shareOnWhatsapp(shareText)}
+              >
+                Share to WhatsApp
+              </Button>
+              <Button
+                className="flex-1 bg-black hover:bg-black/80 text-white"
+                onClick={() => shareOnX(shareText)}
+              >
+                Share to X
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 border-[#8B7355] text-[#8B7355] hover:bg-[#8B7355] hover:text-white"
+                onClick={() => mobileShare(shareText)}
+              >
+                Mobile Share
+              </Button>
+            </div>
           </div>
           <Button
             variant="ghost"
@@ -180,34 +113,6 @@ export function SessionShareCard({ stats, feedback, onClose }: SessionShareCardP
       </div>
     </div>
   );
-}
-
-function roundRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-  fill: boolean,
-  stroke: boolean
-) {
-  if (typeof radius === "number") {
-    radius = Math.min(radius, width / 2, height / 2);
-  }
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-  if (fill) ctx.fill();
-  if (stroke) ctx.stroke();
 }
 
 
