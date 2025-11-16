@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Home, Users, Activity, Brain, MapPin } from "lucide-react";
 import { Dashboard } from "./components/Dashboard";
 import { Community } from "./components/Community";
@@ -7,10 +7,23 @@ import { SaunaAlgorithms } from "./components/SaunaAlgorithms";
 import { FindSaunas } from "./components/FindSaunas";
 import { SessionBar } from "./components/SessionBar";
 import { useSessionState } from "./hooks/useSessionState";
+import { SessionFeedback } from "./components/SessionFeedback";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
   const sessionState = useSessionState();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const wasRunningRef = useRef(false);
+
+  // Show feedback when a running session stops (includes auto-stop on completion)
+  useEffect(() => {
+    const wasRunning = wasRunningRef.current;
+    const isRunning = sessionState.isSessionRunning;
+    if (wasRunning && !isRunning) {
+      setShowFeedback(true);
+    }
+    wasRunningRef.current = isRunning;
+  }, [sessionState.isSessionRunning]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -126,6 +139,17 @@ export default function App() {
           </button>
         </div>
       </nav>
+
+      {/* Session Feedback Modal */}
+      {showFeedback && (
+        <SessionFeedback
+          onClose={() => setShowFeedback(false)}
+          onSubmit={() => {
+            // TODO: persist feedback if needed
+            setShowFeedback(false);
+          }}
+        />
+      )}
     </div>
   );
 }
