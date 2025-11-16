@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Home, Users, Activity, Brain, MapPin } from "lucide-react";
 import { Dashboard } from "./components/Dashboard";
 import { Community } from "./components/Community";
@@ -7,17 +7,30 @@ import { SaunaAlgorithms } from "./components/SaunaAlgorithms";
 import { FindSaunas } from "./components/FindSaunas";
 import { SessionBar } from "./components/SessionBar";
 import { useSessionState } from "./hooks/useSessionState";
+import { SessionFeedback } from "./components/SessionFeedback";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("home");
   const sessionState = useSessionState();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const wasRunningRef = useRef(false);
+
+  // Show feedback when a running session stops (includes auto-stop on completion)
+  useEffect(() => {
+    const wasRunning = wasRunningRef.current;
+    const isRunning = sessionState.isSessionRunning;
+    if (wasRunning && !isRunning) {
+      setShowFeedback(true);
+    }
+    wasRunningRef.current = isRunning;
+  }, [sessionState.isSessionRunning]);
 
   const renderContent = () => {
     switch (activeTab) {
       case "home":
         return <Dashboard sessionState={sessionState} />;
       case "community":
-        return <Community sessionState={sessionState} />;
+        return <Community sessionState={sessionState} onNavigate={(tab) => setActiveTab(tab)} />;
       case "tracking":
         return <DataTracking />;
       case "algorithms":
@@ -38,13 +51,15 @@ export default function App() {
           duration={sessionState.duration}
           heatLevel={sessionState.heatLevel}
           currentProgram={sessionState.currentProgram}
-          currentIntervalIndex={sessionState.currentIntervalIndex}
-          intervalStartTime={sessionState.intervalStartTime}
           onStop={sessionState.stopProgram}
           onNavigateHome={() => setActiveTab("home")}
           getTotalProgramDuration={sessionState.getTotalProgramDuration}
-          getIntervalElapsedTime={sessionState.getIntervalElapsedTime}
           getCurrentInterval={sessionState.getCurrentInterval}
+          currentTemp={sessionState.currentTemp}
+          isWarming={sessionState.isWarming}
+          isReadyToStart={sessionState.isReadyToStart}
+          warmupProgressPct={sessionState.warmupProgressPct}
+          etaSeconds={sessionState.etaSeconds}
         />
       )}
 
@@ -53,6 +68,7 @@ export default function App() {
         className={`flex-1 overflow-y-auto   ${
           sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
         }`}
+        data-app-scroll-container
 
         style={{ scrollbarWidth: 'none' }}
       >
@@ -64,7 +80,7 @@ export default function App() {
         <div className="flex items-center justify-around">
           <button
             onClick={() => setActiveTab("home")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "home"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -76,7 +92,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("community")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "community"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -88,7 +104,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("tracking")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "tracking"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -100,7 +116,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("algorithms")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "algorithms"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -112,7 +128,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("find")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "find"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -123,6 +139,17 @@ export default function App() {
           </button>
         </div>
       </nav>
+
+      {/* Session Feedback Modal */}
+      {showFeedback && (
+        <SessionFeedback
+          onClose={() => setShowFeedback(false)}
+          onSubmit={() => {
+            // TODO: persist feedback if needed
+            setShowFeedback(false);
+          }}
+        />
+      )}
     </div>
   );
 }

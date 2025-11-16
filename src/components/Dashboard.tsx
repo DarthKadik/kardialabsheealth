@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 import Carousel from './ui/carousel'
@@ -9,7 +9,6 @@ import {
   Plus,
   X,
   Volume2,
-  VolumeX,
 } from "lucide-react";
 import { SavedProgramCard } from "./SavedProgramCard";
 import { ProgramDetailView } from "./ProgramDetailView";
@@ -24,8 +23,11 @@ import type {
 import { GuidedSession } from "./GuidedSession";
 import { GuidedSessionConfig } from "../data/guidedSessions";
 import { WheelPicker } from "./WheelPicker";
-import { recommendedSessions } from "../data/recommendedSessions";
-import { getSessionById } from "../data/allSessions";
+import { useProfile } from "../context/ProfileContext";
+import { useSoundscapeAudio } from "../hooks/useSoundscapeAudio";
+import { SessionHeaderCard } from "./session/SessionHeaderCard";
+import { TimeWheel } from "./session/TimeWheel";
+import { SessionBar } from "./SessionBar";
 
 interface DashboardProps {
   onNavigate: (tab: string) => void;
@@ -37,6 +39,11 @@ interface DashboardProps {
 export function Dashboard({
   sessionState,
 }: Omit<DashboardProps, 'onNavigate'>) {
+  const { profile } = useProfile();
+  const displayName = profile.name && profile.name.trim() ? profile.name : "Anna";
+  useEffect(() => {
+    console.log("Onboarding profile:", profile);
+  }, [profile]);
   // Destructure session state
   const {
     duration,
@@ -101,6 +108,16 @@ export function Dashboard({
   >(null);
   const [tempActionTime, setTempActionTime] = useState("");
 
+  // Warm-up state and helpers are now provided by sessionState
+  const {
+    currentTemp,
+    tempDelta,
+    isWarming,
+    isReadyToStart,
+    etaSeconds,
+    warmupProgressPct,
+  } = sessionState as any;
+
   // Use saved programs from sessionState instead of local state
   const {
     savedPrograms,
@@ -121,27 +138,11 @@ export function Dashboard({
     show: boolean;
   }>({ index: -1, show: false });
 
-  // Audio state for soundscapes
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [audioVolume, setAudioVolume] = useState(0.6);
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
-
-  // Soundscape audio mapping - using working audio URLs
-  const soundscapeAudioMap: Record<string, string> = {
-    "Forest Ambience":
-      "https://assets.mixkit.co/active_storage/sfx/2462/2462-preview.mp3", // Nature/Forest ambience
-    "Ocean Waves":
-      "https://assets.mixkit.co/active_storage/sfx/2393/2393-preview.mp3", // Ocean waves
-    "Rain & Thunder":
-      "https://assets.mixkit.co/active_storage/sfx/2410/2410-preview.mp3", // Rain sound
-    "Nordic Winds":
-      "https://assets.mixkit.co/active_storage/sfx/2398/2398-preview.mp3", // Wind ambience
-    "Meditation Bowls":
-      "https://assets.mixkit.co/active_storage/sfx/2417/2417-preview.mp3", // Meditation/calm
-    "Birch Forest":
-      "https://assets.mixkit.co/active_storage/sfx/2462/2462-preview.mp3", // Forest sounds
-    Silent: "",
-  };
+  // Soundscape audio
+  const audio = useSoundscapeAudio({
+    isSessionRunning,
+    currentProgramSoundscape: currentProgram?.soundscape || null,
+  });
 
   // Wrapper functions for UI actions
   const handleStartSession = () => {
@@ -156,13 +157,6 @@ export function Dashboard({
 
   const handleStartProgramNow = (program: SavedProgram) => {
     startProgramNow(program);
-    // Play soundscape audio if program has one
-    if (
-      program.soundscape &&
-      soundscapeAudioMap[program.soundscape]
-    ) {
-      playAudio(soundscapeAudioMap[program.soundscape]);
-    }
   };
 
   const handleScheduleProgramForLater = (
@@ -173,151 +167,16 @@ export function Dashboard({
   };
 
   const handleStopProgram = () => {
-    stopAudio();
+    audio.stop();
     stopProgram();
   };
 
   const handleStopSession = () => {
-    stopAudio();
+    audio.stop();
     stopSession();
   };
 
-  // Audio control functions
-  const playAudio = (url: string) => {
-    if (!url) {
-      console.log("No audio URL provided");
-      return;
-    }
-
-    console.log("🎵 Attempting to play audio:", url);
-
-    stopAudio();
-
-    // Create new audio element
-    const audio = new Audio();
-    audio.crossOrigin = "anonymous"; // Add CORS support
-    audio.loop = true;
-    audio.volume = audioVolume;
-    audio.muted = isAudioMuted; // Set muted property directly
-
-    // Add event listeners for debugging
-    const handleLoaded = () => {
-      console.log("✅ Audio loaded successfully");
-    };
-
-    const handleError = (e: ErrorEvent | Event) => {
-      console.error("❌ Audio error event:", {
-        url,
-        type: e.type,
-        error: (e as any).error,
-        message: (e as any).message,
-        target: (e.target as HTMLAudioElement)?.error,
-      });
-      // Don't set audioRef if there's an error
-      audioRef.current = null;
-    };
-
-    audio.addEventListener("loadeddata", handleLoaded);
-    audio.addEventListener("error", handleError);
-
-    // Set source after adding listeners
-    audio.src = url;
-
-    // Set ref AFTER play succeeds to avoid race conditions
-    audio
-      .play()
-      .then(() => {
-        console.log("▶️ Audio playing");
-        audioRef.current = audio; // Only set ref when playing successfully
-      })
-      .catch((err) => {
-        console.error("❌ Audio playback failed:", err);
-        console.error("Error details:", {
-          name: err.name,
-          message: err.message,
-          url,
-        });
-        // Clean up if play failed
-        audioRef.current = null;
-      });
-  };
-
-  const stopAudio = () => {
-    if (audioRef.current) {
-      try {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-        audioRef.current.removeEventListener("error", () => {});
-        audioRef.current.removeEventListener(
-          "loadeddata",
-          () => {},
-        );
-        audioRef.current.src = ""; // Clear the source to fully stop
-      } catch (e) {
-        console.log("Error during audio cleanup:", e);
-      }
-      audioRef.current = null;
-    }
-  };
-
-  const toggleMute = () => {
-    const newMutedState = !isAudioMuted;
-    setIsAudioMuted(newMutedState);
-    if (audioRef.current) {
-      audioRef.current.muted = newMutedState; // Use muted property instead of volume
-    }
-  };
-
-  const changeVolume = (value: number[]) => {
-    const newVolume = value[0];
-    setAudioVolume(newVolume);
-
-    // If user is adjusting volume, unmute automatically
-    if (newVolume > 0 && isAudioMuted) {
-      setIsAudioMuted(false);
-      if (audioRef.current) {
-        audioRef.current.muted = false;
-      }
-    }
-
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-  };
-
-  // Effect to handle audio when session state changes
-  useEffect(() => {
-    // Stop audio when session stops or program ends
-    if (!isSessionRunning && audioRef.current) {
-      stopAudio();
-    }
-
-    // Also stop audio if currentProgram becomes null (program stopped)
-    if (!currentProgram && audioRef.current) {
-      stopAudio();
-    }
-
-    // Start audio when scheduled session begins
-    if (
-      isSessionRunning &&
-      currentProgram &&
-      currentProgram.soundscape &&
-      !audioRef.current
-    ) {
-      const audioUrl =
-        soundscapeAudioMap[currentProgram.soundscape];
-      if (audioUrl) {
-        playAudio(audioUrl);
-      }
-    }
-  }, [isSessionRunning, currentProgram]);
-
-  // Cleanup audio on unmount
-  useEffect(() => {
-    return () => {
-      stopAudio();
-    };
-  }, []);
+  // Audio lifecycle moved to useSoundscapeAudio
 
   const addInterval = (type: "sauna" | "break") => {
     setIntervals([
@@ -462,9 +321,30 @@ export function Dashboard({
   // If guided session is active, show it instead
   if (activeGuidedSession) {
     return (
-      <GuidedSession
-        onBack={() => setActiveGuidedSession(null)}
-      />
+      <>
+        {isSessionRunning && (
+          <SessionBar
+            elapsedTime={elapsedTime}
+            duration={duration}
+            heatLevel={heatLevel}
+            currentProgram={currentProgram}
+            onStop={handleStopProgram}
+            onNavigateHome={() => {}}
+            getTotalProgramDuration={getTotalProgramDuration}
+            getCurrentInterval={getCurrentInterval}
+            currentTemp={currentTemp}
+            isWarming={isWarming}
+            isReadyToStart={isReadyToStart}
+            warmupProgressPct={warmupProgressPct}
+            etaSeconds={etaSeconds}
+          />
+        )}
+        <div className={isSessionRunning ? "pt-[73px]" : ""}>
+          <GuidedSession
+            onBack={() => setActiveGuidedSession(null)}
+          />
+        </div>
+      </>
     );
   }
 
@@ -488,396 +368,46 @@ export function Dashboard({
         {/* Content */}
         <div className="relative z-10">
           <div className="mb-6">
-            <p className="text-white/70 text-sm">
-              Welcome back,
-            </p>
-            <h1 className="text-white mt-1">Anna</h1>
+            <p className="text-white/70 text-sm">Welcome back,</p>
+            <h1 className="text-white mt-1">{displayName}</h1>
           </div>
-
-          <div className="bg-[#8B7355]/40 backdrop-blur-md border border-white/20 rounded-2xl p-5 shadow-xl max-w-[280px]">
-            {isSessionRunning ? (
-              // Session Running State
-              <>
-                {currentProgram ? (
-                  <>
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-[#FFEBCD] text-sm">
-                        {currentProgram.name}
-                      </p>
-                      {elapsedTime < 1200 && (
-                        <div className="text-right">
-                          <p className="text-white/70 text-xs">
-                            Warming Up
-                          </p>
-                          <p className="text-white text-sm">
-                            {Math.min(
-                              Math.floor(
-                                24 +
-                                  (elapsedTime / 1200) *
-                                    (heatLevel[0] - 24),
-                              ),
-                              heatLevel[0],
-                            )}
-                            °C
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-white text-3xl mb-3">
-                      {formatElapsedTime(elapsedTime)}
-                    </p>
-                    {getCurrentInterval() && (
-                      <>
-                        <div className="bg-white/10 rounded-lg p-2 mb-3">
-                          <p className="text-white/70 text-xs mb-1">
-                            Current Interval
-                          </p>
-                          <p className="text-white text-sm">
-                            {getCurrentInterval()?.type ===
-                            "sauna"
-                              ? "🔥 Sauna"
-                              : "❄️ Break"}{" "}
-                            • {getCurrentInterval()?.duration}{" "}
-                            min
-                          </p>
-                          {getCurrentInterval()
-                            ?.temperature && (
-                            <p className="text-white/60 text-xs mt-1 capitalize">
-                              {
-                                getCurrentInterval()
-                                  ?.temperature
-                              }
-                            </p>
-                          )}
-                          <div className="mt-2 bg-white/20 rounded-full h-1 overflow-hidden">
-                            <div
-                              className="bg-white h-full transition-all duration-1000"
-                              style={{
-                                width: `${Math.min(100, (getIntervalElapsedTime() / ((getCurrentInterval()?.duration || 1) * 60)) * 100)}%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <p className="text-white/60 text-xs mb-4">
-                          Interval {currentIntervalIndex + 1} of{" "}
-                          {currentProgram.intervals.length}
-                        </p>
-                      </>
-                    )}
-
-                    {/* Audio Controls - Show if program has soundscape */}
-                    {currentProgram.soundscape &&
-                      currentProgram.soundscape !==
-                        "Silent" && (
-                        <div className="bg-white/10 rounded-lg p-3 mb-3">
-                          <div className="flex items-center justify-between mb-2">
-                            <p className="text-white/70 text-xs">
-                              🎵 {currentProgram.soundscape}
-                            </p>
-                            <button
-                              onClick={toggleMute}
-                              className="text-white/80 hover:text-white transition-colors"
-                            >
-                              {isAudioMuted ? (
-                                <VolumeX className="w-4 h-4" />
-                              ) : (
-                                <Volume2 className="w-4 h-4" />
-                              )}
-                            </button>
-                          </div>
-                          <Slider
-                            value={[audioVolume]}
-                            onValueChange={changeVolume}
-                            max={1}
-                            step={0.1}
-                            className="w-full"
-                            disabled={isAudioMuted}
-                          />
-                        </div>
-                      )}
-
-                    <Button
-                      size="sm"
-                      onClick={handleStopProgram}
-                      className="w-full bg-red-600/80 hover:bg-red-700/80 text-white border border-white/40 backdrop-blur-sm"
-                    >
-                      End Program
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-[#FFEBCD] text-sm">
-                        Session In Progress
-                      </p>
-                      {elapsedTime < 1200 && (
-                        <div className="text-right">
-                          <p className="text-white/70 text-xs text-[rgba(252,77,8,0.7)]">
-                            Warming Up
-                          </p>
-                          <p className="text-white text-sm">
-                            {Math.min(
-                              Math.floor(
-                                24 +
-                                  (elapsedTime / 1200) *
-                                    (heatLevel[0] - 24),
-                              ),
-                              heatLevel[0],
-                            )}
-                            °C
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-white text-3xl mb-3">
-                      {formatElapsedTime(elapsedTime)}
-                    </p>
-                    <div className="flex items-center gap-3 text-sm mb-4">
-                      <div>
-                        <span className="text-white/70 text-xs">
-                          Temp
-                        </span>
-                        <p className="text-white">
-                          {heatLevel[0]}°C
-                        </p>
-                      </div>
-                      <div className="w-px h-8 bg-white/20" />
-                      <div>
-                        <span className="text-white/70 text-xs">
-                          Time
-                        </span>
-                        <p className="text-white">
-                          {duration[0]} min
-                        </p>
-                      </div>
-                      <div className="w-px h-8 bg-white/20" />
-                      <div>
-                        <span className="text-white/70 text-xs">
-                          Humid
-                        </span>
-                        <p className="text-white">
-                          {humidity[0]}%
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={handleStopSession}
-                      className="w-full bg-red-600/80 hover:bg-red-700/80 text-white border border-white/40 backdrop-blur-sm"
-                    >
-                      End Session
-                    </Button>
-                  </>
-                )}
-              </>
-            ) : isSessionScheduled ? (
-              // Session Scheduled State
-              <>
-                {currentProgram ? (
-                  <>
-                    <p className="text-[#FFEBCD] text-sm mb-1">
-                      {currentProgram.name} Scheduled
-                    </p>
-                    <div className="mb-3">
-                      <p className="text-white text-3xl">
-                        {scheduledStartTime}
-                      </p>
-                      <p className="text-white/70 text-sm mt-1">
-                        Starts in{" "}
-                        {formatCountdown(timeUntilStart)}
-                      </p>
-                    </div>
-                    <div className="bg-white/10 rounded-lg p-2 mb-4">
-                      <p className="text-white/70 text-xs mb-1">
-                        Program Details
-                      </p>
-                      <p className="text-white text-sm">
-                        {currentProgram.intervals.length}{" "}
-                        intervals •{" "}
-                        {getTotalProgramDuration(
-                          currentProgram,
-                        )}{" "}
-                        min total
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          if (currentProgram) {
-                            handleStartProgramNow(
-                              currentProgram,
-                            );
-                          }
-                        }}
-                        className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40 backdrop-blur-sm"
-                      >
-                        Start Now
-                      </Button>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            if (currentProgram) {
-                              setShowScheduleProgramOverlay(
-                                true,
-                              );
-                            }
-                          }}
-                          variant="ghost"
-                          className="flex-1 text-white/80 hover:text-white hover:bg-white/10 text-xs"
-                        >
-                          Reschedule
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={cancelSchedule}
-                          variant="ghost"
-                          className="flex-1 text-white/80 hover:text-white hover:bg-white/10 text-xs"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-[#FFEBCD] text-sm mb-1">
-                      Session Scheduled
-                    </p>
-                    <div className="mb-3">
-                      <p className="text-white text-3xl">
-                        {scheduledStartTime}
-                      </p>
-                      <p className="text-white/70 text-sm mt-1">
-                        Starts in{" "}
-                        {formatCountdown(timeUntilStart)}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm mb-4">
-                      <div>
-                        <span className="text-white/70 text-xs">
-                          Temp
-                        </span>
-                        <p className="text-white">
-                          {heatLevel[0]}°C
-                        </p>
-                      </div>
-                      <div className="w-px h-8 bg-white/20" />
-                      <div>
-                        <span className="text-white/70 text-xs">
-                          Time
-                        </span>
-                        <p className="text-white">
-                          {duration[0]} min
-                        </p>
-                      </div>
-                      <div className="w-px h-8 bg-white/20" />
-                      <div>
-                        <span className="text-white/70 text-xs">
-                          Humid
-                        </span>
-                        <p className="text-white">
-                          {humidity[0]}%
-                        </p>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Button
-                        size="sm"
-                        onClick={handleStartSession}
-                        className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40 backdrop-blur-sm"
-                      >
-                        Start Now
-                      </Button>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => {
-                            cancelSchedule();
-                            setShowConfigOverlay(true);
-                          }}
-                          variant="ghost"
-                          className="flex-1 text-white/80 hover:text-white hover:bg-white/10 text-xs"
-                        >
-                          Reschedule
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={cancelSchedule}
-                          variant="ghost"
-                          className="flex-1 text-white/80 hover:text-white hover:bg-white/10 text-xs"
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              // No Session State
-              <>
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-[#FFEBCD] text-sm">
-                    No Session Configured
-                  </p>
-                  <Button
-                    size="sm"
-                    onClick={handleStartSession}
-                    className="bg-white/20 hover:bg-white/30 text-white border border-white/40 h-7 px-3 text-sm"
-                  >
-                    Start
-                  </Button>
-                </div>
-                <p className="text-white text-3xl mb-3">
-                  --:--
-                </p>
-                <div className="flex items-center gap-3 text-sm mb-4">
-                  <button
-                    onClick={() => setActivePicker("temp")}
-                    className="flex-1 hover:bg-white/10 rounded-lg p-2 transition-colors"
-                  >
-                    <span className="text-white/70 text-xs block">
-                      Temp
-                    </span>
-                    <p className="text-white">
-                      {heatLevel[0]}°C
-                    </p>
-                  </button>
-                  <div className="w-px h-8 bg-white/20" />
-                  <button
-                    onClick={() => setActivePicker("time")}
-                    className="flex-1 hover:bg-white/10 rounded-lg p-2 transition-colors"
-                  >
-                    <span className="text-white/70 text-xs block">
-                      Time
-                    </span>
-                    <p className="text-white">
-                      {duration[0]} min
-                    </p>
-                  </button>
-                  <div className="w-px h-8 bg-white/20" />
-                  <button
-                    onClick={() => setActivePicker("humidity")}
-                    className="flex-1 hover:bg-white/10 rounded-lg p-2 transition-colors"
-                  >
-                    <span className="text-white/70 text-xs block">
-                      Humid
-                    </span>
-                    <p className="text-white">{humidity[0]}%</p>
-                  </button>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={() => setShowConfigOverlay(true)}
-                  className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40 backdrop-blur-sm"
-                >
-                  Configure Session
-                </Button>
-              </>
-            )}
-          </div>
+          <SessionHeaderCard
+            isSessionRunning={isSessionRunning}
+            isSessionScheduled={isSessionScheduled}
+            elapsedTime={elapsedTime}
+            scheduledStartTime={scheduledStartTime}
+            timeUntilStart={timeUntilStart}
+            currentProgram={currentProgram}
+            currentIntervalIndex={currentIntervalIndex}
+            heatLevel={heatLevel}
+            duration={duration}
+            humidity={humidity}
+            getCurrentInterval={getCurrentInterval}
+            getTotalProgramDuration={getTotalProgramDuration}
+            getIntervalElapsedTime={getIntervalElapsedTime}
+            formatCountdown={formatCountdown}
+            formatElapsedTime={formatElapsedTime}
+            currentTemp={currentTemp}
+            tempDelta={tempDelta}
+            isWarming={isWarming}
+            isReadyToStart={isReadyToStart}
+            progressPct={warmupProgressPct}
+            etaSeconds={etaSeconds}
+            onStartSession={handleStartSession}
+            onStopSession={handleStopSession}
+            onStartProgramNow={handleStartProgramNow}
+            onStopProgram={handleStopProgram}
+            onCancelSchedule={cancelSchedule}
+            onOpenConfig={() => setShowConfigOverlay(true)}
+            onOpenScheduleProgram={() => setShowScheduleProgramOverlay(true)}
+            setActivePicker={setActivePicker}
+            audio={{
+              isMuted: audio.isMuted,
+              volume: audio.volume,
+              toggleMute: audio.toggleMute,
+              setVolume: audio.setVolume,
+            }}
+          />
         </div>
       </div>
 
@@ -895,20 +425,13 @@ export function Dashboard({
             {/* Header */}
             <div className="relative px-6 pt-8 pb-6 text-white overflow-hidden">
               <div
-                className="absolute inset-0 bg-cover bg-center"
+                className="absolute inset-0 bg-cover bg-center pointer-events-none"
                 style={{
                   backgroundImage:
                     "url('https://images.unsplash.com/photo-1678742753298-9e6b10fcc42f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHdvb2QlMjB0ZXh0dXJlfGVufDF8fHx8MTc2MzE1MzcwN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral')",
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355]/95 to-[#5C4033]/95" />
-              <button
-                onClick={() => setShowConfigOverlay(false)}
-                className="absolute top-4 left-4 text-white/80 hover:text-white flex items-center gap-2 transition-colors"
-              >
-                <ChevronDown className="w-6 h-6 rotate-90" />
-                <span className="text-sm">Back</span>
-              </button>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355]/95 to-[#5C4033]/95 pointer-events-none" />
               <Button
                 onClick={() => setShowConfigOverlay(false)}
                 className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white border border-white/40 h-9 px-4 text-sm"
@@ -933,210 +456,8 @@ export function Dashboard({
                   <label className="block text-[#3E2723]">
                     Start Time
                   </label>
-                  <Button
-                    onClick={handleStartSession}
-                    className="bg-[#D84315] hover:bg-[#BF360C] text-white h-9 px-6 text-sm"
-                  >
-                    Start Session
-                  </Button>
                 </div>
-                <div className="w-full bg-white/60 border border-[#8B7355]/30 rounded-xl p-4">
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Hours Wheel */}
-                    <div className="relative h-32 w-20 overflow-hidden">
-                      <div className="absolute inset-0 pointer-events-none z-10">
-                        <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-white/60 to-transparent" />
-                        <div className="absolute top-[44px] left-0 right-0 h-10 border-y-2 border-[#8B7355]/30 bg-[#8B7355]/5" />
-                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white/60 to-transparent" />
-                      </div>
-                      <div
-                        className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
-                        onScroll={(e) => {
-                          const element = e.currentTarget;
-                          const scrollTop = element.scrollTop;
-                          const itemHeight = 40;
-                          const totalItems = 24;
-                          const sets = 3;
-                          const index = Math.round(
-                            scrollTop / itemHeight,
-                          );
-                          const hour = index % totalItems;
-                          const currentTime =
-                            startTime.split(":");
-                          setStartTime(
-                            `${String(hour).padStart(2, "0")}:${currentTime[1]}`,
-                          );
-
-                          // Loop logic: jump to middle set when near edges
-                          const middleSetStart = totalItems + 1;
-                          const nearTop =
-                            index < totalItems / 2;
-                          const nearBottom =
-                            index >
-                            sets * totalItems - totalItems / 2;
-
-                          if (
-                            nearTop &&
-                            !element.dataset.jumping
-                          ) {
-                            element.dataset.jumping = "true";
-                            requestAnimationFrame(() => {
-                              element.scrollTop =
-                                (middleSetStart + hour) *
-                                itemHeight;
-                              setTimeout(
-                                () =>
-                                  delete element.dataset
-                                    .jumping,
-                                100,
-                              );
-                            });
-                          } else if (
-                            nearBottom &&
-                            !element.dataset.jumping
-                          ) {
-                            element.dataset.jumping = "true";
-                            requestAnimationFrame(() => {
-                              element.scrollTop =
-                                (middleSetStart + hour) *
-                                itemHeight;
-                              setTimeout(
-                                () =>
-                                  delete element.dataset
-                                    .jumping,
-                                100,
-                              );
-                            });
-                          }
-                        }}
-                        ref={(el) => {
-                          if (el && !el.dataset.initialized) {
-                            el.dataset.initialized = "true";
-                            const hour = parseInt(
-                              startTime.split(":")[0],
-                            );
-                            const middleSetStart = 24 + 1;
-                            el.scrollTop =
-                              (middleSetStart + hour) * 40;
-                          }
-                        }}
-                      >
-                        <div className="h-10" />
-                        {/* Repeat hours 3 times for infinite scroll */}
-                        {Array.from({ length: 3 }, (_, set) =>
-                          Array.from({ length: 24 }, (_, i) => (
-                            <div
-                              key={`${set}-${i}`}
-                              className="h-10 flex items-center justify-center snap-center text-[#3E2723] text-lg"
-                            >
-                              {String(i).padStart(2, "0")}
-                            </div>
-                          )),
-                        )}
-                        <div className="h-10" />
-                      </div>
-                    </div>
-
-                    <span className="text-[#3E2723] text-2xl font-semibold">
-                      :
-                    </span>
-
-                    {/* Minutes Wheel */}
-                    <div className="relative h-32 w-20 overflow-hidden">
-                      <div className="absolute inset-0 pointer-events-none z-10">
-                        <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-white/60 to-transparent" />
-                        <div className="absolute top-[44px] left-0 right-0 h-10 border-y-2 border-[#8B7355]/30 bg-[#8B7355]/5" />
-                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white/60 to-transparent" />
-                      </div>
-                      <div
-                        className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
-                        onScroll={(e) => {
-                          const element = e.currentTarget;
-                          const scrollTop = element.scrollTop;
-                          const itemHeight = 40;
-                          const totalItems = 60;
-                          const sets = 3;
-                          const index = Math.round(
-                            scrollTop / itemHeight,
-                          );
-                          const minute = index % totalItems;
-                          const currentTime =
-                            startTime.split(":");
-                          setStartTime(
-                            `${currentTime[0]}:${String(minute).padStart(2, "0")}`,
-                          );
-
-                          // Loop logic: jump to middle set when near edges
-                          const middleSetStart = totalItems + 1;
-                          const nearTop =
-                            index < totalItems / 2;
-                          const nearBottom =
-                            index >
-                            sets * totalItems - totalItems / 2;
-
-                          if (
-                            nearTop &&
-                            !element.dataset.jumping
-                          ) {
-                            element.dataset.jumping = "true";
-                            requestAnimationFrame(() => {
-                              element.scrollTop =
-                                (middleSetStart + minute) *
-                                itemHeight;
-                              setTimeout(
-                                () =>
-                                  delete element.dataset
-                                    .jumping,
-                                100,
-                              );
-                            });
-                          } else if (
-                            nearBottom &&
-                            !element.dataset.jumping
-                          ) {
-                            element.dataset.jumping = "true";
-                            requestAnimationFrame(() => {
-                              element.scrollTop =
-                                (middleSetStart + minute) *
-                                itemHeight;
-                              setTimeout(
-                                () =>
-                                  delete element.dataset
-                                    .jumping,
-                                100,
-                              );
-                            });
-                          }
-                        }}
-                        ref={(el) => {
-                          if (el && !el.dataset.initialized) {
-                            el.dataset.initialized = "true";
-                            const minute = parseInt(
-                              startTime.split(":")[1],
-                            );
-                            const middleSetStart = 60 + 1;
-                            el.scrollTop =
-                              (middleSetStart + minute) * 40;
-                          }
-                        }}
-                      >
-                        <div className="h-10" />
-                        {/* Repeat minutes 3 times for infinite scroll */}
-                        {Array.from({ length: 3 }, (_, set) =>
-                          Array.from({ length: 60 }, (_, i) => (
-                            <div
-                              key={`${set}-${i}`}
-                              className="h-10 flex items-center justify-center snap-center text-[#3E2723] text-lg"
-                            >
-                              {String(i).padStart(2, "0")}
-                            </div>
-                          )),
-                        )}
-                        <div className="h-10" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <TimeWheel value={startTime} onChange={setStartTime} />
               </div>
 
               {/* Duration */}
@@ -1213,12 +534,20 @@ export function Dashboard({
 
               {/* Action Buttons */}
               <div className="space-y-3 pt-4">
-                <Button
-                  className="w-full bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
-                  onClick={handleScheduleSession}
-                >
-                  Schedule Session
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    className="flex-1 bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
+                      onClick={handleStartSession}
+                  >
+                    Start Session
+                  </Button>
+                  <Button
+                    className="flex-1 bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
+                    onClick={handleScheduleSession}
+                  >
+                    Schedule Session
+                  </Button>
+                </div>
 
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
@@ -1357,68 +686,19 @@ export function Dashboard({
 
                           {/* Preview button for soundscapes */}
                           {soundscape &&
-                            soundscape !== "Silent" &&
-                            soundscapeAudioMap[soundscape] && (
+                            soundscape !== "Silent" && (
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => {
-                                  console.log(
-                                    "🎧 Preview button clicked, soundscape:",
-                                    soundscape,
-                                  );
-                                  console.log(
-                                    "Audio URL:",
-                                    soundscapeAudioMap[
-                                      soundscape
-                                    ],
-                                  );
-                                  console.log(
-                                    "Current audio ref:",
-                                    audioRef.current,
-                                  );
-
-                                  // Quick preview - play for a few seconds
-                                  if (audioRef.current) {
-                                    console.log(
-                                      "Stopping audio preview",
-                                    );
-                                    stopAudio();
-                                  } else {
-                                    console.log(
-                                      "Starting audio preview for:",
-                                      soundscape,
-                                    );
-                                    playAudio(
-                                      soundscapeAudioMap[
-                                        soundscape
-                                      ],
-                                    );
-                                    // Auto-stop preview after 10 seconds (increased from 5)
-                                    setTimeout(() => {
-                                      if (!isSessionRunning) {
-                                        console.log(
-                                          "Auto-stopping preview",
-                                        );
-                                        stopAudio();
-                                      }
-                                    }, 10000);
-                                  }
+                                  audio.playPreview(soundscape);
                                 }}
                                 className="w-full text-[#5C4033] hover:bg-white/40 h-8 border-[#8B7355]/30"
                               >
-                                {audioRef.current &&
-                                !isSessionRunning ? (
-                                  <>
-                                    <VolumeX className="w-3 h-3 mr-2" />
-                                    Stop Preview
-                                  </>
-                                ) : (
                                   <>
                                     <Volume2 className="w-3 h-3 mr-2" />
                                     Preview Sound
                                   </>
-                                )}
                               </Button>
                             )}
 
@@ -2231,115 +1511,7 @@ export function Dashboard({
                 <label className="block text-[#3E2723] mb-3">
                   Start Time
                 </label>
-                <div className="w-full bg-white/60 border border-[#8B7355]/30 rounded-xl p-4">
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Hours Wheel */}
-                    <div className="relative h-32 w-20 overflow-hidden">
-                      <div className="absolute inset-0 pointer-events-none z-10">
-                        <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-white/60 to-transparent" />
-                        <div className="absolute top-[44px] left-0 right-0 h-10 border-y-2 border-[#8B7355]/30 bg-[#8B7355]/5" />
-                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white/60 to-transparent" />
-                      </div>
-                      <div
-                        className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
-                        onScroll={(e) => {
-                          const element = e.currentTarget;
-                          const scrollTop = element.scrollTop;
-                          const itemHeight = 40;
-                          const totalItems = 24;
-                          const index = Math.round(
-                            scrollTop / itemHeight,
-                          );
-                          const hour = index % totalItems;
-                          const currentTime =
-                            programScheduleTime.split(":");
-                          setProgramScheduleTime(
-                            `${String(hour).padStart(2, "0")}:${currentTime[1]}`,
-                          );
-                        }}
-                        ref={(el) => {
-                          if (el && !el.dataset.initialized) {
-                            el.dataset.initialized = "true";
-                            const hour = parseInt(
-                              programScheduleTime.split(":")[0],
-                            );
-                            const middleSetStart = 24 + 1;
-                            el.scrollTop =
-                              (middleSetStart + hour) * 40;
-                          }
-                        }}
-                      >
-                        <div className="h-10" />
-                        {Array.from({ length: 3 }, (_, set) =>
-                          Array.from({ length: 24 }, (_, i) => (
-                            <div
-                              key={`${set}-${i}`}
-                              className="h-10 flex items-center justify-center snap-center text-[#3E2723] text-lg"
-                            >
-                              {String(i).padStart(2, "0")}
-                            </div>
-                          )),
-                        )}
-                        <div className="h-10" />
-                      </div>
-                    </div>
-
-                    <span className="text-[#3E2723] text-2xl font-semibold">
-                      :
-                    </span>
-
-                    {/* Minutes Wheel */}
-                    <div className="relative h-32 w-20 overflow-hidden">
-                      <div className="absolute inset-0 pointer-events-none z-10">
-                        <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-white/60 to-transparent" />
-                        <div className="absolute top-[44px] left-0 right-0 h-10 border-y-2 border-[#8B7355]/30 bg-[#8B7355]/5" />
-                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white/60 to-transparent" />
-                      </div>
-                      <div
-                        className="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
-                        onScroll={(e) => {
-                          const element = e.currentTarget;
-                          const scrollTop = element.scrollTop;
-                          const itemHeight = 40;
-                          const totalItems = 60;
-                          const index = Math.round(
-                            scrollTop / itemHeight,
-                          );
-                          const minute = index % totalItems;
-                          const currentTime =
-                            programScheduleTime.split(":");
-                          setProgramScheduleTime(
-                            `${currentTime[0]}:${String(minute).padStart(2, "0")}`,
-                          );
-                        }}
-                        ref={(el) => {
-                          if (el && !el.dataset.initialized) {
-                            el.dataset.initialized = "true";
-                            const minute = parseInt(
-                              programScheduleTime.split(":")[1],
-                            );
-                            const middleSetStart = 60 + 1;
-                            el.scrollTop =
-                              (middleSetStart + minute) * 40;
-                          }
-                        }}
-                      >
-                        <div className="h-10" />
-                        {Array.from({ length: 3 }, (_, set) =>
-                          Array.from({ length: 60 }, (_, i) => (
-                            <div
-                              key={`${set}-${i}`}
-                              className="h-10 flex items-center justify-center snap-center text-[#3E2723] text-lg"
-                            >
-                              {String(i).padStart(2, "0")}
-                            </div>
-                          )),
-                        )}
-                        <div className="h-10" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <TimeWheel value={programScheduleTime} onChange={setProgramScheduleTime} />
               </div>
 
               {/* Action Buttons */}
@@ -2518,10 +1690,11 @@ export function Dashboard({
             <Carousel
               baseWidth={380}
               autoplay={true}
-              autoplayDelay={3000}
+              autoplayDelay={10000}
               pauseOnHover={true}
               loop={true}
               round={false}
+              onStartGuidedSession={(session) => setActiveGuidedSession(session)}
             >
               
             </Carousel>

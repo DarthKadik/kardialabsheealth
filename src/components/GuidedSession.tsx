@@ -137,6 +137,30 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [sessionStarted, setSessionStarted] = useState(false);
 
+  // Ensure we start at the top when the guided session opens
+  useEffect(() => {
+    try {
+      // Prefer scrolling the app's main scroll container (within the app shell)
+      const appScrollEl = document.querySelector('[data-app-scroll-container]') as HTMLElement | null;
+      if (appScrollEl) {
+        appScrollEl.scrollTop = 0;
+      } else {
+        // Fallback to window/document if no container is found
+        window.scrollTo(0, 0);
+        const scrollingElements = [
+          document.scrollingElement,
+          document.documentElement,
+          document.body,
+        ].filter(Boolean) as Element[];
+        scrollingElements.forEach((el) => {
+          (el as HTMLElement).scrollTop = 0;
+        });
+      }
+    } catch {
+      // no-op
+    }
+  }, []);
+
   // Prep steps are the first 3, session steps are the rest
   const prepSteps = guidedSteps.slice(0, 3);
   const sessionSteps = guidedSteps.slice(3);

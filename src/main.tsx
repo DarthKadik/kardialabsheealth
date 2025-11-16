@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { ProfileProvider } from "./context/ProfileContext";
 
 // --- Robust Service Worker Registration ---
 if ('serviceWorker' in navigator) {
@@ -19,4 +20,8 @@ if ('serviceWorker' in navigator) {
 }
 // --- End of Registration Code ---
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <ProfileProvider>
+    <App />
+  </ProfileProvider>
+);
