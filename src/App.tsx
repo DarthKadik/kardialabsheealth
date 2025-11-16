@@ -38,12 +38,9 @@ export default function App() {
           duration={sessionState.duration}
           heatLevel={sessionState.heatLevel}
           currentProgram={sessionState.currentProgram}
-          currentIntervalIndex={sessionState.currentIntervalIndex}
-          intervalStartTime={sessionState.intervalStartTime}
           onStop={sessionState.stopProgram}
           onNavigateHome={() => setActiveTab("home")}
           getTotalProgramDuration={sessionState.getTotalProgramDuration}
-          getIntervalElapsedTime={sessionState.getIntervalElapsedTime}
           getCurrentInterval={sessionState.getCurrentInterval}
         />
       )}
