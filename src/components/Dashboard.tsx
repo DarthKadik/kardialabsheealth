@@ -107,37 +107,15 @@ export function Dashboard({
   >(null);
   const [tempActionTime, setTempActionTime] = useState("");
 
-  // Simulated current sauna temperature for warm-up UX
-  const [currentTemp, setCurrentTemp] = useState(24);
-
-  // Reset baseline temperature at the start of a session/program
-  useEffect(() => {
-    if (isSessionRunning && elapsedTime === 0) {
-      setCurrentTemp(24);
-    }
-  }, [isSessionRunning, elapsedTime]);
-
-  // Heating simulation: +1°C every 2 seconds until target while running
-  useEffect(() => {
-    if (!isSessionRunning) return;
-    const intervalId = setInterval(() => {
-      setCurrentTemp((t) => Math.min(t + 1, heatLevel[0]));
-    }, 2000);
-    return () => clearInterval(intervalId);
-  }, [isSessionRunning, heatLevel]);
-
-  // Warm-up helpers
-  const tempDelta = heatLevel[0] - currentTemp;
-  const isWarming = tempDelta > 5;
-  const isReadyToStart = tempDelta > 0 && tempDelta <= 5;
-  const etaSeconds = Math.ceil(Math.max(0, tempDelta)) * 2;
-  const progressPct = Math.min(
-    100,
-    Math.max(
-      0,
-      ((currentTemp - 24) / Math.max(1, heatLevel[0] - 24)) * 100,
-    ),
-  );
+  // Warm-up state and helpers are now provided by sessionState
+  const {
+    currentTemp,
+    tempDelta,
+    isWarming,
+    isReadyToStart,
+    etaSeconds,
+    warmupProgressPct,
+  } = sessionState as any;
 
   // Use saved programs from sessionState instead of local state
   const {
@@ -391,7 +369,7 @@ export function Dashboard({
             tempDelta={tempDelta}
             isWarming={isWarming}
             isReadyToStart={isReadyToStart}
-            progressPct={progressPct}
+            progressPct={warmupProgressPct}
             etaSeconds={etaSeconds}
             onStartSession={handleStartSession}
             onStopSession={handleStopSession}

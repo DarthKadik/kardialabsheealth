@@ -15,7 +15,7 @@ export default function App() {
   const renderContent = () => {
     switch (activeTab) {
       case "home":
-        return <Dashboard sessionState={sessionState} onNavigate={(tab) => setActiveTab(tab)} />;
+        return <Dashboard sessionState={sessionState} />;
       case "community":
         return <Community sessionState={sessionState} onNavigate={(tab) => setActiveTab(tab)} />;
       case "tracking":
@@ -42,6 +42,10 @@ export default function App() {
           onNavigateHome={() => setActiveTab("home")}
           getTotalProgramDuration={sessionState.getTotalProgramDuration}
           getCurrentInterval={sessionState.getCurrentInterval}
+          currentTemp={sessionState.currentTemp}
+          isWarming={sessionState.isWarming}
+          isReadyToStart={sessionState.isReadyToStart}
+          warmupProgressPct={sessionState.warmupProgressPct}
         />
       )}
 

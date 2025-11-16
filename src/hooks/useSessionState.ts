@@ -34,6 +34,12 @@ export function useSessionState() {
   const [heatLevel, setHeatLevel] = useState([85]);
   const [humidity, setHumidity] = useState([40]);
   
+  // Warm-up and temperature state (persisted across navigation)
+  const [currentTemp, setCurrentTemp] = useState<number>(() => {
+    const saved = localStorage.getItem('saunaCurrentTemp');
+    return saved ? Number(saved) : 24;
+  });
+  
   // Session tracking state
   const [isSessionRunning, setIsSessionRunning] = useState(false);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
@@ -63,6 +69,11 @@ export function useSessionState() {
     };
     localStorage.setItem('saunaSessionConfig', JSON.stringify(config));
   }, [duration, heatLevel, humidity]);
+
+  // Persist current temperature
+  useEffect(() => {
+    localStorage.setItem('saunaCurrentTemp', String(currentTemp));
+  }, [currentTemp]);
 
   const [savedPrograms, setSavedPrograms] = useState<SavedProgram[]>([]);
 
@@ -178,6 +189,23 @@ export function useSessionState() {
     return () => clearInterval(interval);
   }, [isSessionScheduled, scheduledStartTime, isSessionRunning]);
 
+  // Warm-up simulation: +1°C every 2 seconds until target while running
+  useEffect(() => {
+    const target = heatLevel?.[0] ?? 24;
+    if (!isSessionRunning || target <= currentTemp) return;
+    const intervalId = setInterval(() => {
+      setCurrentTemp((t) => Math.min(t + 1, target));
+    }, 2000);
+    return () => clearInterval(intervalId);
+  }, [isSessionRunning, heatLevel, currentTemp]);
+
+  // Reset baseline temperature when session starts
+  useEffect(() => {
+    if (isSessionRunning && elapsedTime === 0) {
+      setCurrentTemp((prev) => (prev < 24 ? 24 : prev));
+    }
+  }, [isSessionRunning, elapsedTime]);
+
   // Calculate time until scheduled start
   useEffect(() => {
     if (isSessionScheduled && scheduledStartTime) {
@@ -282,6 +310,19 @@ export function useSessionState() {
     return Math.floor((Date.now() - intervalStartTime) / 1000);
   };
 
+  // Warm-up derived helpers
+  const tempDelta = (heatLevel?.[0] ?? 0) - currentTemp;
+  const isWarming = tempDelta > 5;
+  const isReadyToStart = tempDelta > 0 && tempDelta <= 5;
+  const etaSeconds = Math.ceil(Math.max(0, tempDelta)) * 2;
+  const warmupProgressPct = Math.min(
+    100,
+    Math.max(
+      0,
+      ((currentTemp - 24) / Math.max(1, (heatLevel?.[0] ?? 24) - 24)) * 100
+    )
+  );
+
   return {
     // Config state
     duration,
@@ -295,6 +336,12 @@ export function useSessionState() {
     isSessionRunning,
     sessionStartTime,
     elapsedTime,
+    currentTemp,
+    tempDelta,
+    isWarming,
+    isReadyToStart,
+    etaSeconds,
+    warmupProgressPct,
     
     // Scheduling state
     isSessionScheduled,

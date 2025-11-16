@@ -29,6 +29,12 @@ interface SessionBarProps {
   getTotalProgramDuration: (program: SavedProgram) => number;
   getIntervalElapsedTime: () => number;
   getCurrentInterval: () => Interval | null;
+  // Warm-up from shared state
+  currentTemp: number;
+  isWarming: boolean;
+  isReadyToStart: boolean;
+  warmupProgressPct: number;
+  etaSeconds: number;
 }
 
 export function SessionBar({
@@ -40,11 +46,23 @@ export function SessionBar({
   onNavigateHome,
   getTotalProgramDuration,
   getCurrentInterval,
+  // warm-up props from shared state
+  currentTemp,
+  isWarming,
+  isReadyToStart,
+  warmupProgressPct,
+  etaSeconds,
 }: Omit<SessionBarProps, 'currentIntervalIndex' | 'intervalStartTime' | 'getIntervalElapsedTime'>) {
+  // warm-up state is provided via props now
   const formatElapsedTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+  const formatEta = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}m ${String(secs).padStart(2, '0')}s`;
   };
 
   const getTemperatureDisplay = (temp?: "mellow" | "warm" | "hot" | "intense") => {
@@ -75,10 +93,17 @@ export function SessionBar({
       <div className="bg-gradient-to-r from-[#3E2723] to-[#5C4033] shadow-lg border-b border-[#8B7355]/40">
         {/* Progress bar */}
         <div className="h-1 bg-[#2C1810]">
-          <div
-            className="h-full bg-gradient-to-r from-[#FF6B35] to-[#FF8C42] transition-all duration-1000"
-            style={{ width: `${Math.min(progress, 100)}%` }}
-          />
+          {(isWarming || isReadyToStart) ? (
+            <div
+              className="h-full bg-gradient-to-r from-white to-white/80 transition-all duration-1000"
+              style={{ width: `${Math.min(warmupProgressPct, 100)}%` }}
+            />
+          ) : (
+            <div
+              className="h-full bg-gradient-to-r from-[#FF6B35] to-[#FF8C42] transition-all duration-1000"
+              style={{ width: `${Math.min(progress, 100)}%` }}
+            />
+          )}
         </div>
 
         {/* Content */}
@@ -110,10 +135,22 @@ export function SessionBar({
                       )}
                     </>
                   )}
-                  {!currentProgram && (
+                  {!currentProgram && !(isWarming || isReadyToStart) && (
                     <>
                       <span className="text-white/40">•</span>
                       <span>{heatLevel[0]}°C</span>
+                    </>
+                  )}
+                  {(isWarming || isReadyToStart) && (
+                    <>
+                      <span className="text-white/40">•</span>
+                      <span>{Math.floor(currentTemp)}°C</span>
+                      {etaSeconds > 0 && (
+                        <>
+                          <span className="text-white/40">•</span>
+                          <span>{isWarming ? "Warming up" : "Ready soon"} — {formatEta(etaSeconds)}</span>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
