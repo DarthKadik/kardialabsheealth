@@ -798,7 +798,7 @@ function CultureCard({
             size="sm"
             className="flex-1 bg-white/20 hover:bg-white/30 text-white border border-white/40"
           >
-            Try This Culture
+            Try This Culture (coming soon)
           </Button>
           <Dialog
             open={accessoriesOpen}

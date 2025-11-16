@@ -24,8 +24,6 @@ import type {
 import { GuidedSession } from "./GuidedSession";
 import { GuidedSessionConfig } from "../data/guidedSessions";
 import { WheelPicker } from "./WheelPicker";
-import { recommendedSessions } from "../data/recommendedSessions";
-import { getSessionById } from "../data/allSessions";
 import { useProfile } from "../context/ProfileContext";
 
 interface DashboardProps {
@@ -39,9 +37,10 @@ export function Dashboard({
   sessionState,
 }: Omit<DashboardProps, 'onNavigate'>) {
   const { profile } = useProfile();
+  const displayName = profile.name && profile.name.trim() ? profile.name : "Anna";
   useEffect(() => {
     console.log("Onboarding profile:", profile);
-  }, []);
+  }, [profile]);
   // Destructure session state
   const {
     duration,
@@ -204,6 +203,8 @@ export function Dashboard({
     audio.loop = true;
     audio.volume = audioVolume;
     audio.muted = isAudioMuted; // Set muted property directly
+    // Set the ref immediately so controls (mute/stop) work even before play() resolves
+    audioRef.current = audio;
 
     // Add event listeners for debugging
     const handleLoaded = () => {
@@ -228,12 +229,11 @@ export function Dashboard({
     // Set source after adding listeners
     audio.src = url;
 
-    // Set ref AFTER play succeeds to avoid race conditions
+    // Attempt to play; on failure, clear ref
     audio
       .play()
       .then(() => {
         console.log("▶️ Audio playing");
-        audioRef.current = audio; // Only set ref when playing successfully
       })
       .catch((err) => {
         console.error("❌ Audio playback failed:", err);
@@ -252,12 +252,19 @@ export function Dashboard({
       try {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
+        // Force silence and detach source to avoid lingering playback
+        audioRef.current.muted = true;
+        audioRef.current.volume = 0;
         audioRef.current.removeEventListener("error", () => {});
         audioRef.current.removeEventListener(
           "loadeddata",
           () => {},
         );
         audioRef.current.src = ""; // Clear the source to fully stop
+        // Some browsers require load() after src change to flush buffers
+        try {
+          audioRef.current.load();
+        } catch {}
       } catch (e) {
         console.log("Error during audio cleanup:", e);
       }
@@ -269,7 +276,9 @@ export function Dashboard({
     const newMutedState = !isAudioMuted;
     setIsAudioMuted(newMutedState);
     if (audioRef.current) {
-      audioRef.current.muted = newMutedState; // Use muted property instead of volume
+      audioRef.current.muted = newMutedState;
+      // Also adjust volume as a fallback for environments that ignore 'muted'
+      audioRef.current.volume = newMutedState ? 0 : audioVolume;
     }
   };
 
@@ -496,7 +505,7 @@ export function Dashboard({
             <p className="text-white/70 text-sm">
               Welcome back,
             </p>
-            <h1 className="text-white mt-1">Anna</h1>
+            <h1 className="text-white mt-1">{displayName}</h1>
           </div>
 
           <div className="bg-[#8B7355]/40 backdrop-blur-md border border-white/20 rounded-2xl p-5 shadow-xl max-w-[280px]">
@@ -900,20 +909,13 @@ export function Dashboard({
             {/* Header */}
             <div className="relative px-6 pt-8 pb-6 text-white overflow-hidden">
               <div
-                className="absolute inset-0 bg-cover bg-center"
+                className="absolute inset-0 bg-cover bg-center pointer-events-none"
                 style={{
                   backgroundImage:
                     "url('https://images.unsplash.com/photo-1678742753298-9e6b10fcc42f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHdvb2QlMjB0ZXh0dXJlfGVufDF8fHx8MTc2MzE1MzcwN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral')",
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355]/95 to-[#5C4033]/95" />
-              <button
-                onClick={() => setShowConfigOverlay(false)}
-                className="absolute top-4 left-4 text-white/80 hover:text-white flex items-center gap-2 transition-colors"
-              >
-                <ChevronDown className="w-6 h-6 rotate-90" />
-                <span className="text-sm">Back</span>
-              </button>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#8B7355]/95 to-[#5C4033]/95 pointer-events-none" />
               <Button
                 onClick={() => setShowConfigOverlay(false)}
                 className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white border border-white/40 h-9 px-4 text-sm"
@@ -2523,10 +2525,11 @@ export function Dashboard({
             <Carousel
               baseWidth={380}
               autoplay={true}
-              autoplayDelay={3000}
+              autoplayDelay={10000}
               pauseOnHover={true}
               loop={true}
               round={false}
+              onStartGuidedSession={(session) => setActiveGuidedSession(session)}
             >
               
             </Carousel>

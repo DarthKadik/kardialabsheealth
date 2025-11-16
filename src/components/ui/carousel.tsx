@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, JSX } from 'react';
 import { motion, PanInfo, useMotionValue, useTransform } from 'motion/react';
 import { recommendedSessions } from '../../data/recommendedSessions';
 import { getSessionById } from '../../data/allSessions';
-import { useSessionState } from '../../hooks/useSessionState';
+import type { GuidedSessionConfig } from '../../data/guidedSessions';
 import { Button } from './button';
 
 export interface CarouselProps {
@@ -12,6 +12,7 @@ export interface CarouselProps {
   pauseOnHover?: boolean;
   loop?: boolean;
   round?: boolean;
+  onStartGuidedSession?: (session: GuidedSessionConfig) => void;
 }
 
 const DRAG_BUFFER = 0;
@@ -25,9 +26,9 @@ export default function Carousel({
   autoplayDelay = 3000,
   pauseOnHover = false,
   loop = false,
-  round = false
+  round = false,
+  onStartGuidedSession
 }: CarouselProps): JSX.Element {
-  const { setActiveGuidedSession } = useSessionState();
   const containerPadding = 16;
   const itemWidth = baseWidth - containerPadding * 2;
   const trackItemOffset = itemWidth + GAP;
@@ -142,7 +143,7 @@ export default function Carousel({
           const rotateY = useTransform(x, range, outputRange, { clamp: false });
           return (
             <motion.div
-              key={rec.id}
+              key={`${rec.id}-${index}`}
               className="relative shrink-0"
               style={{
                 width: itemWidth,
@@ -186,8 +187,11 @@ export default function Carousel({
                       className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40"
                       onClick={() => {
                         const session = getSessionById(rec.id);
-                        if (session) {
-                          setActiveGuidedSession(session);
+                        if (session && onStartGuidedSession) {
+                          onStartGuidedSession(session);
+                        } else if (!session) {
+                          // eslint-disable-next-line no-console
+                          console.warn('Guided session not found for id:', rec.id);
                         }
                       }}
                     >
