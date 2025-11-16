@@ -451,6 +451,7 @@ export function Dashboard({
         <div className={isSessionRunning ? "pt-[73px]" : ""}>
           <GuidedSession
             onBack={() => setActiveGuidedSession(null)}
+            config={activeGuidedSession || undefined}
           />
         </div>
       </>
@@ -1818,7 +1819,10 @@ export function Dashboard({
               pauseOnHover={true}
               loop={true}
               round={false}
-              onStartGuidedSession={(session) => beginPreparationForGuided(session)}
+              onStartGuidedSession={(session) => {
+                beginPreparationForGuided(session);
+                setActiveGuidedSession(session);
+              }}
               prependNodes={[
                 <AiCompanionCard
                   key="ai-card"
