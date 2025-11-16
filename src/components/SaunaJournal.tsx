@@ -120,7 +120,9 @@ export function SaunaJournal() {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
+    // Convert Sunday (0) to 6, and shift all other days by 1 to start week on Monday
+    const dayOfWeek = firstDay.getDay();
+    const startingDayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
     return { daysInMonth, startingDayOfWeek };
   };
@@ -169,7 +171,7 @@ export function SaunaJournal() {
   const monthName = currentDate.toLocaleString("default", { month: "long" });
   const year = currentDate.getFullYear();
 
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
     <div className="space-y-4">
