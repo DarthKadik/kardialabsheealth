@@ -42,6 +42,7 @@ import {
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Slider } from "./ui/slider";
 import { AdvancedProgramBuilder } from "./AdvancedProgramBuilder";
+import { SavedProgramCard } from "./SavedProgramCard";
 import { GuidedSession } from "./GuidedSession";
 import { GuidedSessionConfig } from "../data/guidedSessions";
 import { getSessionById } from "../data/allSessions";
@@ -420,7 +421,7 @@ export function Community({ sessionState }: CommunityProps) {
                     Create
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#FFEBCD] border-[#8B7355]">
+                <DialogContent className="bg-[#FFEBCD] border-[#8B7355] max-h-[80vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle className="text-[#3E2723]">
                       Create Sauna Program
@@ -443,6 +444,36 @@ export function Community({ sessionState }: CommunityProps) {
                       sessionState.addProgram(program);
                       setProgramBuilderOpen(false);
                     }}
+                    onStartNow={(config) => {
+                      const program: import("../hooks/useSessionState").SavedProgram = {
+                        id: Date.now(),
+                        name: config.programName,
+                        intervals: config.intervals,
+                        soundscape: config.soundscape,
+                        lighting: config.lighting,
+                        actions: config.actions
+                      };
+                      sessionState.addProgram(program);
+                      sessionState.startProgramNow(program);
+                      setProgramBuilderOpen(false);
+                    }}
+                    onScheduleLater={(config) => {
+                      const program: import("../hooks/useSessionState").SavedProgram = {
+                        id: Date.now(),
+                        name: config.programName,
+                        intervals: config.intervals,
+                        soundscape: config.soundscape,
+                        lighting: config.lighting,
+                        actions: config.actions
+                      };
+                      sessionState.addProgram(program);
+                      // Ask for schedule time in HH:MM; default to current time
+                      const now = new Date();
+                      const defaultTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                      const time = window.prompt("Schedule time (HH:MM)?", defaultTime) || defaultTime;
+                      sessionState.scheduleProgramForLater(program, time);
+                      setProgramBuilderOpen(false);
+                    }}
                     onCancel={() =>
                       setProgramBuilderOpen(false)
                     }
@@ -457,37 +488,34 @@ export function Community({ sessionState }: CommunityProps) {
                 Your Custom Programs
               </h4>
             </div>
-
-            <ProgramCard
-              name="My Evening Routine"
-              type="Personal"
-              phases={3}
-              duration={45}
-              temperature={82}
-              description="Relaxing evening session with gradual heat increase"
-              isPublic={false}
-              uses={34}
-            />
-            <ProgramCard
-              name="Weekend Warrior"
-              type="Intense"
-              phases={5}
-              duration={75}
-              temperature={88}
-              description="High-intensity session with multiple cooling breaks"
-              isPublic={true}
-              uses={12}
-            />
-            <ProgramCard
-              name="Recovery & Meditation"
-              type="Gentle"
-              phases={2}
-              duration={30}
-              temperature={70}
-              description="Low-heat mindfulness session for active recovery"
-              isPublic={true}
-              uses={28}
-            />
+            {sessionState.savedPrograms.length > 0 ? (
+              <div className="space-y-4">
+                {sessionState.savedPrograms.map((program) => (
+                  <SavedProgramCard
+                    key={program.id}
+                    program={program}
+                    onClick={() => {}}
+                    onStartNow={() => {
+                      sessionState.startProgramNow(program);
+                    }}
+                    onSchedule={() => {
+                      const now = new Date();
+                      const defaultTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+                        now.getMinutes(),
+                      ).padStart(2, "0")}`;
+                      const time =
+                        window.prompt("Schedule time (HH:MM)?", defaultTime) ||
+                        defaultTime;
+                      sessionState.scheduleProgramForLater(program, time);
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-[#5C4033]/70 text-sm">
+                You have no saved programs yet. Create one to see it here.
+              </p>
+            )}
 
             {/* Recommended Sessions */}
             <div className="mb-6 pt-6 border-t border-[#8B7355]/30">
@@ -588,6 +616,9 @@ export function Community({ sessionState }: CommunityProps) {
                 <p className="text-[#5C4033]/80 text-sm">
                   Join or host local sauna gatherings
                 </p>
+                <div className="mt-2 rounded-xl border border-[#8B7355]/30 bg-white/60 text-[#5C4033] text-xs px-3 py-2">
+                  Note: This Events section is a concept preview and not functional.
+                </div>
               </div>
               <Dialog
                 open={eventBuilderOpen}

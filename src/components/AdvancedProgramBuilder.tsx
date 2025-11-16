@@ -18,6 +18,26 @@ interface AdvancedProgramBuilderProps {
     lighting: { r: number; g: number; b: number };
     actions: Action[];
   }) => void;
+  onStartNow?: (config: {
+    programName: string;
+    duration: number;
+    heatLevel: number;
+    humidity: number;
+    intervals: Interval[];
+    soundscape: string;
+    lighting: { r: number; g: number; b: number };
+    actions: Action[];
+  }) => void;
+  onScheduleLater?: (config: {
+    programName: string;
+    duration: number;
+    heatLevel: number;
+    humidity: number;
+    intervals: Interval[];
+    soundscape: string;
+    lighting: { r: number; g: number; b: number };
+    actions: Action[];
+  }) => void;
   onCancel: () => void;
   initialData?: {
     programName?: string;
@@ -34,6 +54,8 @@ interface AdvancedProgramBuilderProps {
 
 export function AdvancedProgramBuilder({ 
   onSave, 
+  onStartNow,
+  onScheduleLater,
   onCancel, 
   initialData,
   isSessionRunning = false 
@@ -173,20 +195,12 @@ export function AdvancedProgramBuilder({
     setActions(actions.filter(a => a.id !== id));
   };
 
-  // Handle save
-  const handleSave = () => {
-    if (showAdvanced && intervals.length === 0) {
-      alert("Please add at least one interval to save the program");
-      return;
-    }
-    
-    if (showAdvanced && !programName.trim()) {
-      alert("Please enter a name for your program");
-      return;
-    }
-    
-    onSave({
-      programName,
+  const buildConfig = () => {
+    const effectiveName =
+      (programName && programName.trim()) ||
+      `Program ${duration[0]}m ${heatLevel[0]}°C`;
+    return {
+      programName: effectiveName,
       duration: duration[0],
       heatLevel: heatLevel[0],
       humidity: humidity[0],
@@ -194,7 +208,24 @@ export function AdvancedProgramBuilder({
       soundscape,
       lighting: { r: lightingR[0], g: lightingG[0], b: lightingB[0] },
       actions
-    });
+    };
+  };
+
+  // Handle save
+  const handleSave = () => {
+    onSave(buildConfig());
+  };
+
+  const handleStartNow = () => {
+    if (onStartNow) {
+      onStartNow(buildConfig());
+    }
+  };
+
+  const handleScheduleLater = () => {
+    if (onScheduleLater) {
+      onScheduleLater(buildConfig());
+    }
   };
 
   return (
@@ -261,11 +292,33 @@ export function AdvancedProgramBuilder({
 
       {/* Action Buttons */}
       <div className="space-y-3 pt-4">
+        {(onStartNow || onScheduleLater) && (
+          <div className="grid grid-cols-2 gap-2">
+            {onStartNow && (
+              <Button
+                variant="outline"
+                className="w-full border-[#8B7355] text-[#5C4033] h-12"
+                onClick={handleStartNow}
+              >
+                Start Now
+              </Button>
+            )}
+            {onScheduleLater && (
+              <Button
+                variant="outline"
+                className="w-full border-[#8B7355] text-[#5C4033] h-12"
+                onClick={handleScheduleLater}
+              >
+                Schedule for Later
+              </Button>
+            )}
+          </div>
+        )}
         <Button 
           className="w-full bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
           onClick={handleSave}
         >
-          {showAdvanced && intervals.length > 0 ? 'Schedule Session' : 'Schedule Session'}
+          Save Program
         </Button>
         
         <button
@@ -790,25 +843,17 @@ export function AdvancedProgramBuilder({
           </div>
         )}
 
-        {showAdvanced && intervals.length > 0 && (
-          <>
-            <div>
-              <label className="block text-[#3E2723] mb-3">Program Name</label>
-              <input
-                type="text"
-                value={programName}
-                onChange={(e) => setProgramName(e.target.value)}
-                placeholder="Enter program name..."
-                className="w-full px-4 py-3 bg-white/60 border border-[#8B7355]/30 rounded-xl text-[#3E2723] placeholder:text-[#5C4033]/50 focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
-              />
-            </div>
-            <Button 
-              className="w-full bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
-              onClick={handleSave}
-            >
-              Save Advanced Program
-            </Button>
-          </>
+        {showAdvanced && (
+          <div>
+            <label className="block text-[#3E2723] mb-3">Program Name (optional)</label>
+            <input
+              type="text"
+              value={programName}
+              onChange={(e) => setProgramName(e.target.value)}
+              placeholder="Enter program name..."
+              className="w-full px-4 py-3 bg-white/60 border border-[#8B7355]/30 rounded-xl text-[#3E2723] placeholder:text-[#5C4033]/50 focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+            />
+          </div>
         )}
 
         <Button 
