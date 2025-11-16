@@ -86,6 +86,8 @@ export default function App() {
     sessionState.duration,
   ]);
 
+  const saunaListRef = useRef<HTMLDivElement>(null);
+
   const renderContent = () => {
     switch (activeTab) {
       case "home":
@@ -97,7 +99,7 @@ export default function App() {
       case "algorithms":
         return <SaunaAlgorithms />;
       case "find":
-        return <FindSaunas />;
+        return <FindSaunas scrollContainerRef={saunaListRef} />;
       default:
         return <Dashboard sessionState={sessionState} />;
     }
