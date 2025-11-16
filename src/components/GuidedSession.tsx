@@ -137,6 +137,24 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [sessionStarted, setSessionStarted] = useState(false);
 
+  // Ensure we start at the top when the guided session opens
+  useEffect(() => {
+    try {
+      // Scroll both window and any scrollable parent to top
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+      const scrollingElements = [
+        document.scrollingElement,
+        document.documentElement,
+        document.body,
+      ].filter(Boolean) as Element[];
+      scrollingElements.forEach((el) => {
+        (el as HTMLElement).scrollTop = 0;
+      });
+    } catch {
+      // no-op
+    }
+  }, []);
+
   // Prep steps are the first 3, session steps are the rest
   const prepSteps = guidedSteps.slice(0, 3);
   const sessionSteps = guidedSteps.slice(3);

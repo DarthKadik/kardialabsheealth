@@ -47,6 +47,7 @@ import { GuidedSession } from "./GuidedSession";
 import { GuidedSessionConfig } from "../data/guidedSessions";
 import { getSessionById } from "../data/allSessions";
 import { recommendedSessions } from "../data/recommendedSessions";
+import { ProgramDetailView } from "./ProgramDetailView";
 
 interface CommunityProps {
   sessionState: ReturnType<typeof import("../hooks/useSessionState").useSessionState>;
@@ -62,6 +63,8 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
     useState(false);
   const [activeGuidedSession, setActiveGuidedSession] =
     useState<GuidedSessionConfig | null>(null);
+  const [viewingProgram, setViewingProgram] =
+    useState<import("../hooks/useSessionState").SavedProgram | null>(null);
 
   if (activeGuidedSession) {
     return <GuidedSession onBack={() => setActiveGuidedSession(null)} />;
@@ -498,7 +501,7 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
                   <SavedProgramCard
                     key={program.id}
                     program={program}
-                    onClick={() => {}}
+                    onClick={() => setViewingProgram(program)}
                     onStartNow={() => {
                       sessionState.startProgramNow(program);
                       onNavigate && onNavigate("home");
@@ -521,6 +524,21 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
               <p className="text-[#5C4033]/70 text-sm">
                 You have no saved programs yet. Create one to see it here.
               </p>
+            )}
+            
+            {viewingProgram && (
+              <ProgramDetailView
+                program={viewingProgram}
+                onClose={() => setViewingProgram(null)}
+                onEdit={() => {
+                  setViewingProgram(null);
+                  onNavigate && onNavigate("home");
+                }}
+                onDelete={() => {
+                  sessionState.deleteProgram(viewingProgram.id);
+                  setViewingProgram(null);
+                }}
+              />
             )}
 
             {/* Recommended Sessions */}
@@ -622,9 +640,6 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
                 <p className="text-[#5C4033]/80 text-sm">
                   Join or host local sauna gatherings
                 </p>
-                <div className="mt-2 rounded-xl border border-[#8B7355]/30 bg-white/60 text-[#5C4033] text-xs px-3 py-2">
-                  Note: This Events section is a concept preview and not functional.
-                </div>
               </div>
               <Dialog
                 open={eventBuilderOpen}
@@ -654,6 +669,11 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
                   />
                 </DialogContent>
               </Dialog>
+            </div>
+
+            {/* Informational note below header, above first event */}
+            <div className="rounded-xl border border-[#8B7355]/30 bg-white/60 text-[#5C4033] text-xs px-3 py-2">
+              Note: This Events section is a concept preview and not functional.
             </div>
 
             <EventCard
@@ -703,6 +723,11 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
               <p className="text-[#5C4033]/80 text-sm">
                 Connect with fellow enthusiasts
               </p>
+            </div>
+
+            {/* Informational note below header, above friends content */}
+            <div className="rounded-xl border border-[#8B7355]/30 bg-white/60 text-[#5C4033] text-xs px-3 py-2">
+              Note: This Friends section is a concept preview and not functional.
             </div>
 
             <div className="relative overflow-hidden rounded-2xl shadow-lg p-4 mb-4 bg-white/60">
