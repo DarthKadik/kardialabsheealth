@@ -1837,7 +1837,7 @@ export function Dashboard({
                       onSelect={() => {
                         const s = getSuggestedSession();
                         if (s) {
-                          beginPreparationForGuided(s);
+                          setActiveGuidedSession(s);
                           setAiOverlayOpen(false);
                         }
                       }}
@@ -1889,7 +1889,7 @@ export function Dashboard({
                   onSelect={() => {
                     const s = getSuggestedSession();
                     if (s) {
-                      beginPreparationForGuided(s);
+                      setActiveGuidedSession(s);
                       setAiOverlayOpen(false);
                     }
                   }}
