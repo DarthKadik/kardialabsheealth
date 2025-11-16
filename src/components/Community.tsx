@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Share2, Globe, Calendar, Users, Plus, Sparkles, Clock, Flame, Droplets, Wind, UserPlus, Settings, ShoppingBag, Package } from "lucide-react";
+import { Heart, MessageCircle, Share2, Globe, Calendar, Users, Plus, Sparkles, Clock, Flame, UserPlus, Settings, ShoppingBag, Package } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function Community() {

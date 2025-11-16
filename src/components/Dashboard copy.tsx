@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Slider } from "./ui/slider";
 import {
   ChevronDown,
@@ -14,17 +16,19 @@ import { ProgramDetailView } from "./ProgramDetailView";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DraggableInterval } from "./DraggableInterval";
+import { DropIndicator } from "./DropIndicator";
 import type {
   SavedProgram,
   Interval,
   Action,
 } from "../hooks/useSessionState";
 import { GuidedSession } from "./GuidedSession";
-import { GuidedSessionConfig } from "../data/guidedSessions";
+import {
+  guidedSessions,
+  GuidedSessionConfig,
+} from "../data/guidedSessions";
 import { WheelPicker } from "./WheelPicker";
 import Slider2 from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { recommendedSessions } from "../data/recommendedSessions";
 import { getSessionById } from "../data/allSessions";
 
@@ -36,8 +40,9 @@ interface DashboardProps {
 }
 
 export function Dashboard({
+  onNavigate,
   sessionState,
-}: Omit<DashboardProps, 'onNavigate'>) {
+}: DashboardProps) {
   // Destructure session state
   const {
     duration,
@@ -50,9 +55,11 @@ export function Dashboard({
     elapsedTime,
     isSessionScheduled,
     scheduledStartTime,
+    currentTime,
     timeUntilStart,
     currentProgram,
     currentIntervalIndex,
+    intervalStartTime,
     startSession,
     stopSession,
     scheduleSession,
@@ -101,6 +108,8 @@ export function Dashboard({
     number | null
   >(null);
   const [tempActionTime, setTempActionTime] = useState("");
+  const [focusedTempDropdown, setFocusedTempDropdown] =
+    useState<number | null>(null);
 
   // Use saved programs from sessionState instead of local state
   const {
@@ -130,17 +139,17 @@ export function Dashboard({
   // Soundscape audio mapping - using working audio URLs
   const soundscapeAudioMap: Record<string, string> = {
     "Forest Ambience":
-      "/2462-preview.mp3", // Nature/Forest ambience
+      "https://assets.mixkit.co/active_storage/sfx/2462/2462-preview.mp3", // Nature/Forest ambience
     "Ocean Waves":
-      "/2393-preview.mp3", // Ocean waves
+      "https://assets.mixkit.co/active_storage/sfx/2393/2393-preview.mp3", // Ocean waves
     "Rain & Thunder":
-      "/2410-preview.mp3", // Rain sound
+      "https://assets.mixkit.co/active_storage/sfx/2410/2410-preview.mp3", // Rain sound
     "Nordic Winds":
-      "/2398-preview.mp3", // Wind ambience
+      "https://assets.mixkit.co/active_storage/sfx/2398/2398-preview.mp3", // Wind ambience
     "Meditation Bowls":
-      "/2417-preview.mp3", // Meditation/calm
+      "https://assets.mixkit.co/active_storage/sfx/2417/2417-preview.mp3", // Meditation/calm
     "Birch Forest":
-      "/2462-preview.mp3", // Forest sounds
+      "https://assets.mixkit.co/active_storage/sfx/2462/2462-preview.mp3", // Forest sounds
     Silent: "",
   };
 
@@ -396,7 +405,7 @@ export function Dashboard({
         },
         actions: actions.map((a) => ({ ...a })),
       };
-      updateProgram(program);
+      updateProgram(editingProgramId, program);
       setEditingProgramId(null);
     } else {
       // Create new program
@@ -464,7 +473,9 @@ export function Dashboard({
   if (activeGuidedSession) {
     return (
       <GuidedSession
+        sessionConfig={activeGuidedSession}
         onBack={() => setActiveGuidedSession(null)}
+        sourcePage="home"
       />
     );
   }
@@ -2373,7 +2384,7 @@ export function Dashboard({
       )}
 
       {/* Stats Grid */}
-      <div className="px-6 py-6 flex flex-col justify-around">
+      <div className="px-6 py-6 -mt-4">
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="relative overflow-hidden rounded-2xl shadow-lg h-20">
             <div
@@ -2442,8 +2453,6 @@ export function Dashboard({
           </div>
         </div>
 
-<<<<<<< Updated upstream
-=======
         {/* Quick Actions */}
         <div className="mb-6">
           <div className="space-y-3">
@@ -2451,9 +2460,8 @@ export function Dashboard({
           </div>
         </div>
 
->>>>>>> Stashed changes
         {/* Saved Programs */}
-        {savedPrograms && savedPrograms.length > 0 && (
+        {savedPrograms.length > 0 && (
           <div className="mb-6">
             <h3 className="text-[#3E2723] mb-3">
               My Custom Programs

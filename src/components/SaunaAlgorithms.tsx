@@ -37,7 +37,7 @@ const recommendations = [
 	},
 ];
 
-export function SaunaAlgorithms({ onNavigate }: { onNavigate: (tab: string) => void }) {
+export function SaunaAlgorithms() {
 	const [autoOptimize, setAutoOptimize] = useState(true);
 	const [targetTemp, setTargetTemp] = useState([85]);
 	const [sessionLength, setSessionLength] = useState([20]);

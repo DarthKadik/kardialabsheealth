@@ -63,6 +63,40 @@ export function useSessionState() {
     };
     localStorage.setItem('saunaSessionConfig', JSON.stringify(config));
   }, [duration, heatLevel, humidity]);
+
+  const [savedPrograms, setSavedPrograms] = useState<SavedProgram[]>([]);
+
+  // Load saved programs from local storage on mount
+  useEffect(() => {
+    const storedPrograms = localStorage.getItem('savedSaunaPrograms');
+    if (storedPrograms) {
+      try {
+        setSavedPrograms(JSON.parse(storedPrograms));
+      } catch (e) {
+        console.error('Failed to load saved programs:', e);
+      }
+    }
+  }, []);
+
+  // Persist saved programs whenever they change
+  useEffect(() => {
+    localStorage.setItem('savedSaunaPrograms', JSON.stringify(savedPrograms));
+  }, [savedPrograms]);
+
+  const addProgram = (program: Omit<SavedProgram, 'id'>) => {
+    setSavedPrograms(prev => [
+      ...prev,
+      { ...program, id: Date.now() }
+    ]);
+  };
+
+  const updateProgram = (program: SavedProgram) => {
+    setSavedPrograms(prev => prev.map(p => p.id === program.id ? program : p));
+  };
+
+  const deleteProgram = (programId: number) => {
+    setSavedPrograms(prev => prev.filter(p => p.id !== programId));
+  };
   
   // Session scheduling state
   const [isSessionScheduled, setIsSessionScheduled] = useState(false);
@@ -269,7 +303,13 @@ export function useSessionState() {
     currentIntervalIndex,
     intervalStartTime,
     
+    // Saved Programs
+    savedPrograms,
+    
     // Actions
+    addProgram,
+    updateProgram,
+    deleteProgram,
     startSession,
     stopSession,
     scheduleSession,
