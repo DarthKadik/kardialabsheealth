@@ -50,9 +50,10 @@ import { recommendedSessions } from "../data/recommendedSessions";
 
 interface CommunityProps {
   sessionState: ReturnType<typeof import("../hooks/useSessionState").useSessionState>;
+  onNavigate?: (tab: string) => void;
 }
 
-export function Community({ sessionState }: CommunityProps) {
+export function Community({ sessionState, onNavigate }: CommunityProps) {
   const [activeSection, setActiveSection] =
     useState("discover");
   const [programBuilderOpen, setProgramBuilderOpen] =
@@ -443,6 +444,7 @@ export function Community({ sessionState }: CommunityProps) {
                       };
                       sessionState.addProgram(program);
                       setProgramBuilderOpen(false);
+                      onNavigate && onNavigate("home");
                     }}
                     onStartNow={(config) => {
                       const program: import("../hooks/useSessionState").SavedProgram = {
@@ -456,6 +458,7 @@ export function Community({ sessionState }: CommunityProps) {
                       sessionState.addProgram(program);
                       sessionState.startProgramNow(program);
                       setProgramBuilderOpen(false);
+                      onNavigate && onNavigate("home");
                     }}
                     onScheduleLater={(config) => {
                       const program: import("../hooks/useSessionState").SavedProgram = {
@@ -473,6 +476,7 @@ export function Community({ sessionState }: CommunityProps) {
                       const time = window.prompt("Schedule time (HH:MM)?", defaultTime) || defaultTime;
                       sessionState.scheduleProgramForLater(program, time);
                       setProgramBuilderOpen(false);
+                      onNavigate && onNavigate("home");
                     }}
                     onCancel={() =>
                       setProgramBuilderOpen(false)
@@ -497,6 +501,7 @@ export function Community({ sessionState }: CommunityProps) {
                     onClick={() => {}}
                     onStartNow={() => {
                       sessionState.startProgramNow(program);
+                      onNavigate && onNavigate("home");
                     }}
                     onSchedule={() => {
                       const now = new Date();
@@ -507,6 +512,7 @@ export function Community({ sessionState }: CommunityProps) {
                         window.prompt("Schedule time (HH:MM)?", defaultTime) ||
                         defaultTime;
                       sessionState.scheduleProgramForLater(program, time);
+                      onNavigate && onNavigate("home");
                     }}
                   />
                 ))}

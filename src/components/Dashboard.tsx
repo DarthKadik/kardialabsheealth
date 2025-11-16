@@ -105,6 +105,38 @@ export function Dashboard({
   >(null);
   const [tempActionTime, setTempActionTime] = useState("");
 
+  // Simulated current sauna temperature for warm-up UX
+  const [currentTemp, setCurrentTemp] = useState(24);
+
+  // Reset baseline temperature at the start of a session/program
+  useEffect(() => {
+    if (isSessionRunning && elapsedTime === 0) {
+      setCurrentTemp(24);
+    }
+  }, [isSessionRunning, elapsedTime]);
+
+  // Heating simulation: +1°C every 2 seconds until target while running
+  useEffect(() => {
+    if (!isSessionRunning) return;
+    const intervalId = setInterval(() => {
+      setCurrentTemp((t) => Math.min(t + 1, heatLevel[0]));
+    }, 2000);
+    return () => clearInterval(intervalId);
+  }, [isSessionRunning, heatLevel]);
+
+  // Warm-up helpers
+  const tempDelta = heatLevel[0] - currentTemp;
+  const isWarming = tempDelta > 5;
+  const isReadyToStart = tempDelta > 0 && tempDelta <= 5;
+  const etaSeconds = Math.ceil(Math.max(0, tempDelta)) * 2;
+  const progressPct = Math.min(
+    100,
+    Math.max(
+      0,
+      ((currentTemp - 24) / Math.max(1, heatLevel[0] - 24)) * 100,
+    ),
+  );
+
   // Use saved programs from sessionState instead of local state
   const {
     savedPrograms,
@@ -514,32 +546,37 @@ export function Dashboard({
               <>
                 {currentProgram ? (
                   <>
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-[#FFEBCD] text-sm">
-                        {currentProgram.name}
-                      </p>
-                      {elapsedTime < 1200 && (
-                        <div className="text-right">
+                    <div className="flex items-start justify-between mb-3 gap-3">
+                      <div className="flex-1">
+                        <p className="text-[#FFEBCD] text-sm">
+                          {currentProgram.name}
+                        </p>
+                        <p className="text-white text-3xl mt-1">
+                          {formatElapsedTime(elapsedTime)}
+                        </p>
+                      </div>
+                      {(isWarming || isReadyToStart) && (
+                        <div className="w-28 text-right">
                           <p className="text-white/70 text-xs">
-                            Warming Up
+                            {isWarming ? "Warming Up" : "Ready to start"}
                           </p>
                           <p className="text-white text-sm">
-                            {Math.min(
-                              Math.floor(
-                                24 +
-                                  (elapsedTime / 1200) *
-                                    (heatLevel[0] - 24),
-                              ),
-                              heatLevel[0],
-                            )}
-                            °C
+                            {Math.floor(currentTemp)}°C
                           </p>
+                          <div className="mt-1 bg-white/20 rounded-full h-1 overflow-hidden">
+                            <div
+                              className="bg-white h-full transition-all duration-1000"
+                              style={{ width: `${progressPct}%` }}
+                            />
+                          </div>
+                          {tempDelta > 0 && (
+                            <p className="text-white/70 text-xs mt-1">
+                              Ready in {formatCountdown(etaSeconds)}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
-                    <p className="text-white text-3xl mb-3">
-                      {formatElapsedTime(elapsedTime)}
-                    </p>
                     {getCurrentInterval() && (
                       <>
                         <div className="bg-white/10 rounded-lg p-2 mb-3">
@@ -620,33 +657,38 @@ export function Dashboard({
                   </>
                 ) : (
                   <>
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-[#FFEBCD] text-sm">
-                        Session In Progress
-                      </p>
-                      {elapsedTime < 1200 && (
-                        <div className="text-right">
+                    <div className="flex items-start justify-between mb-3 gap-3">
+                      <div className="flex-1">
+                        <p className="text-[#FFEBCD] text-sm">
+                          Session In Progress
+                        </p>
+                        <p className="text-white text-3xl mt-1">
+                          {formatElapsedTime(elapsedTime)}
+                        </p>
+                      </div>
+                      {(isWarming || isReadyToStart) && (
+                        <div className="w-28 text-right">
                           <p className="text-white/70 text-xs text-[rgba(252,77,8,0.7)]">
-                            Warming Up
+                            {isWarming ? "Warming Up" : "Ready to start"}
                           </p>
                           <p className="text-white text-sm">
-                            {Math.min(
-                              Math.floor(
-                                24 +
-                                  (elapsedTime / 1200) *
-                                    (heatLevel[0] - 24),
-                              ),
-                              heatLevel[0],
-                            )}
-                            °C
+                            {Math.floor(currentTemp)}°C
                           </p>
+                          <div className="mt-1 bg-white/20 rounded-full h-1 overflow-hidden">
+                            <div
+                              className="bg-white h-full transition-all duration-1000"
+                              style={{ width: `${progressPct}%` }}
+                            />
+                          </div>
+                          {tempDelta > 0 && (
+                            <p className="text-white/70 text-xs mt-1">
+                              Ready in {formatCountdown(etaSeconds)}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
-                    <p className="text-white text-3xl mb-3">
-                      {formatElapsedTime(elapsedTime)}
-                    </p>
-                    <div className="flex items-center gap-3 text-sm mb-4">
+                    <div className="flex items-center justify-center gap-3 text-sm mb-4">
                       <div>
                         <span className="text-white/70 text-xs">
                           Temp
@@ -768,7 +810,7 @@ export function Dashboard({
                         {formatCountdown(timeUntilStart)}
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 text-sm mb-4">
+                    <div className="flex items-center justify-center gap-3 text-sm mb-4">
                       <div>
                         <span className="text-white/70 text-xs">
                           Temp

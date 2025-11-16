@@ -15,9 +15,9 @@ export default function App() {
   const renderContent = () => {
     switch (activeTab) {
       case "home":
-        return <Dashboard sessionState={sessionState} />;
+        return <Dashboard sessionState={sessionState} onNavigate={(tab) => setActiveTab(tab)} />;
       case "community":
-        return <Community sessionState={sessionState} />;
+        return <Community sessionState={sessionState} onNavigate={(tab) => setActiveTab(tab)} />;
       case "tracking":
         return <DataTracking />;
       case "algorithms":
@@ -61,7 +61,7 @@ export default function App() {
         <div className="flex items-center justify-around">
           <button
             onClick={() => setActiveTab("home")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "home"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -73,7 +73,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("community")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "community"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -85,7 +85,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("tracking")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "tracking"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -97,7 +97,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("algorithms")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "algorithms"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
@@ -109,7 +109,7 @@ export default function App() {
 
           <button
             onClick={() => setActiveTab("find")}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+            className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${
               activeTab === "find"
                 ? "text-[#FFEBCD]"
                 : "text-white/60 hover:text-white/80"
