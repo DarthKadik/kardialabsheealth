@@ -298,24 +298,6 @@ export function Community({ sessionState }: CommunityProps) {
               </Dialog>
             </div>
 
-<<<<<<< Updated upstream
-            {/* User's Saved Programs */}
-            <div className="mb-4">
-              <h4 className="text-[#3E2723] mb-4">
-                
-              </h4>
-            </div>
-            {sessionState.savedPrograms.length > 0 ? (
-              <div className="space-y-4">
-                {sessionState.savedPrograms.map((program) => (
-                  <SavedProgramCard
-                    key={program.id}
-                    program={program}
-                    onClick={() => setViewingProgram(program)}
-                    onStartNow={() => {
-                      sessionState.startProgramNow(program);
-                      onNavigate && onNavigate("home");
-=======
             {userPrograms.map(program => (
               <ProgramCard
                 key={program.id}
@@ -397,7 +379,6 @@ export function Community({ sessionState }: CommunityProps) {
                       }
                       setEditProgramId(null);
                       setEditProgramName("");
->>>>>>> Stashed changes
                     }}
                     onCancel={() => {
                       setEditProgramId(null);
@@ -408,84 +389,6 @@ export function Community({ sessionState }: CommunityProps) {
               </DialogContent>
             </Dialog>
 
-<<<<<<< Updated upstream
-            {/* Recommended Sessions */}
-            <div className="mb-6 pt-6 border-t border-[#8B7355]/30">
-              <h4 className="text-[#3E2723] mb-2">
-                Recommended Sessions
-              </h4>
-              <p className="text-[#5C4033]/80 text-sm mb-4">
-                Expert-guided programs tailored for different
-                wellness goals
-              </p>
-
-              <div className="space-y-4 ">
-                {recommendedSessions.map((rec) => (
-                  <div
-                    key={rec.id}
-                    className="relative overflow-hidden rounded-2xl shadow-lg group"
-                  >
-                    {/* Background Image */}
-                    <div
-                      className="absolute inset-0 bg-cover bg-center"
-                      style={{
-                        backgroundImage: rec.id === 'finnish-traditional'
-                          ? `url('https://images.unsplash.com/photo-1622997638119-e53621e3d73b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaW5uaXNoJTIwbGFrZSUyMGZvcmVzdHxlbnwxfHx8fDE3NjMyNTMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral')`
-                          : `url('${rec.image}')`,
-                      }}
-                    />
-                    <div className={`absolute inset-0 ${
-                      'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
-                    }`} />
-
-                    {/* Content */}
-                    <div className="relative p-4">
-                      <h4 className="text-white mb-2">
-                        {rec.title}
-                      </h4>
-                      <p className="text-white/80 text-sm mb-4 leading-relaxed">
-                        {rec.description}
-                      </p>
-
-                      <div className="flex items-center gap-4 mb-4 text-sm text-white/70">
-                        <span>{rec.temp}°C</span>
-                        <span>•</span>
-                        <span>{rec.duration} min</span>
-                      </div>
-
-                      <Button
-                        size="sm"
-                        className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40"
-                        onClick={() => {
-                          console.log(
-                            "🔍 Looking for session:",
-                            rec.id,
-                          );
-                          const session = getSessionById(
-                            rec.id,
-                          );
-                          console.log(
-                            "✅ Found session:",
-                            session
-                              ? session.title
-                              : "NOT FOUND",
-                          );
-                          if (session) {
-                            setActiveGuidedSession(session);
-                            console.log(
-                              "🚀 Session activated!",
-                            );
-                          } else {
-                            console.error(
-                              "❌ Session not found in registry for ID:",
-                              rec.id,
-                            );
-                          }
-                        }}
-                      >
-                        Start Session
-                      </Button>
-=======
             {/* Settings Dialog */}
             <Dialog
               open={settingsProgramId !== null}
@@ -505,7 +408,6 @@ export function Community({ sessionState }: CommunityProps) {
                     <div>
                       <Label className="text-[#3E2723]">Make Public</Label>
                       <p className="text-xs text-[#5C4033]/70">Share this program with the community</p>
->>>>>>> Stashed changes
                     </div>
                     <input type="checkbox" className="rounded border-[#8B7355]" checked={settingsIsPublic} onChange={(e) => setSettingsIsPublic(e.target.checked)} />
                   </div>
@@ -594,7 +496,8 @@ export function Community({ sessionState }: CommunityProps) {
                         : `url('${rec.image}')`,
                     }}
                   />
-                  <div className={`absolute inset-0 ${'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
+                  <div className={`absolute inset-0 ${
+                    'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
                   }`} />
 
                   {/* Content */}
