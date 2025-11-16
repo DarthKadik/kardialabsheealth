@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 import Carousel from './ui/carousel'
+import { AiCompanionCard } from "./session/AiCompanionCard";
+import { AiChatOverlay } from "./session/AiChatOverlay";
+import { GuidedSessionMiniCard } from "./session/GuidedSessionMiniCard";
+import { guidedSessions } from "../data/guidedSessions";
+import { postAiMessage, generateSessionId } from "../services/aiChat";
 
 import {
   ChevronDown,
@@ -22,12 +27,14 @@ import type {
 } from "../hooks/useSessionState";
 import { GuidedSession } from "./GuidedSession";
 import { GuidedSessionConfig } from "../data/guidedSessions";
+import { guidedConfigToProgram, getTotalActiveMinutes } from "../utils/sessionTransform";
 import { WheelPicker } from "./WheelPicker";
 import { useProfile } from "../context/ProfileContext";
 import { useSoundscapeAudio } from "../hooks/useSoundscapeAudio";
 import { SessionHeaderCard } from "./session/SessionHeaderCard";
 import { TimeWheel } from "./session/TimeWheel";
 import { SessionBar } from "./SessionBar";
+import { SessionPreparationBar } from "./session/SessionPreparationBar";
 
 interface DashboardProps {
   onNavigate: (tab: string) => void;
@@ -85,9 +92,54 @@ export function Dashboard({
     useState(getCurrentTime());
   const [activeGuidedSession, setActiveGuidedSession] =
     useState<GuidedSessionConfig | null>(null);
+  const [pendingGuidedSession, setPendingGuidedSession] =
+    useState<GuidedSessionConfig | null>(() => {
+      try {
+        const id = localStorage.getItem("pendingGuidedSessionId");
+        if (!id) return null;
+        const all = Object.values(guidedSessions);
+        return all.find((s) => s.id === id) || null;
+      } catch {
+        return null;
+      }
+    });
+  const [pendingProgramJson, setPendingProgramJson] = useState<string | null>(null);
   const [activePicker, setActivePicker] = useState<
     "temp" | "time" | "humidity" | null
   >(null);
+  // AI companion state
+  const [aiOverlayOpen, setAiOverlayOpen] = useState(false);
+  const [aiMessages, setAiMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [aiPending, setAiPending] = useState(false);
+  const [aiSuggestedSessionId, setAiSuggestedSessionId] = useState<number | null>(null);
+  const [aiSessionId, setAiSessionId] = useState<string>(() => generateSessionId());
+
+  const getSuggestedSession = () => {
+    if (aiSuggestedSessionId == null) return null;
+    const sessions = Object.values(guidedSessions);
+    return sessions.find((s) => s.sessionId === aiSuggestedSessionId) || null;
+  };
+
+  const sendMessageToAi = async (text: string) => {
+    setAiPending(true);
+    try {
+      const res = await postAiMessage(text, aiSessionId);
+      setAiMessages((prev) => [...prev, { role: "assistant", content: res.message }]);
+      if (res.session && res.session.id) {
+        const idNum = Number(res.session.id);
+        if (!Number.isNaN(idNum)) {
+          setAiSuggestedSessionId(idNum);
+        }
+      }
+    } catch (e) {
+      setAiMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Sorry, I couldn't reach the AI right now. Please try again." },
+      ]);
+    } finally {
+      setAiPending(false);
+    }
+  };
 
   // Advanced program state
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -175,6 +227,63 @@ export function Dashboard({
     audio.stop();
     stopSession();
   };
+
+  // Handle preparation flow for guided sessions
+  const beginPreparationForGuided = (session: GuidedSessionConfig) => {
+    // Pre-configure session state, but do not auto-start
+    try {
+      setHeatLevel([session.temp]);
+    } catch {}
+    try {
+      const totalMins = getTotalActiveMinutes(session);
+      if (totalMins > 0) setDuration([totalMins]);
+    } catch {}
+    const program = guidedConfigToProgram(session);
+    sessionState.loadProgram(program);
+    setPendingGuidedSession(session);
+    setPendingProgramJson(JSON.stringify(program)); // for rendering summary if needed
+    try {
+      localStorage.setItem("pendingGuidedSessionId", session.id);
+    } catch {}
+  };
+
+  const cancelPreparation = () => {
+    try {
+      localStorage.removeItem("pendingGuidedSessionId");
+    } catch {}
+    setPendingGuidedSession(null);
+    setPendingProgramJson(null);
+    // If a program is loaded but not wanted anymore, stop it (non-destructive)
+    if (isSessionRunning) {
+      // User will be prompted in the bar when running; here avoid auto stop
+    } else {
+      stopProgram();
+    }
+  };
+
+  const startPreparationWarmup = () => {
+    if (!pendingGuidedSession) return;
+    // Start warmup and program execution timeline; Guided view will manage step timers
+    if (currentProgram) {
+      startProgramNow(currentProgram);
+    } else {
+      const program = guidedConfigToProgram(pendingGuidedSession);
+      startProgramNow(program);
+    }
+    try {
+      localStorage.removeItem("pendingGuidedSessionId");
+    } catch {}
+    setPendingGuidedSession(null);
+    setPendingProgramJson(null);
+  };
+
+  // If user selects guided session from elsewhere, route into preparation
+  useEffect(() => {
+    if (activeGuidedSession) {
+      // If a guided session screen was explicitly opened, keep old behavior
+      // No-op here; the Carousel onSelect will switch to preparation instead.
+    }
+  }, [activeGuidedSession]);
 
   // Audio lifecycle moved to useSoundscapeAudio
 
@@ -350,6 +459,21 @@ export function Dashboard({
 
   return (
     <div className="min-h-full bg-[#FFEBCD]">
+      {/* Preparation Bar */}
+      {pendingGuidedSession && (
+        <SessionPreparationBar
+          session={pendingGuidedSession}
+          currentTemp={sessionState.currentTemp}
+          isWarming={sessionState.isWarming}
+          isReadyToStart={sessionState.isReadyToStart}
+          warmupProgressPct={sessionState.warmupProgressPct}
+          etaSeconds={sessionState.etaSeconds}
+          onPrepare={startPreparationWarmup}
+          onCancel={cancelPreparation}
+          isRunning={isSessionRunning}
+          onStopRunning={handleStopProgram}
+        />
+      )}
       {/* Header with Background */}
       <div className="relative px-6 pt-12 pb-8 text-white overflow-hidden min-h-[300px]">
         {/* Background Image */}
@@ -1694,7 +1818,32 @@ export function Dashboard({
               pauseOnHover={true}
               loop={true}
               round={false}
-              onStartGuidedSession={(session) => setActiveGuidedSession(session)}
+              onStartGuidedSession={(session) => beginPreparationForGuided(session)}
+              prependNodes={[
+                <AiCompanionCard
+                  key="ai-card"
+                  pending={aiPending}
+                  onSend={(message) => {
+                    // open overlay and seed user message
+                    setAiOverlayOpen(true);
+                    setAiMessages((prev) => [...prev, { role: "user", content: message }]);
+                    void sendMessageToAi(message);
+                  }}
+                />,
+                ...(getSuggestedSession()
+                  ? [<GuidedSessionMiniCard
+                      key={`suggested-${getSuggestedSession()!.id}`}
+                      session={getSuggestedSession()!}
+                      onSelect={() => {
+                        const s = getSuggestedSession();
+                        if (s) {
+                          beginPreparationForGuided(s);
+                          setAiOverlayOpen(false);
+                        }
+                      }}
+                    />]
+                  : [])
+              ]}
             >
               
             </Carousel>
@@ -1714,6 +1863,42 @@ export function Dashboard({
         />
       )}
 
+      {/* AI Chat Overlay */}
+      <AiChatOverlay
+        open={aiOverlayOpen}
+        pending={aiPending}
+        messages={aiMessages}
+        onClose={() => setAiOverlayOpen(false)}
+        onNewChat={() => {
+          setAiMessages([]);
+          setAiSuggestedSessionId(null);
+          setAiSessionId(generateSessionId());
+        }}
+        onSend={(m) => {
+          setAiMessages((prev) => [...prev, { role: "user", content: m }]);
+          void sendMessageToAi(m);
+        }}
+        suggested={getSuggestedSession()}
+        suggestedElement={
+          getSuggestedSession() ? (
+            <div className="mt-2">
+              <div className="text-[#3E2723] text-sm mb-2">Suggested session</div>
+              <div className="rounded-xl overflow-hidden border border-[#8B7355]/20">
+                <GuidedSessionMiniCard
+                  session={getSuggestedSession()!}
+                  onSelect={() => {
+                    const s = getSuggestedSession();
+                    if (s) {
+                      beginPreparationForGuided(s);
+                      setAiOverlayOpen(false);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          ) : undefined
+        }
+      />
       {/* Wheel Pickers */}
       {activePicker === "temp" && (
         <WheelPicker

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import type { GuidedSessionConfig } from "../data/guidedSessions";
 
 interface Step {
   id: number;
@@ -22,7 +23,7 @@ interface Step {
   type: "prep" | "interval" | "cooldown" | "hydration" | "steam";
 }
 
-const guidedSteps: Step[] = [
+const defaultGuidedSteps: Step[] = [
   {
     id: 1,
     title: "Pre-Sauna Shower",
@@ -129,13 +130,33 @@ const guidedSteps: Step[] = [
   },
 ];
 
-export function GuidedSession({ onBack }: { onBack: () => void }) {
+function parseMinutes(duration?: string): number {
+  if (!duration) return 0;
+  const match = duration.match(/([\d.]+)\s*min/i);
+  if (!match) return 0;
+  const minutes = parseFloat(match[1]);
+  return Number.isFinite(minutes) ? minutes : 0;
+}
+
+export function GuidedSession({ onBack, config }: { onBack: () => void; config?: GuidedSessionConfig }) {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [sessionStarted, setSessionStarted] = useState(false);
+  const guidedSteps: Step[] = config
+    ? config.steps.map((s) => ({
+        id: s.id,
+        title: s.title,
+        duration: s.duration,
+        description: s.description,
+        info: s.info,
+        image: s.image,
+        type: s.type as Step["type"],
+      }))
+    : defaultGuidedSteps;
+  const prepStepsCount = config?.prepStepsCount ?? 3;
 
   // Ensure we start at the top when the guided session opens
   useEffect(() => {
@@ -161,9 +182,9 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
     }
   }, []);
 
-  // Prep steps are the first 3, session steps are the rest
-  const prepSteps = guidedSteps.slice(0, 3);
-  const sessionSteps = guidedSteps.slice(3);
+  // Prep steps based on provided config count
+  const prepSteps = guidedSteps.slice(0, prepStepsCount);
+  const sessionSteps = guidedSteps.slice(prepStepsCount);
   const allPrepComplete = prepSteps.every(step => completedSteps.includes(step.id));
 
   // Timer logic
@@ -191,8 +212,8 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
           // Set time for next step
           const nextStep = guidedSteps[nextIndex];
           if (nextStep.duration) {
-            const minutes = parseFloat(nextStep.duration.split(" ")[0]);
-            return minutes * 60;
+            const minutes = parseMinutes(nextStep.duration);
+            return Math.round(minutes * 60);
           }
           return 0;
         }
@@ -239,11 +260,11 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
   const startSession = () => {
     setSessionStarted(true);
     setIsPlaying(true);
-    setCurrentStepIndex(3); // Start from first session step (index 3)
-    const firstSessionStep = guidedSteps[3];
+    setCurrentStepIndex(prepStepsCount); // Start from first session step
+    const firstSessionStep = guidedSteps[prepStepsCount];
     if (firstSessionStep.duration) {
-      const minutes = parseFloat(firstSessionStep.duration.split(" ")[0]);
-      setTimeRemaining(minutes * 60);
+      const minutes = parseMinutes(firstSessionStep.duration);
+      setTimeRemaining(Math.round(minutes * 60));
     }
   };
 
@@ -268,8 +289,8 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
   const totalDuration = guidedSteps
     .filter(step => step.duration)
     .reduce((acc, step) => {
-      const minutes = parseFloat(step.duration?.split(" ")[0] || "0");
-      return acc + minutes;
+      const minutes = parseMinutes(step.duration);
+      return acc + (Number.isFinite(minutes) ? minutes : 0);
     }, 0);
 
   return (
@@ -285,9 +306,9 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
         </button>
         
         <div className="mb-3">
-          <h1 className="text-white mb-2">Beginner's Guided Session</h1>
+          <h1 className="text-white mb-2">{config?.title ?? "Beginner's Guided Session"}</h1>
           <p className="text-white/90">
-            Your complete introduction to sauna wellness
+            {config?.subtitle ?? "Your complete introduction to sauna wellness"}
           </p>
         </div>
         
@@ -297,7 +318,7 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
             <span>~{totalDuration} minutes</span>
           </div>
           <div className="w-px h-4 bg-white/30"></div>
-          <span>3 × 7.5 min intervals</span>
+          <span>{Math.max(0, guidedSteps.length - prepStepsCount)} steps</span>
         </div>
       </div>
 
