@@ -30,7 +30,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-[#FFEBCD] max-w-md mx-auto" style={{ scrollbarWidth: 'none' }}>
+    <div className="h-screen flex flex-col bg-[#FFEBCD] max-w-md mx-auto">
       {/* Session Bar - Show when session is running and not on home page */}
       {sessionState.isSessionRunning && activeTab !== "home" && (
         <SessionBar
@@ -38,21 +38,22 @@ export default function App() {
           duration={sessionState.duration}
           heatLevel={sessionState.heatLevel}
           currentProgram={sessionState.currentProgram}
+          currentIntervalIndex={sessionState.currentIntervalIndex}
+          intervalStartTime={sessionState.intervalStartTime}
           onStop={sessionState.stopProgram}
           onNavigateHome={() => setActiveTab("home")}
           getTotalProgramDuration={sessionState.getTotalProgramDuration}
+          getIntervalElapsedTime={sessionState.getIntervalElapsedTime}
           getCurrentInterval={sessionState.getCurrentInterval}
         />
       )}
 
       {/* App Content */}
       <div
-        className={`flex-1 overflow-y-auto ${
+        className={`flex-1 overflow-y-auto   ${
           sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
         }`}
-
-        style={{ scrollbarWidth: 'none' }}
-      > 
+      >
         {renderContent()}
       </div>
 
