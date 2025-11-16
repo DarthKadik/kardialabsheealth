@@ -456,12 +456,6 @@ export function Dashboard({
                   <label className="block text-[#3E2723]">
                     Start Time
                   </label>
-                  <Button
-                    onClick={handleStartSession}
-                    className="bg-[#D84315] hover:bg-[#BF360C] text-white h-9 px-6 text-sm"
-                  >
-                    Start Session
-                  </Button>
                 </div>
                 <TimeWheel value={startTime} onChange={setStartTime} />
               </div>
@@ -540,12 +534,20 @@ export function Dashboard({
 
               {/* Action Buttons */}
               <div className="space-y-3 pt-4">
-                <Button
-                  className="w-full bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
-                  onClick={handleScheduleSession}
-                >
-                  Schedule Session
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    className="flex-1 bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
+                      onClick={handleStartSession}
+                  >
+                    Start Session
+                  </Button>
+                  <Button
+                    className="flex-1 bg-gradient-to-r from-[#8B7355] to-[#6D5A47] hover:from-[#6D5A47] hover:to-[#5C4033] text-white h-12"
+                    onClick={handleScheduleSession}
+                  >
+                    Schedule Session
+                  </Button>
+                </div>
 
                 <button
                   onClick={() => setShowAdvanced(!showAdvanced)}
