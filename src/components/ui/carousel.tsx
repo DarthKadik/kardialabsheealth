@@ -134,10 +134,15 @@ export default function Carousel({
 
   const handleAnimationComplete = () => {
     if (loop && currentIndex === carouselNodes.length - 1) {
+      // Seamless loop reset using double rAF to avoid visible jump
       setIsResetting(true);
-      x.set(0);
       setCurrentIndex(0);
-      setTimeout(() => setIsResetting(false), 50);
+      requestAnimationFrame(() => {
+        x.set(0);
+        requestAnimationFrame(() => {
+          setIsResetting(false);
+        });
+      });
     }
   };
 
@@ -145,11 +150,19 @@ export default function Carousel({
     const offset = info.offset.x;
     const velocity = info.velocity.x;
     if (offset < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD) {
-      if (loop && currentIndex === itemsCount - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setCurrentIndex(prev => Math.min(prev + 1, carouselNodes.length - 1));
+      if (loop) {
+        // If we're at the last real item, go to the duplicate end cap
+        if (currentIndex === itemsCount - 1) {
+          setCurrentIndex(itemsCount);
+          return;
+        }
+        // If we're already at the duplicate end cap, jump to first real item
+        if (currentIndex === itemsCount) {
+          setCurrentIndex(1);
+          return;
+        }
       }
+      setCurrentIndex(prev => Math.min(prev + 1, carouselNodes.length - 1));
     } else if (offset > DRAG_BUFFER || velocity > VELOCITY_THRESHOLD) {
       if (loop && currentIndex === 0) {
         setCurrentIndex(itemsCount - 1);
@@ -187,7 +200,7 @@ export default function Carousel({
           width: itemWidth,
           gap: `${GAP}px`,
           perspective: 1000,
-          perspectiveOrigin: `${currentIndex * trackItemOffset + itemWidth / 2}px 50%`,
+          perspectiveOrigin: `${(currentIndex % itemsCount) * trackItemOffset + itemWidth / 2}px 50%`,
           x
         }}
         onDragEnd={handleDragEnd}
