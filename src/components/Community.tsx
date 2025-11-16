@@ -495,7 +495,7 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
             {/* User's Saved Programs */}
             <div className="mb-4">
               <h4 className="text-[#3E2723] mb-4">
-                Your Custom Programs
+                
               </h4>
             </div>
             {sessionState.savedPrograms.length > 0 ? (
@@ -582,11 +582,7 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
                       }}
                     />
                     <div className={`absolute inset-0 ${
-                      rec.id === 'finnish-traditional' 
-                        ? 'bg-gradient-to-br from-[#A8C5DD]/90 to-[#7BA3C4]/90' 
-                        : rec.id === 'detox-respiratory'
-                        ? 'bg-gradient-to-br from-[#C8E6C9]/90 to-[#A5D6A7]/90'
-                        : 'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
+                      'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
                     }`} />
 
                     {/* Content */}
