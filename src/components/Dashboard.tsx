@@ -27,6 +27,7 @@ import { useProfile } from "../context/ProfileContext";
 import { useSoundscapeAudio } from "../hooks/useSoundscapeAudio";
 import { SessionHeaderCard } from "./session/SessionHeaderCard";
 import { TimeWheel } from "./session/TimeWheel";
+import { SessionBar } from "./SessionBar";
 
 interface DashboardProps {
   onNavigate: (tab: string) => void;
@@ -320,9 +321,30 @@ export function Dashboard({
   // If guided session is active, show it instead
   if (activeGuidedSession) {
     return (
-      <GuidedSession
-        onBack={() => setActiveGuidedSession(null)}
-      />
+      <>
+        {isSessionRunning && (
+          <SessionBar
+            elapsedTime={elapsedTime}
+            duration={duration}
+            heatLevel={heatLevel}
+            currentProgram={currentProgram}
+            onStop={handleStopProgram}
+            onNavigateHome={() => {}}
+            getTotalProgramDuration={getTotalProgramDuration}
+            getCurrentInterval={getCurrentInterval}
+            currentTemp={currentTemp}
+            isWarming={isWarming}
+            isReadyToStart={isReadyToStart}
+            warmupProgressPct={warmupProgressPct}
+            etaSeconds={etaSeconds}
+          />
+        )}
+        <div className={isSessionRunning ? "pt-[73px]" : ""}>
+          <GuidedSession
+            onBack={() => setActiveGuidedSession(null)}
+          />
+        </div>
+      </>
     );
   }
 

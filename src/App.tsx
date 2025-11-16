@@ -55,6 +55,7 @@ export default function App() {
         className={`flex-1 overflow-y-auto   ${
           sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
         }`}
+        data-app-scroll-container
 
         style={{ scrollbarWidth: 'none' }}
       >

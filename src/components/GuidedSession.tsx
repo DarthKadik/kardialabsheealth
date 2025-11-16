@@ -140,16 +140,22 @@ export function GuidedSession({ onBack }: { onBack: () => void }) {
   // Ensure we start at the top when the guided session opens
   useEffect(() => {
     try {
-      // Scroll both window and any scrollable parent to top
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-      const scrollingElements = [
-        document.scrollingElement,
-        document.documentElement,
-        document.body,
-      ].filter(Boolean) as Element[];
-      scrollingElements.forEach((el) => {
-        (el as HTMLElement).scrollTop = 0;
-      });
+      // Prefer scrolling the app's main scroll container (within the app shell)
+      const appScrollEl = document.querySelector('[data-app-scroll-container]') as HTMLElement | null;
+      if (appScrollEl) {
+        appScrollEl.scrollTop = 0;
+      } else {
+        // Fallback to window/document if no container is found
+        window.scrollTo(0, 0);
+        const scrollingElements = [
+          document.scrollingElement,
+          document.documentElement,
+          document.body,
+        ].filter(Boolean) as Element[];
+        scrollingElements.forEach((el) => {
+          (el as HTMLElement).scrollTop = 0;
+        });
+      }
     } catch {
       // no-op
     }
