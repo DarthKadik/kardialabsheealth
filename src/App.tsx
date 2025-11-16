@@ -53,7 +53,7 @@ export default function App() {
 
       {/* App Content */}
       <div
-        className={`flex-1 overflow-y-auto pb-20 ${
+        className={`flex-1 overflow-y-auto   ${
           sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
         }`}
       >

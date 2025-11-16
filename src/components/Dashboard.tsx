@@ -1373,7 +1373,7 @@ export function Dashboard({ onNavigate, sessionState }: DashboardProps) {
       )}
 
       {/* Stats Grid */}
-      <div className="px-6 py-6 -mt-4">
+      <div className="px-6 py-6 flex flex-col justify-around">
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="relative overflow-hidden rounded-2xl shadow-lg h-20">
             <div 
@@ -1424,16 +1424,6 @@ export function Dashboard({ onNavigate, sessionState }: DashboardProps) {
                 <p className="text-white/80 text-xs">Weekly Average</p>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mb-6">
-
-          <div className="space-y-3">
-            <Button variant="outline" className="w-full border-2 border-[#8B7355] text-[#5C4033] hover:bg-[#FFEBCD] h-12" onClick={() => onNavigate('tracking')}>
-              View My Progress
-            </Button>
           </div>
         </div>
 
