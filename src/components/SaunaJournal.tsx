@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -18,6 +19,10 @@ import {
   Edit,
   Save
 } from "lucide-react";
+import { DataService } from "../utils/dataUtils";
+import type { SaunaSession } from "../types";
+
+const dataService = new DataService();
 
 interface SessionData {
   id: string;
@@ -26,97 +31,78 @@ interface SessionData {
   avgTemp: number;
   tempRange: { min: number; max: number };
   recoveryScore: number;
-  intervals: number;
-  intervalLength: number; // minutes
-  humidity: number; // percentage
-  waterThrows: number;
-  waterThrowInterval: number; // minutes
+  avgHumidity: number;
   heartRate: { avg: number; max: number; min: number };
-  caloriesBurned: number;
+  relaxationScore: number;
+  enjoymentScore: number;
   notes: string;
-  summary: string;
+  timeSeries: Array<{ time_minutes: number; temperature_celsius: number; humidity_percent: number }>;
 }
 
-// Mock session data
-const mockSessions: SessionData[] = [
-  {
-    id: "1",
-    date: new Date(2025, 10, 10), // Nov 10, 2025
-    duration: 45,
-    avgTemp: 85,
-    tempRange: { min: 78, max: 92 },
-    recoveryScore: 87,
-    intervals: 3,
-    intervalLength: 12,
-    humidity: 25,
-    waterThrows: 8,
-    waterThrowInterval: 5.5,
-    heartRate: { avg: 125, max: 142, min: 98 },
-    caloriesBurned: 320,
-    notes: "Felt amazing today. Started with lower bench and gradually moved up. The steam during the second interval was perfect. Body felt loose after the cooldown. Sleep should be great tonight.",
-    summary: "Excellent progressive session with optimal steam timing and great recovery indicators.",
-  },
-  {
-    id: "2",
-    date: new Date(2025, 10, 8), // Nov 8, 2025
-    duration: 30,
-    avgTemp: 82,
-    tempRange: { min: 80, max: 86 },
-    recoveryScore: 78,
-    intervals: 2,
-    intervalLength: 12,
-    humidity: 20,
-    waterThrows: 4,
-    waterThrowInterval: 7,
-    heartRate: { avg: 115, max: 130, min: 95 },
-    caloriesBurned: 210,
-    notes: "Shorter session today due to time constraints. Still felt refreshed. Focused on breathing exercises and mindfulness. Good recovery session after yesterday's workout.",
-    summary: "Gentle recovery session with moderate heat and good mindfulness practice.",
-  },
-  {
-    id: "3",
-    date: new Date(2025, 10, 5), // Nov 5, 2025
-    duration: 50,
-    avgTemp: 88,
-    tempRange: { min: 82, max: 95 },
-    recoveryScore: 92,
-    intervals: 3,
-    intervalLength: 15,
-    humidity: 30,
-    waterThrows: 12,
-    waterThrowInterval: 4,
-    heartRate: { avg: 135, max: 155, min: 102 },
-    caloriesBurned: 380,
-    notes: "Peak performance session. Pushed myself with higher temperatures and more frequent steam. The cold shower between intervals was invigorating. Noticed improved flexibility in my hamstrings.",
-    summary: "High-intensity session with excellent cardiovascular response and mobility improvements.",
-  },
-  {
-    id: "4",
-    date: new Date(2025, 10, 3), // Nov 3, 2025
-    duration: 25,
-    avgTemp: 80,
-    tempRange: { min: 78, max: 84 },
-    recoveryScore: 72,
-    intervals: 2,
-    intervalLength: 10,
-    humidity: 18,
-    waterThrows: 3,
-    waterThrowInterval: 8,
-    heartRate: { avg: 108, max: 120, min: 92 },
-    caloriesBurned: 175,
-    notes: "Easy day. Just wanted to relax and let the stress melt away. Brought a book but ended up just meditating. Sometimes the simple sessions are the best.",
-    summary: "Relaxing stress-relief session with minimal intensity and focus on mental wellness.",
-  },
-];
+// Convert SaunaSession to SessionData
+function convertSessionToSessionData(session: SaunaSession): SessionData {
+  const sessionDate = new Date(session.timestamp);
+  
+  // Calculate temperature stats from time series
+  const temps = session.time_series.map(ts => ts.temperature_celsius);
+  const avgTemp = temps.length > 0 
+    ? Math.round(temps.reduce((sum, t) => sum + t, 0) / temps.length)
+    : 0;
+  const tempRange = temps.length > 0
+    ? { min: Math.round(Math.min(...temps)), max: Math.round(Math.max(...temps)) }
+    : { min: 0, max: 0 };
+  
+  // Calculate humidity stats
+  const humidities = session.time_series.map(ts => ts.humidity_percent);
+  const avgHumidity = humidities.length > 0
+    ? Math.round(humidities.reduce((sum, h) => sum + h, 0) / humidities.length)
+    : 0;
+  
+  // Calculate heart rate stats
+  const heartRates = session.time_series.map(ts => ts.heart_rate_bpm);
+  const heartRate = heartRates.length > 0
+    ? {
+        avg: Math.round(heartRates.reduce((sum, hr) => sum + hr, 0) / heartRates.length),
+        max: Math.round(Math.max(...heartRates)),
+        min: Math.round(Math.min(...heartRates))
+      }
+    : { avg: 0, max: 0, min: 0 };
+  
+  return {
+    id: session.session_id,
+    date: sessionDate,
+    duration: session.duration_minutes,
+    avgTemp,
+    tempRange,
+    recoveryScore: session.recovery_score,
+    avgHumidity,
+    heartRate,
+    relaxationScore: session.relaxation_score,
+    enjoymentScore: session.enjoyment_score,
+    notes: "", // Notes can be added/edited by user
+    timeSeries: session.time_series.map(ts => ({
+      time_minutes: ts.time_minutes,
+      temperature_celsius: ts.temperature_celsius,
+      humidity_percent: ts.humidity_percent
+    }))
+  };
+}
 
 export function SaunaJournal() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedSession, setSelectedSession] = useState<SessionData | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [showFullDetail, setShowFullDetail] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [editedNotes, setEditedNotes] = useState("");
+
+  // Get sessions for the current month
+  const sessionsForMonth = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const sessions = dataService.getMonthlySaunaSessions(year, month);
+    return sessions.map(convertSessionToSessionData);
+  }, [currentDate]);
 
   // Calendar navigation
   const goToPreviousMonth = () => {
@@ -134,14 +120,16 @@ export function SaunaJournal() {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
+    // Convert Sunday (0) to 6, and shift all other days by 1 to start week on Monday
+    const dayOfWeek = firstDay.getDay();
+    const startingDayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
     return { daysInMonth, startingDayOfWeek };
   };
 
   // Check if date has session
   const getSessionForDate = (day: number) => {
-    return mockSessions.find((session) => {
+    return sessionsForMonth.find((session) => {
       const sessionDate = session.date;
       return (
         sessionDate.getDate() === day &&
@@ -151,21 +139,11 @@ export function SaunaJournal() {
     });
   };
 
-  const openSessionDetail = (session: SessionData) => {
-    setSelectedSession(session);
-    setEditedNotes(session.notes);
-    setShowPreview(false);
-    setShowFullDetail(false);
-    setShowDetails(false);
-    setIsEditingNotes(false);
-  };
-
   const openSessionPreview = (session: SessionData) => {
     setSelectedSession(session);
     setEditedNotes(session.notes);
     setShowPreview(true);
     setShowFullDetail(false);
-    setShowDetails(false);
     setIsEditingNotes(false);
   };
 
@@ -178,7 +156,6 @@ export function SaunaJournal() {
     setSelectedSession(null);
     setShowPreview(false);
     setShowFullDetail(false);
-    setShowDetails(false);
     setIsEditingNotes(false);
   };
 
@@ -194,7 +171,7 @@ export function SaunaJournal() {
   const monthName = currentDate.toLocaleString("default", { month: "long" });
   const year = currentDate.getFullYear();
 
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   return (
     <div className="space-y-4">
@@ -336,18 +313,10 @@ export function SaunaJournal() {
                 <p className="text-gray-900 text-sm">{selectedSession.avgTemp}°C</p>
               </div>
               <div className="bg-gray-50 rounded-lg p-2 text-center">
-                <Flame className="w-3 h-3 text-orange-600 mx-auto mb-1" />
-                <p className="text-xs text-gray-500">Calories</p>
-                <p className="text-gray-900 text-sm">{selectedSession.caloriesBurned}</p>
+                <Droplets className="w-3 h-3 text-blue-600 mx-auto mb-1" />
+                <p className="text-xs text-gray-500">Humidity</p>
+                <p className="text-gray-900 text-sm">{selectedSession.avgHumidity}%</p>
               </div>
-            </div>
-
-            {/* AI Summary Preview */}
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-              <p className="text-xs text-purple-600 mb-1">AI Summary</p>
-              <p className="text-gray-700 text-xs italic line-clamp-2">
-                {selectedSession.summary}
-              </p>
             </div>
 
             {/* Tap to view more hint */}
@@ -402,12 +371,6 @@ export function SaunaJournal() {
 
             {/* Content */}
             <div className="p-6 max-h-[60vh] overflow-y-auto">
-              {/* AI Summary */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 mb-4">
-                <p className="text-xs text-purple-600 mb-1">AI Summary</p>
-                <p className="text-gray-700 text-sm italic">{selectedSession.summary}</p>
-              </div>
-
               {/* Key Stats */}
               <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="bg-gray-50 rounded-lg p-3 text-center">
@@ -421,88 +384,60 @@ export function SaunaJournal() {
                   <p className="text-gray-900">{selectedSession.avgTemp}°C</p>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3 text-center">
-                  <Flame className="w-4 h-4 text-orange-600 mx-auto mb-1" />
-                  <p className="text-xs text-gray-500">Calories</p>
-                  <p className="text-gray-900">{selectedSession.caloriesBurned}</p>
+                  <Droplets className="w-4 h-4 text-blue-600 mx-auto mb-1" />
+                  <p className="text-xs text-gray-500">Humidity</p>
+                  <p className="text-gray-900">{selectedSession.avgHumidity}%</p>
                 </div>
               </div>
 
-              {/* Show More Button */}
-              <button
-                onClick={() => setShowDetails(!showDetails)}
-                className="w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 rounded-lg p-3 mb-4 transition-colors"
-              >
-                <span className="text-sm text-gray-700">Detailed Statistics</span>
-                {showDetails ? (
-                  <ChevronUp className="w-4 h-4 text-gray-600" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-gray-600" />
-                )}
-              </button>
-
-              {/* Detailed Stats (Expandable) */}
-              {showDetails && (
-                <div className="space-y-3 mb-4 animate-in fade-in duration-200">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                      <p className="text-xs text-orange-600 mb-1">Temperature Range</p>
-                      <p className="text-gray-900 text-sm">
-                        {selectedSession.tempRange.min}°C - {selectedSession.tempRange.max}°C
-                      </p>
-                    </div>
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                      <p className="text-xs text-orange-600 mb-1">Intervals</p>
-                      <p className="text-gray-900 text-sm">
-                        {selectedSession.intervals} × {selectedSession.intervalLength} min
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p className="text-xs text-blue-600 mb-1">Humidity</p>
-                      <p className="text-gray-900 text-sm">{selectedSession.humidity}%</p>
-                    </div>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <p className="text-xs text-blue-600 mb-1">Water Throws</p>
-                      <p className="text-gray-900 text-sm">
-                        {selectedSession.waterThrows} (every {selectedSession.waterThrowInterval} min)
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Heart className="w-4 h-4 text-red-600" />
-                      <p className="text-xs text-red-600">Heart Rate Data</p>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div>
-                        <p className="text-xs text-gray-500">Avg</p>
-                        <p className="text-gray-900 text-sm">{selectedSession.heartRate.avg} bpm</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Max</p>
-                        <p className="text-gray-900 text-sm">{selectedSession.heartRate.max} bpm</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Min</p>
-                        <p className="text-gray-900 text-sm">{selectedSession.heartRate.min} bpm</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-purple-600" />
-                      <p className="text-xs text-purple-600">Biometric Data</p>
-                    </div>
-                    <p className="text-xs text-gray-600 mt-2">
-                      Synced from wearable device • Apple Watch Series 9
-                    </p>
-                  </div>
+              {/* Time Series Chart */}
+              <div className="mb-4">
+                <h4 className="text-gray-900 text-sm mb-2">Temperature & Humidity Over Time</h4>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <ResponsiveContainer width="100%" height={200} debounce={300}>
+                    <LineChart data={selectedSession.timeSeries}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis 
+                        dataKey="time_minutes" 
+                        tick={{ fontSize: 12 }}
+                      />
+                      <YAxis 
+                        yAxisId="temp"
+                        orientation="left"
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Temp (°C)', angle: -90, position: 'insideLeft' }}
+                      />
+                      <YAxis 
+                        yAxisId="humidity"
+                        orientation="right"
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Humidity (%)', angle: 90, position: 'insideRight' }}
+                      />
+                      <Tooltip />
+                      <Line 
+                        yAxisId="temp"
+                        type="monotone" 
+                        dataKey="temperature_celsius" 
+                        stroke="#f97316" 
+                        strokeWidth={3}
+                        dot={false}
+                        name="Temperature (°C)"
+                        isAnimationActive={false}
+                      />
+                      <Line 
+                        yAxisId="humidity"
+                        type="monotone" 
+                        dataKey="humidity_percent" 
+                        stroke="#3b82f6" 
+                        strokeWidth={3}
+                        dot={false}
+                        name="Humidity (%)"
+                        isAnimationActive={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-              )}
+              </div>
 
               {/* Notes Section */}
               <div className="border-t pt-4">
@@ -546,9 +481,29 @@ export function SaunaJournal() {
                     placeholder="Add notes about your session..."
                   />
                 ) : (
-                  <p className="text-gray-700 text-sm leading-relaxed bg-gray-50 rounded-lg p-3">
-                    {selectedSession.notes}
-                  </p>
+                  <div className="space-y-3">
+                    <p className="text-gray-700 text-sm leading-relaxed bg-gray-50 rounded-lg p-3">
+                      {selectedSession.notes || "No notes added yet."}
+                    </p>
+                    
+                    {/* Relaxation and Enjoyment Scores */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <TrendingUp className="w-4 h-4 text-purple-600" />
+                          <p className="text-xs text-purple-600">Relaxation Score</p>
+                        </div>
+                        <p className="text-gray-900 text-lg font-semibold">{selectedSession.relaxationScore}/5</p>
+                      </div>
+                      <div className="bg-pink-50 border border-pink-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Heart className="w-4 h-4 text-pink-600" />
+                          <p className="text-xs text-pink-600">Enjoyment Score</p>
+                        </div>
+                        <p className="text-gray-900 text-lg font-semibold">{selectedSession.enjoymentScore}/5</p>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

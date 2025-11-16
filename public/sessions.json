@@ -1,0 +1,1050 @@
+[
+  {
+    "id": 1,
+    "title": "Beginner's Guided Session",
+    "description": "Your complete introduction to sauna wellness",
+    "temperature": {
+      "celsius": "70-80°C",
+      "fahrenheit": "158-176°F"
+    },
+    "humidity": "10-20%",
+    "rationale": "Moderate heat and lower humidity make it comfortable for first-timers while still providing sauna benefits",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Pre-Sauna Shower",
+        "duration": "5 min",
+        "description": "Take a warm shower and cleanse your body before entering the sauna",
+        "info": "Showering removes dirt, oils, and lotions from your skin, which helps your body sweat more efficiently and maintains sauna hygiene for all users.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Hydration Check",
+        "description": "Drink 250-500ml of water before starting",
+        "info": "Pre-hydration is crucial as you'll lose significant fluids through sweating. Starting well-hydrated helps maintain blood pressure and prevents dizziness.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Stove Setup Tutorial",
+        "duration": "2 min",
+        "description": "Learn how to configure your Harvia stove settings",
+        "info": "Understanding your stove controls allows you to customize temperature, timer settings, and safety features for an optimal experience.",
+        "image": "https://images.unsplash.com/photo-1660809965901-9cb9d425a8cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0b3ZlJTIwZmlyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 4,
+        "title": "Interval 1: Gentle Start",
+        "duration": "7.5 min",
+        "description": "Enter sauna, sit on lower bench, relax and breathe",
+        "info": "Starting on the lower bench where it's cooler allows your body to gradually adjust to the heat. This prevents overwhelming your cardiovascular system.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 5,
+        "title": "Cool Down 1",
+        "duration": "10 min",
+        "description": "Exit sauna, cool down gradually - start standing, then sit outside",
+        "info": "Gradual cooling prevents sudden drops in blood pressure. Standing first helps circulation adjust, then sitting allows for comfortable cooling.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 6,
+        "title": "Hydration Break",
+        "description": "Drink 250ml of water",
+        "info": "Regular hydration between intervals replaces lost fluids and electrolytes, helping maintain energy levels and preventing dehydration symptoms.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 7,
+        "title": "Interval 2: Build Heat",
+        "duration": "7.5 min",
+        "description": "Re-enter sauna, try middle bench. Add water to stones for steam (optional)",
+        "info": "Throwing water (löyly) on hot stones creates steam, increasing humidity and perceived heat. This enhances sweating and provides a traditional Finnish experience.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 8,
+        "title": "Cool Down 2",
+        "duration": "10 min",
+        "description": "Cool down outside, take a cool shower if desired, walk around gently",
+        "info": "Moving gently during cooldown promotes circulation and helps your body regulate temperature. A cool shower can accelerate the cooling process.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 9,
+        "title": "Hydration Break",
+        "description": "Drink 250ml of water",
+        "info": "Continued hydration is essential. By this point, you've lost significant fluids, and maintaining intake prevents fatigue and headaches.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 10,
+        "title": "Interval 3: Full Experience",
+        "duration": "7.5 min",
+        "description": "Final round - try upper bench. Add steam for peak intensity",
+        "info": "The upper bench is hottest due to heat rising. Your body is now acclimatized and can handle the increased temperature for maximum benefits.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 11,
+        "title": "Final Cool Down",
+        "duration": "15 min",
+        "description": "Cool down completely - shower, sit, and relax until body temperature normalizes",
+        "info": "A longer final cooldown allows your body to fully recover. Complete cooling before getting dressed prevents continued sweating and ensures comfort.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 12,
+        "title": "Post-Sauna Hydration",
+        "description": "Drink 500ml of water over the next 30 minutes",
+        "info": "Post-sauna hydration helps restore fluid balance and supports recovery. Spread intake over time for better absorption.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Athletic Recovery Session",
+    "description": "Optimize muscle recovery and reduce soreness after training",
+    "temperature": {
+      "celsius": "75-85°C",
+      "fahrenheit": "167-185°F"
+    },
+    "humidity": "15-25%",
+    "rationale": "Warmer temperature enhances muscle relaxation and blood flow; moderate humidity supports the contrast therapy protocol",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Recovery Timing",
+        "duration": "1 min",
+        "description": "Wait 45-60 minutes after intense exercise before starting",
+        "info": "Allow your heart rate and core temperature to normalize after training. Entering the sauna too soon after intense exercise can overstress your cardiovascular system.",
+        "image": "https://images.unsplash.com/photo-1434682772747-f16d3ea162c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaXRuZXNzJTIwd2F0Y2glMjB0aW1lcnxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Pre-Sauna Shower",
+        "duration": "5 min",
+        "description": "Take a warm shower to rinse off sweat and prepare muscles",
+        "info": "Washing away workout sweat and warming muscles with a shower helps prepare your body for the sauna while maintaining hygiene.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Recovery Hydration",
+        "description": "Drink 500ml of water. Optional: with electrolytes",
+        "info": "Post-workout hydration is critical. Electrolytes help restore minerals lost through sweat during both exercise and sauna use, supporting muscle function and recovery.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 4,
+        "title": "Light Mobility Work",
+        "duration": "5 min",
+        "description": "Gentle stretching or foam rolling of worked muscle groups",
+        "info": "Light mobility work before the sauna helps identify tight areas and prepares muscles to better absorb the heat therapy benefits. Focus on areas that feel especially tight or sore.",
+        "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJldGNoaW5nJTIweW9nYSUyMG1hdHxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 5,
+        "title": "Interval 1: Deep Muscle Warming",
+        "duration": "12 min",
+        "description": "Enter sauna, sit comfortably, focus on deep breathing and muscle relaxation",
+        "info": "Longer initial interval increases blood flow to muscles, delivering oxygen and nutrients while removing metabolic waste. Heat penetrates deep into muscle tissue, promoting relaxation and reducing soreness.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 6,
+        "title": "Contrast Cool Down 1",
+        "duration": "10 min",
+        "description": "Cold shower (1-2 min) or cold plunge, then rest at room temperature",
+        "info": "Contrast therapy (hot-cold alternation) reduces inflammation, flushes metabolic waste, and may decrease muscle soreness. The cold constricts blood vessels while heat dilates them, creating a pumping effect.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 7,
+        "title": "Hydration & Breathing",
+        "description": "Drink 250-350ml of water, practice deep breathing",
+        "info": "Proper hydration maintains blood volume for optimal circulation to recovering muscles. Deep breathing helps activate parasympathetic nervous system, enhancing recovery.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 8,
+        "title": "Interval 2: Circulation Boost",
+        "duration": "12 min",
+        "description": "Re-enter sauna, apply gentle steam. Focus on relaxing tight muscle groups",
+        "info": "The second heat interval further increases blood flow and helps release muscle tension. Heat shock proteins produced during sauna use may aid in muscle repair and adaptation.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 9,
+        "title": "Contrast Cool Down 2",
+        "duration": "10 min",
+        "description": "Cold exposure (1-2 min), then gentle movement and rest",
+        "info": "Repeated contrast therapy maximizes the recovery benefits. Light movement during rest periods helps maintain circulation without overexertion.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 10,
+        "title": "Recovery Hydration",
+        "description": "Drink 250-350ml of water with electrolytes",
+        "info": "Electrolyte replacement becomes increasingly important as session progresses. Sodium, potassium, and magnesium support muscle function and prevent cramping.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 11,
+        "title": "Interval 3: Final Recovery Round",
+        "duration": "10 min",
+        "description": "Final sauna round, moderate steam, total relaxation focus",
+        "info": "The final interval consolidates recovery benefits. Your muscles are now fully warmed and relaxed, maximizing the therapeutic effects of heat therapy.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 12,
+        "title": "Final Cool Down & Stretch",
+        "duration": "15 min",
+        "description": "Gradual cooling, optional cold exposure, gentle full-body stretching",
+        "info": "Muscles are most pliable when warm. Post-sauna stretching can improve flexibility and reduce next-day stiffness. Cool gradually to avoid sudden blood pressure changes.",
+        "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJldGNoaW5nJTIweW9nYSUyMG1hdHxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 13,
+        "title": "Recovery Nutrition Window",
+        "description": "Drink 500ml water, consider protein/recovery nutrition within 30 minutes",
+        "info": "Post-sauna is an ideal time for recovery nutrition. Increased blood flow helps deliver nutrients to muscles. Combine hydration with protein to support muscle repair.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Morning Energizer Session",
+    "description": "Quick detox and mental clarity boost to start your day strong",
+    "temperature": {
+      "celsius": "75-85°C",
+      "fahrenheit": "167-185°F"
+    },
+    "humidity": "10-20%",
+    "rationale": "Higher temperature stimulates circulation and metabolism; lower humidity creates an invigorating, crisp environment",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Morning Hydration",
+        "description": "Drink 300-400ml of water, preferably room temperature with lemon",
+        "info": "Your body is naturally dehydrated after sleep. Hydrating before sauna kickstarts metabolism and supports the detoxification process. Lemon adds vitamin C and supports liver function.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Quick Rinse",
+        "duration": "3 min",
+        "description": "Brief warm shower to wake up your body and cleanse skin",
+        "info": "A quick shower removes oils accumulated during sleep and prepares your skin for optimal sweating. Warm water begins the body warming process efficiently.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Energizing Breathwork",
+        "duration": "2 min",
+        "description": "Practice 10-15 deep breaths to oxygenate your body",
+        "info": "Deep breathing before sauna increases oxygen saturation, preparing your cardiovascular system and enhancing the energizing effects of heat therapy. This also helps shift into a focused mental state.",
+        "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9uJTIwYnJlYXRoaW5nfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 4,
+        "title": "Interval 1: Metabolic Activation",
+        "duration": "10 min",
+        "description": "Enter sauna, sit on middle/upper bench, focus on steady breathing",
+        "info": "Morning heat exposure stimulates circulation and metabolic rate, helping you feel alert and energized. Increased blood flow delivers oxygen to your brain, enhancing mental clarity for the day ahead.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 5,
+        "title": "Energizing Cool Down",
+        "duration": "5 min",
+        "description": "Step outside, take a cool/cold shower (30-60 seconds), then air dry",
+        "info": "Cold exposure triggers norepinephrine release, boosting alertness, focus, and mood. The temperature contrast enhances circulation and creates an energizing 'wake-up' effect that lasts hours.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 6,
+        "title": "Quick Hydration",
+        "description": "Drink 200-250ml of water",
+        "info": "Replacing fluids between rounds maintains energy levels and supports the detoxification process. Staying hydrated ensures sustained mental performance throughout your morning.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 7,
+        "title": "Interval 2: Deep Detox & Focus",
+        "duration": "10 min",
+        "description": "Re-enter sauna, add moderate steam, practice mindful breathing or mental planning",
+        "info": "The second heat exposure maximizes detoxification through deep sweating while promoting mental clarity. Use this time to mentally organize your day's priorities or practice focused breathing for enhanced cognitive performance.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 8,
+        "title": "Invigorating Cool Down",
+        "duration": "5 min",
+        "description": "Cold shower (30-90 seconds), focus on face and head, then cool down naturally",
+        "info": "Final cold exposure solidifies the energizing effect and helps regulate body temperature for comfortable transition to daily activities. Cold water on your face stimulates the vagus nerve, enhancing alertness.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 9,
+        "title": "Final Preparation",
+        "duration": "5 min",
+        "description": "Dress slowly, drink final water, allow body temperature to fully stabilize",
+        "info": "Taking time to transition prevents post-sauna sweating and ensures you feel comfortable and energized. Your enhanced circulation and mental clarity will support peak performance for hours.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 10,
+        "title": "Sustained Energy Hydration",
+        "description": "Drink 300-400ml of water over the next 30 minutes",
+        "info": "Continued hydration maintains the metabolic and cognitive benefits of your morning sauna. Consider adding electrolytes or drinking green tea for sustained focus and energy throughout your morning.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Evening Wind-Down Session",
+    "description": "Release daily stress and prepare your body for restorative sleep",
+    "temperature": {
+      "celsius": "65-75°C",
+      "fahrenheit": "149-167°F"
+    },
+    "humidity": "15-25%",
+    "rationale": "Lower temperature promotes relaxation without overstimulation; moderate humidity is comfortable for extended gentle sessions",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Optimal Timing",
+        "duration": "1 min",
+        "description": "Start 1.5-2 hours before bedtime for best sleep quality",
+        "info": "Sauna raises core body temperature temporarily. Starting early allows your body to cool down naturally before bed - this temperature drop actually promotes deeper sleep onset and quality.",
+        "image": "https://images.unsplash.com/photo-1434682772747-f16d3ea162c3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaXRuZXNzJTIwd2F0Y2glMjB0aW1lcnxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Gentle Cleansing Shower",
+        "duration": "5 min",
+        "description": "Warm, relaxing shower to wash away the day and prepare for sauna",
+        "info": "A leisurely shower helps transition from day mode to evening relaxation. Warm water begins to release muscle tension accumulated throughout the day.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Calming Hydration",
+        "description": "Drink 250-350ml of water or herbal tea (chamomile, lavender)",
+        "info": "Gentle hydration prepares your body for sauna while herbal teas contain compounds that promote relaxation. Chamomile and lavender have mild sedative properties that complement evening sauna benefits.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 4,
+        "title": "Set Evening Intention",
+        "duration": "2 min",
+        "description": "Take a moment to release the day's thoughts and set a relaxation intention",
+        "info": "Mentally marking the transition from daytime productivity to evening rest helps activate your parasympathetic nervous system, preparing your mind and body for deeper relaxation.",
+        "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9uJTIwYnJlYXRoaW5nfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 5,
+        "title": "Interval 1: Gentle Unwinding",
+        "duration": "12 min",
+        "description": "Enter sauna, sit on lower or middle bench, practice slow, deep breathing",
+        "info": "Lower heat intensity is ideal for evening relaxation. Deep, diaphragmatic breathing activates the parasympathetic nervous system, lowering cortisol and promoting a calm, meditative state.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 6,
+        "title": "Gentle Cool Down 1",
+        "duration": "12 min",
+        "description": "Exit sauna, cool down gradually at room temperature. Sit or lie down peacefully",
+        "info": "Avoid cold showers in the evening - gradual, natural cooling supports relaxation. Allow your heart rate and breathing to slow naturally. This extended rest period deepens the relaxation response.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 7,
+        "title": "Mindful Hydration",
+        "description": "Drink 200-300ml of water slowly and mindfully",
+        "info": "Drinking slowly and mindfully extends the meditative quality of your session. Focus on the sensation and temperature of the water - this simple act enhances present-moment awareness.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 8,
+        "title": "Interval 2: Deep Relaxation",
+        "duration": "12 min",
+        "description": "Re-enter sauna, add gentle steam, practice body scan or gratitude meditation",
+        "info": "The second round deepens muscle relaxation and stress relief. Try mentally scanning from toes to head, releasing tension in each area. Gratitude practice has been shown to improve sleep quality and emotional wellbeing.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 9,
+        "title": "Extended Cool Down",
+        "duration": "15 min",
+        "description": "Cool down slowly and completely. Light stretching or yin yoga poses optional",
+        "info": "Extended cooling is crucial for sleep preparation. Gentle stretching releases any remaining tension. Your body is now primed for the temperature drop that signals sleep readiness to your brain.",
+        "image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJldGNoaW5nJTIweW9nYSUyMG1hdHxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 10,
+        "title": "Evening Ritual Hydration",
+        "description": "Drink 200-300ml of herbal tea or water",
+        "info": "Final hydration supports overnight recovery. If choosing tea, avoid caffeinated varieties. Chamomile, passionflower, or magnesium-infused water can further enhance sleep quality.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 11,
+        "title": "Transition to Sleep Mode",
+        "duration": "5 min",
+        "description": "Dress in comfortable sleepwear, dim lights, continue calm activities",
+        "info": "Your body temperature is now dropping - the ideal physiological state for sleep. Maintain the peaceful atmosphere with dim lighting and calming activities as you transition toward bedtime.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Mindful Presence Session",
+    "description": "Guided meditation journey combining heat therapy with deep mindfulness practice",
+    "temperature": {
+      "celsius": "40-60°C",
+      "fahrenheit": "104-140°F"
+    },
+    "humidity": "15-25%",
+    "rationale": "Lower temperature allows for longer meditation periods without overwhelming the body; balanced humidity supports sustained practice",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Preparation Shower",
+        "duration": "5 min",
+        "description": "Cleanse mindfully, noticing the sensation of water on your skin",
+        "info": "Transform your shower into the first mindfulness practice. Notice temperature, pressure, and the feeling of being present in your body. This sets the tone for deeper awareness.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Intentional Hydration",
+        "description": "Drink 300-400ml of water with full awareness",
+        "info": "Practice present-moment awareness while hydrating. Notice the coolness, the sensation of swallowing, the feeling of nourishment. Even simple acts become meditation when done with full attention.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Grounding Ritual",
+        "duration": "3 min",
+        "description": "Set your intention and practice grounding breathwork (voice guided)",
+        "info": "Voice guidance will lead you through a simple grounding exercise. Connect with your body, release distractions, and set a clear intention for your meditative practice. This creates mental space for deeper work.",
+        "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9uJTIwYnJlYXRoaW5nfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false,
+        "hasVoiceGuidance": true
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 4,
+        "title": "Interval 1: Arriving in the Body",
+        "duration": "15 min",
+        "description": "Guided body scan meditation - systematically bringing awareness through your entire body",
+        "info": "Voice guidance leads you through a comprehensive body scan from toes to crown. The heat enhances bodily awareness, making it easier to notice subtle sensations. This practice anchors attention in the present moment and releases tension.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval",
+        "hasVoiceGuidance": true,
+        "meditationTechnique": "Body Scan"
+      },
+      {
+        "id": 5,
+        "title": "Mindful Transition 1",
+        "duration": "10 min",
+        "description": "Walking meditation - move slowly and deliberately, noticing each sensation",
+        "info": "Voice prompts guide awareness to the feeling of movement, air on skin, and the cooling process. Walking meditation extends mindfulness beyond stillness, teaching presence in motion. No rushing - each step is deliberate.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown",
+        "hasVoiceGuidance": true,
+        "meditationTechnique": "Walking Meditation"
+      },
+      {
+        "id": 6,
+        "title": "Seated Hydration Practice",
+        "description": "Drink 200-300ml water mindfully during silent period",
+        "info": "Brief silence allows you to integrate the first round's insights. Drink slowly, maintaining awareness. This short break preserves the meditative container while caring for your body's needs.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 7,
+        "title": "Interval 2: Breath & Sensation",
+        "duration": "15 min",
+        "description": "Guided breathwork and sensation meditation - observing heat, sweat, and breath without judgment",
+        "info": "Voice guides you through pranayama techniques adapted for heat, then into open awareness of all sensations. The sauna's intensity becomes a meditation object itself - heat, moisture, heartbeat. Practice equanimity with discomfort.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam",
+        "hasVoiceGuidance": true,
+        "meditationTechnique": "Breathwork & Sensation Awareness"
+      },
+      {
+        "id": 8,
+        "title": "Mindful Transition 2",
+        "duration": "12 min",
+        "description": "Sitting meditation outside - observing thoughts and temperature changes without attachment",
+        "info": "Voice guidance supports choiceless awareness practice. Notice thoughts arising and passing like clouds. Feel your body cooling. Practice non-reactivity - simply observing the changing experience without preference.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown",
+        "hasVoiceGuidance": true,
+        "meditationTechnique": "Choiceless Awareness"
+      },
+      {
+        "id": 9,
+        "title": "Contemplative Hydration",
+        "description": "Drink 200-300ml water with loving-kindness reflection",
+        "info": "As you hydrate, reflect on gratitude for your body, this practice, and this moment. Simple appreciation deepens the meditative benefits and cultivates positive mental states.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 10,
+        "title": "Interval 3: Deep Presence & Insight",
+        "duration": "15 min",
+        "description": "Guided visualization and open awareness meditation - accessing deeper states of consciousness",
+        "info": "Voice guides a visualization journey, then releases you into silent open awareness. By now, your mind is quiet and receptive. The heat creates an altered state conducive to insight. Simply rest in pure presence.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval",
+        "hasVoiceGuidance": true,
+        "meditationTechnique": "Visualization & Open Awareness"
+      },
+      {
+        "id": 11,
+        "title": "Integration & Closing",
+        "duration": "15 min",
+        "description": "Gentle cool down with loving-kindness meditation and practice integration",
+        "info": "Voice guides metta (loving-kindness) practice for self and others. This positive culmination helps integrate insights and extends benefits beyond the session. Cool down completely while cultivating compassion.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown",
+        "hasVoiceGuidance": true,
+        "meditationTechnique": "Loving-Kindness (Metta)"
+      },
+      {
+        "id": 12,
+        "title": "Closing Ritual",
+        "description": "Final hydration with gratitude practice, seal the practice with intention",
+        "info": "Drink 300-400ml water over the next 20 minutes. Voice guidance offers brief closing words of dedication - directing the merit of practice toward your wellbeing and others. Carry this presence into your day.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "hasVoiceGuidance": true
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Radiant Skin Renewal Session",
+    "description": "Deep cleansing and rejuvenation for healthy, glowing skin",
+    "temperature": {
+      "celsius": "70-80°C",
+      "fahrenheit": "158-176°F"
+    },
+    "humidity": "20-30%",
+    "rationale": "Optimal temperature for pore dilation and circulation; higher humidity helps hydrate skin and enhance product absorption",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Deep Cleansing Shower",
+        "duration": "7 min",
+        "description": "Thoroughly cleanse face and body with gentle cleanser, removing all makeup and impurities",
+        "info": "Starting with completely clean skin allows pores to open fully and release deeper impurities during sauna. Removing makeup and surface dirt prevents clogging pores when they dilate from heat.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Gentle Exfoliation",
+        "duration": "5 min",
+        "description": "Use a gentle body scrub or dry brush to remove dead skin cells",
+        "info": "Pre-sauna exfoliation removes the barrier of dead cells, allowing deeper cleansing and better absorption of nutrients post-sauna. Increases circulation to skin surface, enhancing the glow effect.",
+        "image": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luJTIwZXhmb2xpYXRpb24lMjBzY3J1YnxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Skin Hydration",
+        "description": "Drink 400-500ml of water, ideally with vitamin C or collagen supplement",
+        "info": "Hydrated skin from within glows better and handles heat stress more effectively. Vitamin C supports collagen production while your body temperature rises, and proper hydration prevents skin from becoming dehydrated during sweating.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 4,
+        "title": "Hair Protection",
+        "duration": "2 min",
+        "description": "Tie hair up or cover with a towel, apply hair mask if desired",
+        "info": "Protecting hair from excessive heat prevents damage and dryness. Optional: applying a deep conditioning mask during sauna lets the heat enhance absorption for shinier, healthier hair.",
+        "image": "https://images.unsplash.com/photo-1560066984-138dadb4c035?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYWlyJTIwdG93ZWwlMjB3cmFwfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 5,
+        "title": "Interval 1: Pore Opening & Initial Detox",
+        "duration": "10 min",
+        "description": "Enter sauna, sit comfortably, allow your skin to warm and pores to gradually open",
+        "info": "Heat causes vasodilation, increasing blood flow to skin by up to 50-70%. This delivers oxygen and nutrients while pores begin opening. The initial sweat flushes surface-level impurities and excess sebum.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 6,
+        "title": "Cool Rinse 1",
+        "duration": "5 min",
+        "description": "Rinse with lukewarm to cool water, gently washing away released impurities",
+        "info": "Rinsing removes sweat and toxins released from pores. Cool water begins to tighten pores and stimulates circulation. Don't use soap yet - you'll do deeper rounds first. Pat skin gently, don't rub.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 7,
+        "title": "Hydration & Antioxidants",
+        "description": "Drink 250-300ml of water, green tea, or antioxidant-rich beverage",
+        "info": "Antioxidants from green tea or berry-infused water support skin health from within. Maintaining hydration ensures your skin can continue producing healthy sweat for detoxification.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 8,
+        "title": "Clay Mask Application",
+        "duration": "3 min",
+        "description": "Apply clay or purifying mask to face and any problem areas on body",
+        "info": "Applying the mask before entering allows it to work powerfully in the heat. Clay masks absorb toxins and excess oil as pores are maximally dilated. The sauna heat activates the mask's cleansing properties for deeper purification.",
+        "image": "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYWNlJTIwbWFzayUyMGNsYXl8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      },
+      {
+        "id": 9,
+        "title": "Interval 2: Deep Cleansing with Steam",
+        "duration": "12 min",
+        "description": "Re-enter sauna, add moderate steam for enhanced pore cleansing",
+        "info": "Steam increases humidity, which softens skin and helps draw out deeper impurities. If you applied a mask, the heat will maximize its effectiveness, drawing out toxins and excess oil from deep within your pores.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 10,
+        "title": "Mask Removal & Cool Water Therapy",
+        "duration": "8 min",
+        "description": "Rinse thoroughly with cool water, removing mask and sweat. Splash face with cold water 10-15 times",
+        "info": "Cool water closes pores, locking in benefits and preventing dirt re-entry. Cold water also reduces inflammation, tightens skin, and boosts circulation. This creates the immediate 'glow' effect. The temperature contrast stimulates collagen production.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 11,
+        "title": "Beauty Hydration",
+        "description": "Drink 250-300ml of water with collagen peptides or hyaluronic acid supplement",
+        "info": "Collagen peptides support skin elasticity and hydration from within. Hyaluronic acid helps skin retain moisture. Both are most effective when consumed during periods of increased circulation.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 12,
+        "title": "Interval 3: Circulation & Collagen Boost",
+        "duration": "10 min",
+        "description": "Final sauna round with gentle steam, focus on face and neck. Optional: apply honey or sheet mask",
+        "info": "Heat shock proteins produced at this stage support cellular repair and collagen synthesis. Honey is antibacterial and deeply moisturizing when applied in heat. Sheet masks supercharge hydration as heat drives ingredients deeper into skin.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 13,
+        "title": "Final Cleansing & Pore Sealing",
+        "duration": "10 min",
+        "description": "Gentle cleanse with pH-balanced cleanser, finish with 1-2 min cold water on face and body",
+        "info": "Final cleanse removes all remaining impurities while skin is still soft. Extended cold exposure maximally tightens pores and reduces any inflammation. The cold also constricts blood vessels, which then rebound with increased flow - creating lasting radiance.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 14,
+        "title": "Post-Sauna Skincare Ritual",
+        "duration": "10 min",
+        "description": "Apply toner, serum, and moisturizer while skin is still slightly damp. Don't forget neck and décolletage",
+        "info": "Post-sauna is the optimal time for skincare application. Pores are clean, circulation is elevated, and skin is receptive. Products absorb up to 10x better. Use hydrating serums (hyaluronic acid, vitamin C) followed by moisturizer to lock everything in. Your skin will maintain this glow for 24-48 hours.",
+        "image": "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luY2FyZSUyMHJvdXRpbmUlMjBzZXJ1bXxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 15,
+        "title": "Skin Recovery Hydration",
+        "description": "Drink 400-500ml of water over the next 30 minutes",
+        "info": "Continued hydration maintains skin plumpness and supports the detoxification process. Skin cells are 64% water - maintaining this ensures your post-sauna glow lasts. Consider adding electrolytes to support cellular hydration.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Authentic Finnish Sauna Ritual",
+    "description": "Traditional Finnish sauna experience with proper löyly technique and cultural practices",
+    "temperature": {
+      "celsius": "80-90°C",
+      "fahrenheit": "176-194°F"
+    },
+    "humidity": "15-30%",
+    "rationale": "Traditional Finnish sauna temperatures create authentic löyly experience; humidity varies naturally with steam thrown on stones",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Traditional Cleansing",
+        "duration": "5 min",
+        "description": "Take a thorough warm shower, washing your entire body",
+        "info": "In Finnish culture, entering the sauna clean is a matter of respect and hygiene. This ritual cleansing is both practical and symbolic, washing away the day before the sauna purification.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Hydration Preparation",
+        "description": "Drink 300-400ml of water at room temperature",
+        "info": "Proper hydration is essential for the intense heat you'll experience. Room temperature water is preferred in Finnish tradition as it's gentler on the system before heat exposure.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Prepare Vihta (Birch Whisk)",
+        "duration": "5 min",
+        "description": "If using a vihta, soak it in warm water to soften the leaves",
+        "info": "The vihta (also called vasta) is a bundle of fresh birch branches used for gentle whipping to stimulate circulation and release aromatic oils. Soaking softens the leaves and releases their beneficial compounds.",
+        "image": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luJTIwZXhmb2xpYXRpb24lMjBzY3J1YnxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      },
+      {
+        "id": 4,
+        "title": "Löyly Water Preparation",
+        "duration": "2 min",
+        "description": "Fill the water bucket and ladle, ensure they're within reach of the stones",
+        "info": "Löyly (the steam created by water on hot stones) is the heart of Finnish sauna. Having your water prepared and accessible ensures you can create the perfect atmosphere during your session.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 5,
+        "title": "Interval 1: Acclimatization",
+        "duration": "8 min",
+        "description": "Enter sauna, sit on lower bench, let your body adjust to the heat",
+        "info": "Finnish tradition emphasizes gradual warming. Start low where it's cooler (around 60-70°C) to let your cardiovascular system adapt. This prevents shock and allows you to enjoy longer sessions.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval"
+      },
+      {
+        "id": 6,
+        "title": "Lake or Snow Cooling",
+        "duration": "5 min",
+        "description": "Cool down outside in fresh air. In tradition: lake swim or snow roll. Alternative: cold shower",
+        "info": "The dramatic temperature contrast is central to Finnish sauna culture. A dip in a cold lake or rolling in snow creates intense invigoration. If unavailable, a cold shower provides similar benefits - improved circulation and endorphin release.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 7,
+        "title": "Rest & Hydration",
+        "duration": "10 min",
+        "description": "Rest completely, drink 200-300ml water, let your body stabilize",
+        "info": "The rest period between rounds is as important as the sauna itself. This is when your body processes the heat stress, blood pressure normalizes, and beneficial adaptations occur. Don't rush this.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 8,
+        "title": "Interval 2: The Löyly Experience",
+        "duration": "10 min",
+        "description": "Move to middle bench. Throw 1-2 ladles of water on stones. Master the art of löyly",
+        "info": "Proper löyly technique: Pour water slowly onto the hottest stones, allowing each ladle to fully evaporate before adding more. The steam should rise and spread evenly. Too much water creates harsh, wet steam; too little gives no effect. This is the essence of Finnish sauna.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 9,
+        "title": "Vihta Treatment",
+        "duration": "5 min",
+        "description": "Optional: Use birch whisk on skin with gentle patting motions while still in sauna",
+        "info": "The vihta massage stimulates circulation, exfoliates skin, and releases aromatic birch oils with anti-inflammatory properties. Use gentle patting and whisking motions on legs, back, and arms. The scent is incredibly refreshing and traditionally therapeutic.",
+        "image": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luJTIwZXhmb2xpYXRpb24lMjBzY3J1YnxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "interval",
+        "optional": true
+      },
+      {
+        "id": 10,
+        "title": "Second Cooling",
+        "duration": "5 min",
+        "description": "Repeat cold exposure - embrace the invigorating shock",
+        "info": "The second cold exposure feels even more invigorating than the first. Your body is now warmed deeply, making the contrast more pronounced. This creates a powerful sense of vitality and awakeness.",
+        "image": "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xkJTIwd2F0ZXIlMjBzaG93ZXJ8ZW58MXx8fHwxNzYzMTk3MjM2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 11,
+        "title": "Extended Rest",
+        "duration": "15 min",
+        "description": "Deep rest period, drink water, enjoy the post-sauna calm",
+        "info": "This extended rest is when the magic happens. Your body is in a state of deep relaxation, stress hormones are low, and endorphins are high. Many Finns consider this the best part of sauna - the profound peace afterward.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 12,
+        "title": "Interval 3: The Peak Experience",
+        "duration": "10-12 min",
+        "description": "Move to upper bench for maximum heat. Create strong löyly for the authentic Finnish intensity",
+        "info": "The upper bench can reach 90-100°C - the true Finnish experience. When ready, create generous löyly. The wave of heat should feel intense but not painful. This is where you experience 'löylyhenki' - the spirit of the steam.",
+        "image": "https://images.unsplash.com/photo-1759216852720-540b165c55f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjByZWxheGluZyUyMHNhdW5hfGVufDF8fHx8MTc2MzE5NzIzN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 13,
+        "title": "Final Cooling & Cleansing",
+        "duration": "10 min",
+        "description": "Final cold exposure, then warm rinse shower to wash away sweat",
+        "info": "End with cold exposure followed by a gentle warm shower to wash away salt and toxins. This final cleansing prepares you for the deep relaxation phase that follows.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 14,
+        "title": "Post-Sauna Tranquility",
+        "duration": "20 min",
+        "description": "Rest completely, hydrate slowly, embrace the profound relaxation. Optional: light refreshment",
+        "info": "The Finnish tradition includes extended post-sauna rest. Your body continues to benefit for hours after leaving the sauna. Hydrate with water or traditional options like beer or berry juice (after you've rehydrated). This is the time for quiet contemplation or good conversation.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Deep Detox & Respiratory Wellness Session",
+    "description": "Maximum humidity protocol for deep detoxification and respiratory system support",
+    "temperature": {
+      "celsius": "70-75°C",
+      "fahrenheit": "158-167°F"
+    },
+    "humidity": "30-40%+",
+    "rationale": "Moderate temperature with high humidity maximizes detoxification through intense sweating; steam supports respiratory health and sinus drainage",
+    "pre-sauna-steps": [
+      {
+        "id": 1,
+        "title": "Respiratory Preparation",
+        "duration": "5 min",
+        "description": "Warm shower focusing on face and chest, practice deep nasal breathing",
+        "info": "Warming your respiratory system with steam from the shower begins opening airways and loosening mucus. Deep nasal breathing prepares your sinuses for the intense humidity to come.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      },
+      {
+        "id": 2,
+        "title": "Detox Hydration",
+        "description": "Drink 400-500ml of water with lemon and pinch of sea salt or electrolytes",
+        "info": "Lemon supports liver function during detox, while minerals help your body maintain electrolyte balance during intense sweating. You'll lose significant fluids in this high-humidity session.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration",
+        "optional": false
+      },
+      {
+        "id": 3,
+        "title": "Dry Brushing",
+        "duration": "5 min",
+        "description": "Gentle dry brushing toward the heart to stimulate lymphatic system",
+        "info": "Dry brushing activates your lymphatic system, which is crucial for toxin removal. Brush in long strokes toward your heart to encourage lymph flow, enhancing the detoxification process.",
+        "image": "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxza2luJTIwZXhmb2xpYXRpb24lMjBzY3J1YnxlbnwxfHx8fDE3NjMxOTcyMzZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": true
+      },
+      {
+        "id": 4,
+        "title": "Breathing Exercise",
+        "duration": "3 min",
+        "description": "Practice deep diaphragmatic breathing - inhale for 4, hold for 4, exhale for 6",
+        "info": "This breathing pattern activates your parasympathetic nervous system and prepares your lungs for the humid environment. It also helps maximize the respiratory benefits of steam.",
+        "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpdGF0aW9uJTIwYnJlYXRoaW5nfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "prep",
+        "optional": false
+      }
+    ],
+    "sauna-steps": [
+      {
+        "id": 5,
+        "title": "Interval 1: Humidity Acclimation",
+        "duration": "10 min",
+        "description": "Enter sauna, sit on lower bench, add water every 2 minutes for consistent high humidity",
+        "info": "High humidity makes moderate temperature feel more intense. Start on the lower bench where it's slightly cooler while your respiratory system adjusts to the steam. The constant moisture will begin opening your pores and airways.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 6,
+        "title": "Gentle Cool Down & Rinse",
+        "duration": "8 min",
+        "description": "Lukewarm shower to rinse away initial toxins released through sweat",
+        "info": "This first rinse washes away surface toxins, salt, and impurities. Use lukewarm water - not cold - to avoid shocking your system. This allows continued detoxification without stress.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 7,
+        "title": "Electrolyte Replenishment",
+        "description": "Drink 250-350ml water with electrolytes or coconut water",
+        "info": "Heavy sweating depletes sodium, potassium, and magnesium. Replacing these minerals is crucial for continued detox capacity and preventing fatigue, cramps, or headaches.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 8,
+        "title": "Interval 2: Deep Detoxification",
+        "duration": "12 min",
+        "description": "Return to sauna, maintain maximum humidity. Focus on slow, deep breathing through your nose",
+        "info": "This round produces the deepest detoxification. Maximum humidity intensifies sweating while delivering steam to your deepest airways. Nasal breathing filters and warms the air, maximizing respiratory benefits and supporting sinus drainage.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 9,
+        "title": "Eucalyptus Steam Treatment",
+        "duration": "3 min",
+        "description": "Optional: Add a few drops of eucalyptus oil to water before throwing on stones",
+        "info": "Eucalyptus oil released in steam has powerful decongestant and antimicrobial properties. It opens airways, fights respiratory infections, and creates an incredibly refreshing breathing experience. Use sparingly - 3-5 drops maximum.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam",
+        "optional": true
+      },
+      {
+        "id": 10,
+        "title": "Toxin Removal Shower",
+        "duration": "10 min",
+        "description": "Thorough shower with mild soap, alternating warm and cool water",
+        "info": "This shower removes all sweat and released toxins from your skin, preventing reabsorption. Alternating temperatures continues to stimulate circulation and lymphatic drainage, enhancing the detox effect.",
+        "image": "https://images.unsplash.com/photo-1604771983240-606a1044a380?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjB3YXRlciUyMHdlbGxuZXNzfGVufDF8fHx8MTc2MzE5NzIzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 11,
+        "title": "Mineral Hydration",
+        "description": "Drink 300-400ml water with trace minerals or herbal detox tea",
+        "info": "Replenishing minerals supports your liver and kidneys in processing released toxins. Herbal teas like dandelion or milk thistle provide additional liver support during the detox process.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      },
+      {
+        "id": 12,
+        "title": "Interval 3: Respiratory Clearing",
+        "duration": "10 min",
+        "description": "Final round with maximum steam. Practice breathing exercises: alternate nostril breathing",
+        "info": "This final round focuses on respiratory health. Alternate nostril breathing in the steam clears sinuses, balances nervous system, and maximizes the therapeutic effects on your respiratory system. The heat and humidity work together to clear even stubborn congestion.",
+        "image": "https://images.unsplash.com/photo-1741601272577-fc2c46f87d9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYXVuYSUyMHN0ZWFtJTIwc3RvbmVzfGVufDF8fHx8MTc2MzE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "steam"
+      },
+      {
+        "id": 13,
+        "title": "Final Cleansing & Recovery",
+        "duration": "15 min",
+        "description": "Thorough final shower, then rest completely to allow body to continue processing toxins",
+        "info": "Your body continues detoxifying for hours after leaving the sauna. This rest period allows your liver and kidneys to process mobilized toxins. Avoid eating immediately - give your body time to complete its cleansing work.",
+        "image": "https://images.unsplash.com/photo-1762931669614-4cd482b5af96?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvdXRkb29yJTIwY29vbGluZyUyMG5hdHVyZXxlbnwxfHx8fDE3NjMxOTcyMzd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "cooldown"
+      },
+      {
+        "id": 14,
+        "title": "Post-Detox Hydration & Nutrition",
+        "description": "Drink 500ml water over 30 minutes. Consider light fruit or vegetable juice for liver support",
+        "info": "Continued hydration flushes toxins from your system. Fresh vegetable juice (especially greens, beets, carrots) provides antioxidants that support your liver in processing the mobilized toxins. Avoid heavy foods for at least an hour.",
+        "image": "https://images.unsplash.com/photo-1565256080583-df488fd02195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3YXRlciUyMGdsYXNzJTIwaHlkcmF0aW9ufGVufDF8fHx8MTc2MzEyNDk4M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        "type": "hydration"
+      }
+    ]
+  }
+]
