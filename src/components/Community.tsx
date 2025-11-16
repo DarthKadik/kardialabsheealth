@@ -48,6 +48,7 @@ import { GuidedSessionConfig } from "../data/guidedSessions";
 import { getSessionById } from "../data/allSessions";
 import { recommendedSessions } from "../data/recommendedSessions";
 import { ProgramDetailView } from "./ProgramDetailView";
+import { ProgramSchedulerDialog } from "./session/ProgramSchedulerDialog";
 
 interface CommunityProps {
   sessionState: ReturnType<typeof import("../hooks/useSessionState").useSessionState>;
@@ -65,6 +66,9 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
     useState<GuidedSessionConfig | null>(null);
   const [viewingProgram, setViewingProgram] =
     useState<import("../hooks/useSessionState").SavedProgram | null>(null);
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState<import("../hooks/useSessionState").SavedProgram | null>(null);
+  const [scheduleTime, setScheduleTime] = useState(sessionState.getCurrentTime());
 
   if (activeGuidedSession) {
     return <GuidedSession onBack={() => setActiveGuidedSession(null)} />;
@@ -506,15 +510,9 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
                       onNavigate && onNavigate("home");
                     }}
                     onSchedule={() => {
-                      const now = new Date();
-                      const defaultTime = `${String(now.getHours()).padStart(2, "0")}:${String(
-                        now.getMinutes(),
-                      ).padStart(2, "0")}`;
-                      const time =
-                        window.prompt("Schedule time (HH:MM)?", defaultTime) ||
-                        defaultTime;
-                      sessionState.scheduleProgramForLater(program, time);
-                      onNavigate && onNavigate("home");
+                      setSelectedProgram(program);
+                      setScheduleTime(sessionState.getCurrentTime());
+                      setShowScheduler(true);
                     }}
                   />
                 ))}
@@ -523,6 +521,24 @@ export function Community({ sessionState, onNavigate }: CommunityProps) {
               <p className="text-[#5C4033]/70 text-sm">
                 You have no saved programs yet. Create one to see it here.
               </p>
+            )}
+            
+            {/* Shared Program Scheduler */}
+            {selectedProgram && (
+              <div className="mt-2">
+                <ProgramSchedulerDialog
+                  open={showScheduler}
+                  onOpenChange={setShowScheduler}
+                  program={selectedProgram}
+                  time={scheduleTime}
+                  onTimeChange={setScheduleTime}
+                  onSchedule={() => {
+                    sessionState.scheduleProgramForLater(selectedProgram, scheduleTime);
+                    setShowScheduler(false);
+                    onNavigate && onNavigate("home");
+                  }}
+                />
+              </div>
             )}
             
             {viewingProgram && (

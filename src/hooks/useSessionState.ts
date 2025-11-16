@@ -249,6 +249,10 @@ export function useSessionState() {
     setCurrentIntervalIndex(0);
   };
   
+  // Aliases to standardize API
+  const startProgram = (program: SavedProgram) => startProgramNow(program);
+  const startSimpleSession = () => startSession();
+  
   const scheduleProgramForLater = (program: SavedProgram, time: string) => {
     loadProgram(program);
     setIsSessionScheduled(true);
@@ -315,8 +319,10 @@ export function useSessionState() {
     scheduleSession,
     cancelSchedule,
     startProgramNow,
+    startProgram,
     scheduleProgramForLater,
     stopProgram,
+    startSimpleSession,
     loadProgram,
     
     // Helpers
