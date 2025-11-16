@@ -10,9 +10,11 @@ interface MapProps {
   listedSaunas: Sauna[];
   onListedSaunaClick: (saunaId: number) => void;
     visitedSaunaIds?: number[];
+    userLocation?: { latitude: number; longitude: number } | null;
+    centerSignal?: number;
 }
 
-const Map = ({ listedSaunas, onListedSaunaClick, visitedSaunaIds = [] }: MapProps) => {
+const Map = ({ listedSaunas, onListedSaunaClick, visitedSaunaIds = [], userLocation = null, centerSignal }: MapProps) => {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng, setLng] = useState(24.93);
@@ -145,9 +147,60 @@ const Map = ({ listedSaunas, onListedSaunaClick, visitedSaunaIds = [] }: MapProp
                     onListedSaunaClick(properties.id);
                 }
             });
+
+                        // add an initial empty user-location source + layer (will update when provided)
+                        if (!map.current.getSource('user-location')) {
+                                map.current.addSource('user-location', {
+                                        type: 'geojson',
+                                        data: {
+                                                type: 'FeatureCollection',
+                                                features: []
+                                        }
+                                } as any);
+
+                                map.current.addLayer({
+                                        id: 'user-location-layer',
+                                        type: 'circle',
+                                        source: 'user-location',
+                                        paint: {
+                                                'circle-radius': 10,
+                                                'circle-color': '#007AFF',
+                                                'circle-stroke-color': '#fff',
+                                                'circle-stroke-width': 2
+                                        }
+                                } as any);
+                        }
         }
     });
   });
+
+    // Fly to user location when provided or when centerSignal increments
+    useEffect(() => {
+        if (!map.current || !userLocation) return;
+        try {
+            map.current.flyTo({ center: [userLocation.longitude, userLocation.latitude], zoom: 13 });
+        } catch (e) {}
+    // intentionally depend on centerSignal so clicking 'center' re-triggers even if coords same
+    }, [userLocation, centerSignal]);
+
+    // update or add user-location geojson when it changes
+    useEffect(() => {
+        if (!map.current) return;
+        const src = map.current.getSource('user-location') as mapboxgl.GeoJSONSource | undefined;
+        const geo = userLocation
+            ? ({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: { type: 'Point', coordinates: [userLocation.longitude, userLocation.latitude] } }] } as GeoJSON.FeatureCollection)
+            : ({ type: 'FeatureCollection', features: [] } as GeoJSON.FeatureCollection);
+
+        if (src) {
+            try {
+                src.setData(geo as any);
+            } catch (e) {}
+        } else if (map.current && userLocation) {
+            try {
+                map.current.addSource('user-location', { type: 'geojson', data: geo } as any);
+            } catch (e) {}
+        }
+    }, [userLocation]);
 
     // keep the listed-saunas source updated when props change
     useEffect(() => {

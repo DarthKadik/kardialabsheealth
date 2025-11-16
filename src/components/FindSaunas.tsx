@@ -240,6 +240,33 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
       (s.distance && s.distance.toLowerCase().includes(q))
     );
   });
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [centerSignal, setCenterSignal] = useState(0);
+
+  const detectLocation = () => {
+    if (!('geolocation' in navigator)) {
+      setLocationError('Geolocation not supported in this browser');
+      return;
+    }
+    setLocating(true);
+    setLocationError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setLocating(false);
+        const coords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
+        setUserLocation(coords);
+        // also center map immediately
+        setCenterSignal((s) => s + 1);
+      },
+      (err) => {
+        setLocating(false);
+        setLocationError(err.message || 'Unable to get location');
+      },
+      { enableHighAccuracy: true, maximumAge: 1000 * 60 * 5 }
+    );
+  };
 
   useEffect(() => {
     try {
@@ -333,13 +360,32 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
             <div className="relative">
               <h1 className="text-white mb-4">Find Saunas</h1>
               
-              <div className="relative">
+              <div className="relative flex items-center gap-2">
                 <Input
                   value={searchTerm}
                   onChange={(e: any) => setSearchTerm(e.target.value)}
                   placeholder="Search saunas or address..."
                   className="pl-4 bg-white/90 backdrop-blur-sm border-white/40 placeholder:text-gray-500"
                 />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="ml-2"
+                  onClick={detectLocation}
+                >
+                  <MapPin className="w-4 h-4 mr-1" />
+                  {locating ? 'Locating...' : 'Locate'}
+                </Button>
+                {userLocation && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="ml-1 text-white/90"
+                    onClick={() => setCenterSignal((s) => s + 1)}
+                  >
+                    Center on me
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -347,7 +393,13 @@ export function FindSaunas({ scrollContainerRef }: FindSaunasProps) {
           {/* Map */}
           {showMap && (
             <div className="h-96">
-              <Map listedSaunas={filteredSaunas} onListedSaunaClick={handleSaunaClick} visitedSaunaIds={visitedSaunas} />
+              <Map
+                listedSaunas={filteredSaunas}
+                onListedSaunaClick={handleSaunaClick}
+                visitedSaunaIds={visitedSaunas}
+                userLocation={userLocation}
+                centerSignal={centerSignal}
+              />
             </div>
           )}
 
