@@ -26,6 +26,7 @@ import { GuidedSessionConfig } from "../data/guidedSessions";
 import { WheelPicker } from "./WheelPicker";
 import { recommendedSessions } from "../data/recommendedSessions";
 import { getSessionById } from "../data/allSessions";
+import { useProfile } from "../context/ProfileContext";
 
 interface DashboardProps {
   onNavigate: (tab: string) => void;
@@ -37,6 +38,10 @@ interface DashboardProps {
 export function Dashboard({
   sessionState,
 }: Omit<DashboardProps, 'onNavigate'>) {
+  const { profile } = useProfile();
+  useEffect(() => {
+    console.log("Onboarding profile:", profile);
+  }, []);
   // Destructure session state
   const {
     duration,
