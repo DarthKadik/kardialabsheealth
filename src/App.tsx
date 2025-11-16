@@ -30,35 +30,37 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-[#FFEBCD] max-w-md mx-auto">
-      {/* Session Bar - Show when session is running and not on home page */}
-      {sessionState.isSessionRunning && activeTab !== "home" && (
-        <SessionBar
-          elapsedTime={sessionState.elapsedTime}
-          duration={sessionState.duration}
-          heatLevel={sessionState.heatLevel}
-          currentProgram={sessionState.currentProgram}
-          currentIntervalIndex={sessionState.currentIntervalIndex}
-          intervalStartTime={sessionState.intervalStartTime}
-          onStop={sessionState.stopProgram}
-          onNavigateHome={() => setActiveTab("home")}
-          getTotalProgramDuration={sessionState.getTotalProgramDuration}
-          getIntervalElapsedTime={sessionState.getIntervalElapsedTime}
-          getCurrentInterval={sessionState.getCurrentInterval}
-        />
-      )}
-
-      {/* App Content */}
-      <div
-        className={`flex-1 overflow-y-auto   ${
-          sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
-        }`}
-      >
-        {renderContent()}
+    <div className="h-screen bg-[#FFEBCD] max-w-md mx-auto grid grid-rows-[1fr_auto]">
+      <div className="overflow-y-auto no-scrollbar ">
+        
+        {/* Session Bar - Show when session is running and not on home page */}
+        {sessionState.isSessionRunning && activeTab !== "home" && (
+          <SessionBar
+            elapsedTime={sessionState.elapsedTime}
+            duration={sessionState.duration}
+            heatLevel={sessionState.heatLevel}
+            currentProgram={sessionState.currentProgram}
+            currentIntervalIndex={sessionState.currentIntervalIndex}
+            intervalStartTime={sessionState.intervalStartTime}
+            onStop={sessionState.stopProgram}
+            onNavigateHome={() => setActiveTab("home")}
+            getTotalProgramDuration={sessionState.getTotalProgramDuration}
+            getIntervalElapsedTime={sessionState.getIntervalElapsedTime}
+            getCurrentInterval={sessionState.getCurrentInterval}
+          />
+        )}
+        {/* App Content */}
+        <div
+          className={`flex-1 overflow-y-auto no-scrollbar ${
+            sessionState.isSessionRunning && activeTab !== "home" ? "pt-[73px]" : ""
+          }`}
+        >
+          {renderContent()}
+        </div>
       </div>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-gradient-to-r from-[#3E2723] to-[#5C4033] border-t border-[#8B7355]/40 px-4 py-2 safe-area-bottom">
+      <nav className="w-full max-w-md mx-auto bg-gradient-to-r from-[#3E2723] to-[#5C4033] border-t border-[#8B7355]/40 px-4 py-2 safe-area-bottom">
         <div className="flex items-center justify-around">
           <button
             onClick={() => setActiveTab("home")}
