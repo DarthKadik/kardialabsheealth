@@ -2441,9 +2441,6 @@ export function Dashboard({
             </div>
           </div>
         </div>
-
-<<<<<<< Updated upstream
-=======
         {/* Quick Actions */}
         <div className="mb-6">
           <div className="space-y-3">
@@ -2451,7 +2448,6 @@ export function Dashboard({
           </div>
         </div>
 
->>>>>>> Stashed changes
         {/* Saved Programs */}
         {savedPrograms && savedPrograms.length > 0 && (
           <div className="mb-6">
@@ -2589,9 +2585,9 @@ export function Dashboard({
         <ProgramDetailView
           program={viewingProgram}
           onClose={() => setViewingProgram(null)}
-          onEdit={() => loadProgramForEditing(viewingProgram)}
+          onEdit={() => viewingProgram && loadProgramForEditing(viewingProgram)}
           onDelete={() =>
-            handleDeleteProgram(viewingProgram.id)
+            viewingProgram && handleDeleteProgram(viewingProgram.id)
           }
         />
       )}

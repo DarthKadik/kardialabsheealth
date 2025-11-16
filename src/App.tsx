@@ -15,13 +15,13 @@ export default function App() {
   const renderContent = () => {
     switch (activeTab) {
       case "home":
-        return <Dashboard onNavigate={setActiveTab} sessionState={sessionState} />;
+        return <Dashboard sessionState={sessionState} />;
       case "community":
         return <Community />;
       case "tracking":
         return <DataTracking />;
       case "algorithms":
-        return <SaunaAlgorithms onNavigate={setActiveTab} />;
+        return <SaunaAlgorithms />;
       case "find":
         return <FindSaunas />;
       default:
