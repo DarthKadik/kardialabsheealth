@@ -1,12 +1,11 @@
 import { Slider } from "./ui/slider";
 import { Switch } from "./ui/switch";
 import { Button } from "./ui/button";
-import { useState, useEffect } from "react";
-import { SaunaHeatmap } from "./SaunaHeatmap";
+import { useState } from "react";
 import { GuidedSession } from "./GuidedSession";
 import { GuidedSessionConfig } from "../data/guidedSessions";
 import SaunaCamera from "./SaunaCamera";
-import { Shield, Settings, AlertTriangle, Package, ExternalLink, Plus, Trash2, Flame, Box, X, Info, Wifi, Link, Zap, Home } from "lucide-react";
+import { Shield, Settings, AlertTriangle, Package, ExternalLink, Plus, Trash2, Flame, Box, X, Info, Wifi, Zap, Home } from "lucide-react";
 
 interface InventoryItem {
   id: number;
@@ -24,7 +23,7 @@ interface SmartDevice {
 }
 
 export function SaunaAlgorithms() {
-  const [autoOptimize, setAutoOptimize] = useState(true);
+  const [autoOptimize] = useState(true);
   const [targetTemp, setTargetTemp] = useState([85]);
   const [sessionLength, setSessionLength] = useState([20]);
   const [activeGuidedSession, setActiveGuidedSession] = useState<GuidedSessionConfig | null>(null);
@@ -35,11 +34,11 @@ export function SaunaAlgorithms() {
   const [showStoveInfo, setShowStoveInfo] = useState(false); // Show stove longevity info popup
   
   // Infrastructure usage tracking (mock data - to be connected to real data later)
-  const [stonesUsageHours, setStonesUsageHours] = useState(450); // Total hours
+  const [stonesUsageHours] = useState(450); // Total hours
   const stonesReplacementPeriod = 600; // Recommended replacement at 600 hours
   const stonesUsagePercent = Math.min((stonesUsageHours / stonesReplacementPeriod) * 100, 100);
   
-  const [stoveUsageYears, setStoveUsageYears] = useState(3.2); // Years of usage
+  const [stoveUsageYears] = useState(3.2); // Years of usage
   const stoveReplacementPeriod = 10; // Recommended replacement at 10 years
   const stoveUsagePercent = Math.min((stoveUsageYears / stoveReplacementPeriod) * 100, 100);
   
@@ -110,11 +109,11 @@ export function SaunaAlgorithms() {
   
   // If guided session is active, show it instead
   if (activeGuidedSession) {
-    return <GuidedSession sessionConfig={activeGuidedSession} onBack={() => setActiveGuidedSession(null)} sourcePage="smart" />;
+    return <GuidedSession onBack={() => setActiveGuidedSession(null)} />;
   }
 
   return (
-    <div className="min-h-full bg-[#FFEBCD]">
+    <div className="bg-[#FFEBCD]">
       {/* Header with Background Image */}
       <div className="relative px-6 pt-12 pb-8 text-white overflow-hidden">
         <div 

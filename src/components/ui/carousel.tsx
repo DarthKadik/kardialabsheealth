@@ -1,241 +1,228 @@
-"use client";
+import { useEffect, useState, useRef, JSX } from 'react';
+import { motion, PanInfo, useMotionValue, useTransform } from 'motion/react';
+import { recommendedSessions } from '../../data/recommendedSessions';
+import { getSessionById } from '../../data/allSessions';
+import { useSessionState } from '../../hooks/useSessionState';
+import { Button } from './button';
 
-import * as React from "react";
-import useEmblaCarousel, {
-  type UseEmblaCarouselType,
-} from "embla-carousel-react@8.6.0";
-import { ArrowLeft, ArrowRight } from "lucide-react@0.487.0";
-
-import { cn } from "./utils";
-import { Button } from "./button";
-
-type CarouselApi = UseEmblaCarouselType[1];
-type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
-type CarouselOptions = UseCarouselParameters[0];
-type CarouselPlugin = UseCarouselParameters[1];
-
-type CarouselProps = {
-  opts?: CarouselOptions;
-  plugins?: CarouselPlugin;
-  orientation?: "horizontal" | "vertical";
-  setApi?: (api: CarouselApi) => void;
-};
-
-type CarouselContextProps = {
-  carouselRef: ReturnType<typeof useEmblaCarousel>[0];
-  api: ReturnType<typeof useEmblaCarousel>[1];
-  scrollPrev: () => void;
-  scrollNext: () => void;
-  canScrollPrev: boolean;
-  canScrollNext: boolean;
-} & CarouselProps;
-
-const CarouselContext = React.createContext<CarouselContextProps | null>(null);
-
-function useCarousel() {
-  const context = React.useContext(CarouselContext);
-
-  if (!context) {
-    throw new Error("useCarousel must be used within a <Carousel />");
-  }
-
-  return context;
+export interface CarouselProps {
+  baseWidth?: number;
+  autoplay?: boolean;
+  autoplayDelay?: number;
+  pauseOnHover?: boolean;
+  loop?: boolean;
+  round?: boolean;
 }
 
-function Carousel({
-  orientation = "horizontal",
-  opts,
-  setApi,
-  plugins,
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"div"> & CarouselProps) {
-  const [carouselRef, api] = useEmblaCarousel(
-    {
-      ...opts,
-      axis: orientation === "horizontal" ? "x" : "y",
-    },
-    plugins,
-  );
-  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
-  const [canScrollNext, setCanScrollNext] = React.useState(false);
+const DRAG_BUFFER = 0;
+const VELOCITY_THRESHOLD = 500;
+const GAP = 16;
+const SPRING_OPTIONS = { type: 'spring' as const, stiffness: 300, damping: 30 };
 
-  const onSelect = React.useCallback((api: CarouselApi) => {
-    if (!api) return;
-    setCanScrollPrev(api.canScrollPrev());
-    setCanScrollNext(api.canScrollNext());
-  }, []);
+export default function Carousel({
+  baseWidth = 300,
+  autoplay = false,
+  autoplayDelay = 3000,
+  pauseOnHover = false,
+  loop = false,
+  round = false
+}: CarouselProps): JSX.Element {
+  const { setActiveGuidedSession } = useSessionState();
+  const containerPadding = 16;
+  const itemWidth = baseWidth - containerPadding * 2;
+  const trackItemOffset = itemWidth + GAP;
 
-  const scrollPrev = React.useCallback(() => {
-    api?.scrollPrev();
-  }, [api]);
+  const items = recommendedSessions;
+  const carouselItems = loop ? [...items, items[0]] : items;
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const x = useMotionValue(0);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isResetting, setIsResetting] = useState<boolean>(false);
 
-  const scrollNext = React.useCallback(() => {
-    api?.scrollNext();
-  }, [api]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (pauseOnHover && containerRef.current) {
+      const container = containerRef.current;
+      const handleMouseEnter = () => setIsHovered(true);
+      const handleMouseLeave = () => setIsHovered(false);
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+      return () => {
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }
+  }, [pauseOnHover]);
 
-  const handleKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        scrollPrev();
-      } else if (event.key === "ArrowRight") {
-        event.preventDefault();
-        scrollNext();
+  useEffect(() => {
+    if (autoplay && (!pauseOnHover || !isHovered)) {
+      const timer = setInterval(() => {
+        setCurrentIndex(prev => {
+          if (prev === items.length - 1 && loop) {
+            return prev + 1;
+          }
+          if (prev === carouselItems.length - 1) {
+            return loop ? 0 : prev;
+          }
+          return prev + 1;
+        });
+      }, autoplayDelay);
+      return () => clearInterval(timer);
+    }
+  }, [autoplay, autoplayDelay, isHovered, loop, items.length, carouselItems.length, pauseOnHover]);
+
+  const effectiveTransition = isResetting ? { duration: 0 } : SPRING_OPTIONS;
+
+  const handleAnimationComplete = () => {
+    if (loop && currentIndex === carouselItems.length - 1) {
+      setIsResetting(true);
+      x.set(0);
+      setCurrentIndex(0);
+      setTimeout(() => setIsResetting(false), 50);
+    }
+  };
+
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo): void => {
+    const offset = info.offset.x;
+    const velocity = info.velocity.x;
+    if (offset < -DRAG_BUFFER || velocity < -VELOCITY_THRESHOLD) {
+      if (loop && currentIndex === items.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        setCurrentIndex(prev => Math.min(prev + 1, carouselItems.length - 1));
       }
-    },
-    [scrollPrev, scrollNext],
-  );
+    } else if (offset > DRAG_BUFFER || velocity > VELOCITY_THRESHOLD) {
+      if (loop && currentIndex === 0) {
+        setCurrentIndex(items.length - 1);
+      } else {
+        setCurrentIndex(prev => Math.max(prev - 1, 0));
+      }
+    }
+  };
 
-  React.useEffect(() => {
-    if (!api || !setApi) return;
-    setApi(api);
-  }, [api, setApi]);
-
-  React.useEffect(() => {
-    if (!api) return;
-    onSelect(api);
-    api.on("reInit", onSelect);
-    api.on("select", onSelect);
-
-    return () => {
-      api?.off("select", onSelect);
-    };
-  }, [api, onSelect]);
-
-  return (
-    <CarouselContext.Provider
-      value={{
-        carouselRef,
-        api: api,
-        opts,
-        orientation:
-          orientation || (opts?.axis === "y" ? "vertical" : "horizontal"),
-        scrollPrev,
-        scrollNext,
-        canScrollPrev,
-        canScrollNext,
-      }}
-    >
-      <div
-        onKeyDownCapture={handleKeyDown}
-        className={cn("relative", className)}
-        role="region"
-        aria-roledescription="carousel"
-        data-slot="carousel"
-        {...props}
-      >
-        {children}
-      </div>
-    </CarouselContext.Provider>
-  );
-}
-
-function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
-  const { carouselRef, orientation } = useCarousel();
+  const dragProps = loop
+    ? {}
+    : {
+        dragConstraints: {
+          left: -trackItemOffset * (carouselItems.length - 1),
+          right: 0
+        }
+      };
 
   return (
     <div
-      ref={carouselRef}
-      className="overflow-hidden"
-      data-slot="carousel-content"
+      ref={containerRef}
+      className={`relative overflow-hidden p-4 ${
+        round ? 'rounded-full border border-white' : 'rounded-[24px]'
+      }`}
+      style={{
+        width: `${baseWidth}px`,
+        ...(round && { height: `${baseWidth}px` })
+      }}
     >
-      <div
-        className={cn(
-          "flex",
-          orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
-          className,
-        )}
-        {...props}
-      />
+      <motion.div
+        className="flex"
+        drag="x"
+        {...dragProps}
+        style={{
+          width: itemWidth,
+          gap: `${GAP}px`,
+          perspective: 1000,
+          perspectiveOrigin: `${currentIndex * trackItemOffset + itemWidth / 2}px 50%`,
+          x
+        }}
+        onDragEnd={handleDragEnd}
+        animate={{ x: -(currentIndex * trackItemOffset) }}
+        transition={effectiveTransition}
+        onAnimationComplete={handleAnimationComplete}
+      >
+        {carouselItems.map((rec, index) => {
+          const range = [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset];
+          const outputRange = [90, 0, -90];
+          const rotateY = useTransform(x, range, outputRange, { clamp: false });
+          return (
+            <motion.div
+              key={rec.id}
+              className="relative shrink-0"
+              style={{
+                width: itemWidth,
+                rotateY: rotateY,
+              }}
+              transition={effectiveTransition}
+            >
+              <div className="mx-2">
+                <div className="relative overflow-hidden rounded-2xl shadow-lg group">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                      backgroundImage: rec.id === 'finnish-traditional'
+                        ? `url('https://images.unsplash.com/photo-1622997638119-e53621e3d73b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaW5uaXNoJTIwbGFrZSUyMGZvcmVzdHxlbnwxfHx8fDE3NjMyNTMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral')`
+                        : `url('${rec.image}')`,
+                    }}
+                  />
+                  <div className={`absolute inset-0 ${
+                    rec.id === 'finnish-traditional' 
+                      ? 'bg-gradient-to-br from-[#A8C5DD]/90 to-[#7BA3C4]/90' 
+                      : rec.id === 'detox-respiratory'
+                      ? 'bg-gradient-to-br from-[#C8E6C9]/90 to-[#A5D6A7]/90'
+                      : 'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
+                  }`} />
+                  <div className="relative p-4">
+                    <h4 className="text-white mb-2">
+                      {rec.title}
+                    </h4>
+                    <p className="text-white/80 text-sm mb-4 leading-relaxed">
+                      {rec.description}
+                    </p>
+
+                    <div className="flex items-center gap-4 mb-4 text-sm text-white/70">
+                      <span>{rec.temp}°C</span>
+                      <span>•</span>
+                      <span>{rec.duration} min</span>
+                    </div>
+
+                    <Button
+                      size="sm"
+                      className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40"
+                      onClick={() => {
+                        const session = getSessionById(rec.id);
+                        if (session) {
+                          setActiveGuidedSession(session);
+                        }
+                      }}
+                    >
+                      Start Session
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+      <div className={`flex w-full justify-center ${round ? 'absolute z-20 bottom-12 left-1/2 -translate-x-1/2' : ''}`}>
+        <div className="mt-4 flex w-[150px] justify-between px-8">
+          {items.map((_, index) => (
+            <motion.div
+              key={index}
+              className={`h-2 w-2 rounded-full cursor-pointer transition-colors duration-150 ${
+                currentIndex % items.length === index
+                  ? round
+                    ? 'bg-white'
+                    : 'bg-white'
+                  : round
+                    ? 'bg-[#555]'
+                    : 'bg-white/40'
+              }`}
+              animate={{
+                scale: currentIndex % items.length === index ? 1.2 : 1
+              }}
+              onClick={() => setCurrentIndex(index)}
+              transition={{ duration: 0.15 }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
-
-function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
-  const { orientation } = useCarousel();
-
-  return (
-    <div
-      role="group"
-      aria-roledescription="slide"
-      data-slot="carousel-item"
-      className={cn(
-        "min-w-0 shrink-0 grow-0 basis-full",
-        orientation === "horizontal" ? "pl-4" : "pt-4",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-function CarouselPrevious({
-  className,
-  variant = "outline",
-  size = "icon",
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollPrev, canScrollPrev } = useCarousel();
-
-  return (
-    <Button
-      data-slot="carousel-previous"
-      variant={variant}
-      size={size}
-      className={cn(
-        "absolute size-8 rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -left-12 -translate-y-1/2"
-          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
-        className,
-      )}
-      disabled={!canScrollPrev}
-      onClick={scrollPrev}
-      {...props}
-    >
-      <ArrowLeft />
-      <span className="sr-only">Previous slide</span>
-    </Button>
-  );
-}
-
-function CarouselNext({
-  className,
-  variant = "outline",
-  size = "icon",
-  ...props
-}: React.ComponentProps<typeof Button>) {
-  const { orientation, scrollNext, canScrollNext } = useCarousel();
-
-  return (
-    <Button
-      data-slot="carousel-next"
-      variant={variant}
-      size={size}
-      className={cn(
-        "absolute size-8 rounded-full",
-        orientation === "horizontal"
-          ? "top-1/2 -right-12 -translate-y-1/2"
-          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
-        className,
-      )}
-      disabled={!canScrollNext}
-      onClick={scrollNext}
-      {...props}
-    >
-      <ArrowRight />
-      <span className="sr-only">Next slide</span>
-    </Button>
-  );
-}
-
-export {
-  type CarouselApi,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-};

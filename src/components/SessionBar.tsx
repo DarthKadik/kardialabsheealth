@@ -36,14 +36,11 @@ export function SessionBar({
   duration,
   heatLevel,
   currentProgram,
-  currentIntervalIndex,
-  intervalStartTime,
   onStop,
   onNavigateHome,
   getTotalProgramDuration,
-  getIntervalElapsedTime,
   getCurrentInterval,
-}: SessionBarProps) {
+}: Omit<SessionBarProps, 'currentIntervalIndex' | 'intervalStartTime' | 'getIntervalElapsedTime'>) {
   const formatElapsedTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;

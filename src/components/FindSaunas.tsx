@@ -45,7 +45,7 @@ const saunas = [
 
 export function FindSaunas() {
   return (
-    <div className="min-h-full bg-[#FFEBCD]">
+    <div className="bg-[#FFEBCD]">
       {/* Header with Search */}
       <div className="relative overflow-hidden px-6 pt-12 pb-6">
         <div 

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
-import { Card } from "./ui/card";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Slider } from "./ui/slider";
+import Carousel from './ui/carousel'
+
 import {
   ChevronDown,
   ChevronUp,
@@ -16,19 +16,14 @@ import { ProgramDetailView } from "./ProgramDetailView";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DraggableInterval } from "./DraggableInterval";
-import { DropIndicator } from "./DropIndicator";
 import type {
   SavedProgram,
   Interval,
   Action,
 } from "../hooks/useSessionState";
 import { GuidedSession } from "./GuidedSession";
-import {
-  guidedSessions,
-  GuidedSessionConfig,
-} from "../data/guidedSessions";
+import { GuidedSessionConfig } from "../data/guidedSessions";
 import { WheelPicker } from "./WheelPicker";
-import Slider2 from "react-slick";
 import { recommendedSessions } from "../data/recommendedSessions";
 import { getSessionById } from "../data/allSessions";
 
@@ -40,9 +35,8 @@ interface DashboardProps {
 }
 
 export function Dashboard({
-  onNavigate,
   sessionState,
-}: DashboardProps) {
+}: Omit<DashboardProps, 'onNavigate'>) {
   // Destructure session state
   const {
     duration,
@@ -55,11 +49,9 @@ export function Dashboard({
     elapsedTime,
     isSessionScheduled,
     scheduledStartTime,
-    currentTime,
     timeUntilStart,
     currentProgram,
     currentIntervalIndex,
-    intervalStartTime,
     startSession,
     stopSession,
     scheduleSession,
@@ -108,8 +100,6 @@ export function Dashboard({
     number | null
   >(null);
   const [tempActionTime, setTempActionTime] = useState("");
-  const [focusedTempDropdown, setFocusedTempDropdown] =
-    useState<number | null>(null);
 
   // Use saved programs from sessionState instead of local state
   const {
@@ -405,7 +395,7 @@ export function Dashboard({
         },
         actions: actions.map((a) => ({ ...a })),
       };
-      updateProgram(editingProgramId, program);
+      updateProgram(program);
       setEditingProgramId(null);
     } else {
       // Create new program
@@ -473,9 +463,7 @@ export function Dashboard({
   if (activeGuidedSession) {
     return (
       <GuidedSession
-        sessionConfig={activeGuidedSession}
         onBack={() => setActiveGuidedSession(null)}
-        sourcePage="home"
       />
     );
   }
@@ -2384,8 +2372,8 @@ export function Dashboard({
       )}
 
       {/* Stats Grid */}
-      <div className="px-6 py-6 -mt-4">
-        <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="px-6 ">
+        <div className="grid grid-cols-3 gap-4 mt-4 mb-6">
           <div className="relative overflow-hidden rounded-2xl shadow-lg h-20">
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -2487,10 +2475,10 @@ export function Dashboard({
 
         {/* Recommendations Carousel */}
         <div>
-          <h3 className="text-[#3E2723] mb-3">
+          <h3 className="text-[#3E2723]">
             Recommended Sessions
           </h3>
-          <div className="relative -mx-6 px-6">
+          <div className="relative -mx-6">
             <style>{`
               .slick-slider {
                 overflow: hidden;
@@ -2501,6 +2489,7 @@ export function Dashboard({
               .slick-track {
                 display: flex !important;
                 align-items: stretch;
+                gap: 20px;
               }
               .slick-slide {
                 height: auto;
@@ -2526,68 +2515,16 @@ export function Dashboard({
                 display: none !important;
               }
             `}</style>
-            <Slider2
-              dots={false}
-              infinite={true}
-              speed={300}
-              slidesToShow={1}
-              slidesToScroll={1}
-              swipe={true}
-              arrows={false}
-              adaptiveHeight={false}
-              variableWidth={false}
+            <Carousel
+              baseWidth={380}
+              autoplay={true}
+              autoplayDelay={3000}
+              pauseOnHover={true}
+              loop={true}
+              round={false}
             >
-              {recommendedSessions.map((rec) => (
-                <div key={rec.id}>
-                  <div className="mx-2">
-                    <div className="relative overflow-hidden rounded-2xl shadow-lg group">
-                      <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                          backgroundImage: rec.id === 'finnish-traditional'
-                            ? `url('https://images.unsplash.com/photo-1622997638119-e53621e3d73b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaW5uaXNoJTIwbGFrZSUyMGZvcmVzdHxlbnwxfHx8fDE3NjMyNTMzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral')`
-                            : `url('${rec.image}')`,
-                        }}
-                      />
-                      <div className={`absolute inset-0 ${
-                        rec.id === 'finnish-traditional' 
-                          ? 'bg-gradient-to-br from-[#A8C5DD]/90 to-[#7BA3C4]/90' 
-                          : rec.id === 'detox-respiratory'
-                          ? 'bg-gradient-to-br from-[#C8E6C9]/90 to-[#A5D6A7]/90'
-                          : 'bg-gradient-to-br from-[#8B7355]/90 to-[#5C4033]/90'
-                      }`} />
-                      <div className="relative p-4">
-                        <h4 className="text-white mb-2">
-                          {rec.title}
-                        </h4>
-                        <p className="text-white/80 text-sm mb-4 leading-relaxed">
-                          {rec.description}
-                        </p>
-
-                        <div className="flex items-center gap-4 mb-4 text-sm text-white/70">
-                          <span>{rec.temp}°C</span>
-                          <span>•</span>
-                          <span>{rec.duration} min</span>
-                        </div>
-
-                        <Button
-                          size="sm"
-                          className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/40"
-                          onClick={() => {
-                            const session = getSessionById(rec.id);
-                            if (session) {
-                              setActiveGuidedSession(session);
-                            }
-                          }}
-                        >
-                          Start Session
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Slider2>
+              
+            </Carousel>
           </div>
         </div>
       </div>

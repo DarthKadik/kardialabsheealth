@@ -137,7 +137,7 @@ function DataTrackingComponent() {
     };
   }, []); // Empty dependency array - only calculate once on mount
   return (
-    <div className="min-h-full bg-[#FFEBCD]">
+    <div className="bg-[#FFEBCD]">
       {/* Header */}
       <div className="relative overflow-hidden px-6 pt-4 pb-2">
         <div 
