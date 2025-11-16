@@ -52,7 +52,7 @@ export function SaunaHeatmap() {
   return (
     <div className="relative">
       {/* Heatmap Visualization - Bird's Eye View */}
-      <div className="relative aspect-square bg-[#FFEBCD] rounded-2xl border-2 border-[#8B7355]/30 overflow-hidden shadow-lg">
+      <div className="relative aspect-[4/3] bg-[#FFEBCD] rounded-2xl border-2 border-[#8B7355]/30 overflow-hidden shadow-lg">
         
         {/* Heat overlay with smooth gradients */}
         <svg className="absolute inset-0 w-full h-full" style={{ mixBlendMode: "multiply" }}>
@@ -79,11 +79,11 @@ export function SaunaHeatmap() {
         </svg>
 
         {/* Floor plan elements */}
-        <div className="absolute inset-0 p-4">
+        <div className="absolute inset-0 p-4 transform">
           
           {/* Benches - L-shaped seating */}
           {/* Top bench */}
-          <div className="absolute top-4 left-4 right-4 h-12 bg-[#8B7355]/40 border-2 border-[#6D5A47]/50 rounded-lg backdrop-blur-sm">
+          <div className="absolute bottom-4 left-4 right-4 h-12 bg-[#8B7355]/40 border-2 border-[#6D5A47]/50 rounded-lg backdrop-blur-sm">
             <div className="absolute inset-1 flex gap-1">
               <div className="flex-1 border-r border-[#6D5A47]/30"></div>
               <div className="flex-1 border-r border-[#6D5A47]/30"></div>
@@ -100,8 +100,8 @@ export function SaunaHeatmap() {
             </div>
           </div>
 
-          {/* Stove - bottom right corner */}
-          <div className="absolute bottom-6 right-6 w-16 h-16">
+          {/* Stove - top center */}
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-16">
             {/* Stove glow */}
             <div className="absolute inset-0 bg-[#CD853F]/30 rounded-lg animate-pulse"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-[#CD853F] to-[#8B7355] rounded-lg border-2 border-[#6D5A47] shadow-lg flex items-center justify-center">
@@ -114,10 +114,10 @@ export function SaunaHeatmap() {
             <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#CD853F]/20 rounded-full animate-ping"></div>
           </div>
 
-          {/* Door - bottom left */}
-          <div className="absolute bottom-4 left-20 w-16 h-3">
+          {/* Door - right center */}
+          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-20 h-5 transform rotate-90">
             <div className="w-full h-full bg-[#5C4033]/60 border border-[#3E2723]/70 rounded-sm backdrop-blur-sm">
-              <div className="absolute left-1/2 -translate-x-1/2 -top-1 w-1 h-1 bg-[#8B7355] rounded-full"></div>
+              <div className="absolute left-1/2 -translate-x-1/2 -top-1 w-1 h-1 bg-[#8B755] rounded-full"></div>
             </div>
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-[#5C4033] bg-white/80 px-1 rounded">
               Door
