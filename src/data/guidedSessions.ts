@@ -12,6 +12,7 @@ export interface Step {
 
 export interface GuidedSessionConfig {
   id: string;
+  sessionId: number;
   title: string;
   subtitle: string;
   description: string;
@@ -26,6 +27,7 @@ export interface GuidedSessionConfig {
 
 // Beginner's Guided Session
 const beginnersGuide: GuidedSessionConfig = {
+  sessionId: 1,
   id: "beginners-guide",
   title: "Beginner's Guided Session",
   subtitle: "Your complete introduction to sauna wellness",
@@ -151,6 +153,7 @@ const beginnersGuide: GuidedSessionConfig = {
 
 // Athletic Recovery Session - Post-workout recovery with contrast therapy
 const athleticRecovery: GuidedSessionConfig = {
+  sessionId: 2,
   id: "athletic-recovery",
   title: "Athletic Recovery Session",
   subtitle: "Optimize muscle recovery and reduce soreness after training",
@@ -285,6 +288,7 @@ const athleticRecovery: GuidedSessionConfig = {
 
 // Recovery Session - Gentle heat for post-workout recovery
 const recoverySession: GuidedSessionConfig = {
+  sessionId: 3,
   id: "recovery-session",
   title: "Post-Workout Recovery",
   subtitle: "Gentle heat therapy for muscle restoration",
@@ -367,6 +371,7 @@ const recoverySession: GuidedSessionConfig = {
 
 // Deep Relaxation Session - Stress relief and mental clarity
 const deepRelaxation: GuidedSessionConfig = {
+  sessionId: 4,
   id: "deep-relaxation",
   title: "Deep Relaxation & Meditation",
   subtitle: "Optimal temperature for stress relief and mental clarity",
@@ -458,6 +463,7 @@ const deepRelaxation: GuidedSessionConfig = {
 
 // Performance Boost - High-intensity heat training
 const performanceBoost: GuidedSessionConfig = {
+  sessionId: 5,
   id: "performance-boost",
   title: "Performance Heat Training",
   subtitle: "High-intensity session for endurance adaptation",
@@ -548,6 +554,7 @@ const performanceBoost: GuidedSessionConfig = {
 
 // Morning Energizer Session - Quick detox and mental clarity boost
 const morningEnergizer: GuidedSessionConfig = {
+  sessionId: 6,
   id: "morning-energizer",
   title: "Morning Energizer Session",
   subtitle: "Quick detox and mental clarity boost to start your day strong",
@@ -656,6 +663,7 @@ const morningEnergizer: GuidedSessionConfig = {
 
 // Mindful Presence Session - Guided meditation journey with voice guidance
 const mindfulPresence: GuidedSessionConfig = {
+  sessionId: 7,
   id: "mindful-presence",
   title: "Mindful Presence Session",
   subtitle: "Guided meditation journey combining heat therapy with deep mindfulness practice",
@@ -795,6 +803,7 @@ const mindfulPresence: GuidedSessionConfig = {
 
 // Evening Wind-Down Session - Release stress and prepare for sleep
 const eveningWindDown: GuidedSessionConfig = {
+  sessionId: 8,
   id: "evening-wind-down",
   title: "Evening Wind-Down Session",
   subtitle: "Release daily stress and prepare your body for restorative sleep",

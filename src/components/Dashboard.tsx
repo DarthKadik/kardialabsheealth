@@ -1689,7 +1689,7 @@ export function Dashboard({
             `}</style>
             <Carousel
               baseWidth={380}
-              autoplay={true}
+              autoplay={false}
               autoplayDelay={10000}
               pauseOnHover={true}
               loop={true}
